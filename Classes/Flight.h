@@ -4,7 +4,8 @@
 
 #ifndef AED2_FLIGHT_H
 #define AED2_FLIGHT_H
-
+#include <string>
+using namespace std;
 
 class Flight {
 
