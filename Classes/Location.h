@@ -1,7 +1,10 @@
 #pragma once
 
 class Location {
-    private:
     float latitude;
     float longitude;
+public:
+    Location();
+    Location(float lat, float lon);
+    float distance(Location location);
 };
