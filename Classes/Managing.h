@@ -1,10 +1,6 @@
-#ifndef AED2_MANAGING_H
-#define AED2_MANAGING_H
-
+#pragma once
 
 class Managing {
 
 };
 
-
-#endif //AED2_MANAGING_H

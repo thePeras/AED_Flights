@@ -1,5 +1,5 @@
-#ifndef AED2_AIRPORT_H
-#define AED2_AIRPORT_H
+#pragma once
+
 #include "Location.h"
 
 class Airport {
@@ -12,5 +12,3 @@ class Airport {
 
 };
 
-
-#endif //AED2_AIRPORT_H
