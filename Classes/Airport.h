@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Location.h"
+#include <string>
+using namespace std;
 
 class Airport {
     private:
