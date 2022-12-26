@@ -39,4 +39,4 @@ add_executable(AED2
         Classes/Location.h
         Classes/Managing.cpp
         Classes/Managing.h
-        main.cpp Classes/Graph.h Classes/Graph.cpp)
+        main.cpp Classes/Graph.h Classes/Graph.cpp menu.cpp menu.h Classes/Comparators.cpp)
