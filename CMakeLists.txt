@@ -22,4 +22,5 @@ add_executable(AED_Aeroportos
         Classes/Managing.h
         main.cpp
         menu.cpp
-        menu.h)
+        menu.h
+        MenuTwo.h MenuOption.h)

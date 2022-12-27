@@ -1,11 +1,24 @@
 #include <iostream>
-#include "menu.h"
-#include "Location.h"
+#include "MenuTwo.h"
+#include <string>
+#include <vector>
+#include "MenuOption.h"
+
 using namespace std;
 
 int main(){
-    Location l1 = Location(51.5007, 0.1246);
-    Location l2 = Location(40.6892, 74.0445);
-    cout << l1.distance(l2);
+    //Menu menu = Menu();
+    vector<MenuOption> options = {
+        {'1', "Viajar", []() {cout << "push para o menu viajar" << endl;}},
+        {'2', "Consultar Aeroporot", []() {cout << "Remove Location" << endl;}},
+        {'3', "Os meus bilhetes", []() {cout << "Edit Location" << endl;}},
+    };
+
+    vector<string> my_list = {"Lisboa", "Porto", "Coimbra", "Braga", "Faro"};
+    string title = "Inicio";
+    string inputText = "Escolha uma opção";
+    MenuTwo<string> menu2(title, inputText, options, my_list, false);
+    menu2.render();
+
     return 0;
 }
