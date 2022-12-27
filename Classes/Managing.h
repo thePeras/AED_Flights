@@ -2,12 +2,18 @@
 
 #include <string>
 #include <set>
+#include <unordered_map>
+#include <unordered_set>
 #include "Airline.h"
 #include "Comparators.cpp"
+#include "Airport.h"
+#include "Graph.h"
+
 using namespace std;
 
 class Managing {
 public:
+
     Managing();
 
     /**
@@ -16,9 +22,11 @@ public:
      */
     void readFiles();
 
-    const set<Airline, airlineComp> &getAirlines() const;
+    const unordered_map<string, Airline> &getAirlines() const;
 
-    void setAirlines(const set<Airline, airlineComp> &airlines);
+    const unordered_map<string, Airport> &getAirports() const;
+
+    const unordered_map<string, vector<string>> &getCountryCities() const;
 
 private:
     //TODO: Add sets, lists, vectors (or whatever we want to use) to store the data
@@ -27,7 +35,9 @@ private:
     void readAirports();
     void readFlights();
 
+    unordered_map<string, Airline> airlines;
+    unordered_map<string, Airport> airports;
+    unordered_map<string, vector<string>> country_cities;
 
-    set<Airline, airlineComp> airlines;
 };
 
