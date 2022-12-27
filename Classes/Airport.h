@@ -18,5 +18,6 @@ public:
     Airport(string code, string name, string city, string country, float latitude, float longitude);
     string getCode() const;
     Location getLocation() const;
+
 };
 

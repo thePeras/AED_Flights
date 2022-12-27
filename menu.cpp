@@ -20,8 +20,7 @@ void Menu::getMenu() {
             case CONSULTAS_MENU: {
                 auto airlines = m.getAirlines();
                 for (auto it = airlines.begin(); it != airlines.end(); it++) {
-                    cout << it->getName() << endl;
-                    cout << it->getCountry() << endl;
+                    cout << it->second.getCode() << " - " << it->second.getName() << endl;
                 }
             }
                 break;

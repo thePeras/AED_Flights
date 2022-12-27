@@ -23,3 +23,11 @@ Flight::Flight(Airport source, Airport target, string airline) {
     this->airline = airline;
     this->distance = source.getLocation().distance(target.getLocation());
 }
+
+const string &Flight::getSource() const {
+    return source;
+}
+
+void Flight::setSource(const string &source) {
+    Flight::source = source;
+}

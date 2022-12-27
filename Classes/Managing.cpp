@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <sstream>
 #include <fstream>
-
+#include <iostream>
 
 Managing::Managing() {
 
@@ -15,12 +15,11 @@ Managing::Managing() {
 
 void Managing::readFiles() {
     readAirlines();
-    //readAirports();
+    readAirports();
     //readFlights();
 }
 
 void Managing::readAirlines() {
-    set<Airline, airlineComp> airlines = {};
     ifstream file(AIRLINES_FILE);
 
     if (file.is_open()) {
@@ -39,18 +38,63 @@ void Managing::readAirlines() {
             getline(file, country);
 
             Airline airline(code, name, callsign, country);
-            airlines.insert(airline);
-
+            airlines.insert({code, airline});
         }
         file.close();
-        this->airlines = airlines;
     }
 }
 
-const set<Airline, airlineComp> &Managing::getAirlines() const {
+void Managing::readAirports() {
+    string line;
+    ifstream file(AIRPORTS_FILE);
+    while (getline(file, line)) {
+        istringstream ss (line);
+        string code, name, city, country;
+        float latitude, longitude;
+        getline(ss, code, ',');
+        if (code.empty()) break;
+        getline(ss, name, ',');
+        getline(ss, city, ',');
+        getline(ss, country, ',');
+        ss >> latitude;
+        ss.ignore();
+        ss >> longitude;
+
+        country_cities[country].push_back(city);
+
+        Airport airport(code, name, city, country, *new Location(latitude, longitude));
+        airports.insert({code, airport});
+    }
+    file.close();
+}
+
+void Managing::readFlights() {
+    ifstream file(FLIGHTS_FILE);
+    string line;
+    while (getline(file, line)) {
+        istringstream ss (line);
+        string origin, destination, airline;
+        getline(ss, origin, ',');
+        if (origin.empty()) break;
+        getline(ss, destination, ',');
+        getline(ss, airline);
+
+        // Here we are supposed to add flights to the graph
+    }
+
+
+}
+
+const unordered_map<string, Airline> &Managing::getAirlines() const {
     return airlines;
 }
 
-void Managing::setAirlines(const set<Airline, airlineComp> &airlines) {
-    Managing::airlines = airlines;
+const unordered_map<string, Airport> &Managing::getAirports() const {
+    return airports;
 }
+
+const unordered_map<string, vector<string>> &Managing::getCountryCities() const {
+    return country_cities;
+}
+
+
