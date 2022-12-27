@@ -2,23 +2,47 @@
 #include "MenuTwo.h"
 #include <string>
 #include <vector>
+#include <stack>
 #include "MenuOption.h"
 
 using namespace std;
+stack<MenuTwo> menuStack;
 
-int main(){
-    //Menu menu = Menu();
-    vector<MenuOption> options = {
-        {'1', "Viajar", []() {cout << "push para o menu viajar" << endl;}},
-        {'2', "Consultar Aeroporot", []() {cout << "Remove Location" << endl;}},
-        {'3', "Os meus bilhetes", []() {cout << "Edit Location" << endl;}},
+void back_action(){
+    menuStack.pop();
+    menuStack.top().render();
+}
+
+void aeroporto_input(){
+    MenuTwo menu_aeroporto_input("Aeroporto", "digite o nome do aeroporto", {}, {"OPO", "JFK"});
+    menu_aeroporto_input.render();
+    cout << menu_aeroporto_input.getInput();
+}
+
+void menu_viajar(){
+    vector<MenuOption> options_viajar = {
+            {"Voltar", back_action},
+            {"Aeroporto (TAG)", aeroporto_input},
+            {"País", []() {}},
+            {"Coordenadas", []() {}},
     };
 
-    vector<string> my_list = {"Lisboa", "Porto", "Coimbra", "Braga", "Faro"};
-    string title = "Inicio";
-    string inputText = "Escolha uma opção";
-    MenuTwo<string> menu2(title, inputText, options, my_list, false);
-    menu2.render();
+    MenuTwo menu_viajar("Viajar", "de onde? ", options_viajar, {});
+    menuStack.push(menu_viajar);
+
+    menu_viajar.render();
+}
+
+int main(){
+    vector<MenuOption> options = {
+            {"Viajar", menu_viajar},
+            {"Consultar Aeroporto", []() {cout << "Remove Location" << endl;}},
+            {"Os meus bilhetes", []() {cout << "Edit Location" << endl;}},
+    };
+
+    MenuTwo MainMenu("Inicio", "Escolha uma opção", options, {}, false);
+    menuStack.push(MainMenu);
+    MainMenu.render();
 
     return 0;
 }

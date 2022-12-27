@@ -8,59 +8,51 @@
 
 using namespace std;
 
-template <typename T>
 class MenuTwo {
 private:
     const string title;
     const string inputText;
     vector<MenuOption> options;
-    const vector<T> list;
-    const bool backOption;
+    const vector<string> list;
     const bool isToPrintList;
     const bool isOrderList;
+    string input_value;
     bool inputIsInvalid(string input);
 public:
-    MenuTwo(string title, string inputText, vector<MenuOption> options, vector<T> list, bool backOption = true, bool isToPrintList = false, bool isOrderList = false);
+    MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list, bool isToPrintList = false, bool isOrderList = false);
     void showList();
     void render();
+    string getInput();
 };
 
-template<typename T>
-MenuTwo<T>::MenuTwo(string title, string inputText, vector<MenuOption> options, vector<T> list, bool backOption, bool isToPrintList, bool isOrderList) : title(title), inputText(inputText), list(list), backOption(backOption), isToPrintList(isToPrintList), isOrderList(isOrderList) {
-    if(backOption) options.insert(options.begin(), MenuOption{'0', "Voltar", nullptr});
-    this->options = options;
-}
+MenuTwo::MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list, bool isToPrintList, bool isOrderList) : title(title), inputText(inputText), list(list), options(options), isToPrintList(isToPrintList), isOrderList(isOrderList) {}
 
-
-template<typename T>
-void MenuTwo<T>::showList(){
-    for (int i = 0; i < list.size(); i++) { //The i variable needs to be started at options.size() + 1
+void MenuTwo::showList(){
+    for (int i = 0; i < list.size(); i++) {
         if(isOrderList) cout << i + 1 << " - ";
         cout << list[i] << endl;
     }
     cout << endl;
 }
 
-template <typename T>
-bool MenuTwo<T>::inputIsInvalid(string input){
+bool MenuTwo::inputIsInvalid(string input){
     try{
         int inputInt = stoi(input);
-        if(inputInt >= 0 and inputInt < options.size()) return true;
+        if(inputInt >= 0 and inputInt <= options.size()) return false;
     }catch (exception e){
         return find(list.begin(), list.end(), input) == list.end();
     }
 }
 
-template<typename T>
-void MenuTwo<T>::render(){
+void MenuTwo::render(){
     string input;
-    cout << "title: " << title << endl;
+    cout << endl << "-------- " << title << " --------" << endl << endl;
     if(isToPrintList) showList();
-    cout << "Options: " << endl;
+    cout << "Opções: " << endl;
     for (int i = 0; i < options.size(); i++) {
-        cout << options[i].choice << " - " << options[i].text << endl;
+        cout << '\t' << i << " - " << options[i].text << endl;
     }
-    cout << inputText << ": ";
+    cout << endl << inputText << ": ";
     cin >> input;
     while(inputIsInvalid(input)) {
         cout << inputText << ": ";
@@ -69,17 +61,16 @@ void MenuTwo<T>::render(){
 
     try {
         int inputInt = stoi(input);
-        if(inputInt == 0){
-            cout << "Voltar" << endl;
-            return;
-        }
-        if(inputInt > 0 and inputInt < options.size()){
+        if(inputInt >= 0 and inputInt <= options.size()){
             options[inputInt].action();
             return;
         }
     }
     catch (exception e) {
-        cout << "input: " << input << endl;
+        this->input_value = input;
     }
 }
 
+string MenuTwo::getInput(){
+    return this->input_value;
+}
