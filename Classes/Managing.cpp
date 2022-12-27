@@ -4,19 +4,20 @@
 
 #include "Managing.h"
 #include "Airline.h"
+#include "Flight.h"
+#include "Airport.h"
 #include <algorithm>
 #include <sstream>
 #include <fstream>
-#include <iostream>
 
 Managing::Managing() {
-
+    graph = Graph();
 }
 
 void Managing::readFiles() {
     readAirlines();
     readAirports();
-    //readFlights();
+    readFlights();
 }
 
 void Managing::readAirlines() {
@@ -64,7 +65,9 @@ void Managing::readAirports() {
 
         Airport airport(code, name, city, country, *new Location(latitude, longitude));
         airports.insert({code, airport});
+        graph.addAirport(&airports[code]);
     }
+    graph.n = airports.size();
     file.close();
 }
 
@@ -79,10 +82,9 @@ void Managing::readFlights() {
         getline(ss, destination, ',');
         getline(ss, airline);
 
-        // Here we are supposed to add flights to the graph
+        // Basically adding edges to the graph
+        airports[origin].addFlight(new Flight (airports[origin], airports[destination], airline));
     }
-
-
 }
 
 const unordered_map<string, Airline> &Managing::getAirlines() const {
@@ -95,6 +97,10 @@ const unordered_map<string, Airport> &Managing::getAirports() const {
 
 const unordered_map<string, vector<string>> &Managing::getCountryCities() const {
     return country_cities;
+}
+
+const Graph &Managing::getGraph() const {
+    return graph;
 }
 
 

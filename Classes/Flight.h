@@ -16,6 +16,17 @@ public:
     Flight(Airport source, Airport target, string airline);
 
     const string &getSource() const;
-
     void setSource(const string &source);
+
+    const string &getTarget() const;
+
+    void setTarget(const string &target);
+
+    const string &getAirline() const;
+
+    void setAirline(const string &airline);
+
+    float getDistance() const;
+
+    void setDistance(float distance);
 };

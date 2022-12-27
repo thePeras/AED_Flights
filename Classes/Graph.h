@@ -1,31 +1,23 @@
 #pragma once
 
+#include <iostream>
 #include <list>
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include "Airport.h"
 
 using namespace std;
 
-
-
 class Graph {
-
-    struct Edge { //TODO: replace with Flight
-        int dest;
-        int weight; // this is distance or time
-    };
-
-    struct Node {
-        list<Edge> adj; // only correct directed edges, flights departure from this airport
-        string airport; // airport id
-        bool visited; // verifies if the node has been visited on a search
-    };
-
+public:
+    unordered_map<string, Airport*> airports; // Nodes
     int n;
-    vector <Node> nodes; // basically is a vector of all airports
 
-    public:
-        Graph(int num) : n(num), nodes(num+1) {};
-        void addEdge(int src, int dest, int weight = 1);
-    ;
+    Graph() {};
+    explicit Graph(int num) : n(num), airports(num+1) {};
+    void addAirport(Airport* airport);
+    void dfs (Airport* airport);
+    void dfsHelper(Airport *airport, unordered_map<string, bool> &visited);
+    void bfs (Airport* airport);
 };

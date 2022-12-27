@@ -2,22 +2,29 @@
 
 #include "Location.h"
 #include <string>
+#include <list>
 
 using namespace std;
 
+class Flight;
+
 class Airport {
-    private:
-    string code;
-    string name;
-    string city;
-    string country;
-    Location location;
 public:
     Airport();
     Airport(string code, string name, string city, string country, Location location);
     Airport(string code, string name, string city, string country, float latitude, float longitude);
     string getCode() const;
     Location getLocation() const;
+    void addFlight(Flight* flight);
 
+    const list<Flight *> &getFlights() const;
+
+private:
+    string code;
+    string name;
+    string city;
+    string country;
+    Location location;
+    list<Flight*> flights;
 };
 

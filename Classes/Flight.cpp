@@ -31,3 +31,27 @@ const string &Flight::getSource() const {
 void Flight::setSource(const string &source) {
     Flight::source = source;
 }
+
+const string &Flight::getTarget() const {
+    return target;
+}
+
+void Flight::setTarget(const string &target) {
+    Flight::target = target;
+}
+
+const string &Flight::getAirline() const {
+    return airline;
+}
+
+void Flight::setAirline(const string &airline) {
+    Flight::airline = airline;
+}
+
+float Flight::getDistance() const {
+    return distance;
+}
+
+void Flight::setDistance(float distance) {
+    Flight::distance = distance;
+}

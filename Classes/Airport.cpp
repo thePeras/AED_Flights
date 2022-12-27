@@ -33,3 +33,11 @@ string Airport::getCode() const {
 Location Airport::getLocation() const {
     return location;
 }
+
+void Airport::addFlight(Flight *flight) {
+    flights.push_back(flight);
+}
+
+const list<Flight *> &Airport::getFlights() const {
+    return flights;
+}

@@ -4,6 +4,7 @@
 #include <vector>
 #include <stack>
 #include "MenuOption.h"
+#include "Managing.h"
 
 using namespace std;
 stack<MenuTwo> menuStack;
@@ -34,6 +35,14 @@ void menu_viajar(){
 }
 
 int main(){
+    Managing m;
+    m.readFiles();
+
+    Graph g = m.getGraph();
+    // perform bfs on the graph and print the airports
+    unordered_map<string, bool> visited;
+    g.bfs(g.airports["OPO"]);
+
     vector<MenuOption> options = {
             {"Viajar", menu_viajar},
             {"Consultar Aeroporto", []() {cout << "Remove Location" << endl;}},
@@ -43,6 +52,8 @@ int main(){
     MenuTwo MainMenu("Inicio", "Escolha uma opção", options, {}, false);
     menuStack.push(MainMenu);
     MainMenu.render();
+
+
 
     return 0;
 }
