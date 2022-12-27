@@ -40,7 +40,6 @@ int main(){
 
     Graph g = m.getGraph();
     // perform bfs on the graph and print the airports
-    unordered_map<string, bool> visited;
     g.bfs(g.airports["OPO"]);
 
     vector<MenuOption> options = {
