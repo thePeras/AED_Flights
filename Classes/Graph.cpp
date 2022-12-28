@@ -2,6 +2,7 @@
 #include "Flight.h"
 #include "Graph.h"
 #include <queue>
+#include <set>
 
 void Graph::addAirport(Airport *airport) {
     airports.insert({airport->getCode(), airport});
@@ -55,4 +56,41 @@ void Graph::dfs(Airport *airport) {
         visited[pair.first] = false;
     }
     dfsHelper(airport, visited);
+}
+
+list<list<string>> Graph::possiblePaths(string source, string target) {
+    list<list<string>> paths;
+
+    unordered_map<string, bool> visited;
+
+    list<list<string>> shortestPaths;
+
+    paths.push_back({source});
+
+    while (!paths.empty()) {
+        list<string> path = paths.front();
+        paths.pop_front();
+
+        string lastAirport = path.back();
+
+        if (lastAirport == target) {
+            shortestPaths.push_back(path);
+            continue;
+        }
+
+        visited[lastAirport] = true;
+
+        Airport* lastAirportObj = airports[lastAirport];
+
+        for (Flight* flight : lastAirportObj->getFlights()) {
+            if (!visited[flight->getTarget()]) {
+                list<string> newPath = path;
+                newPath.push_back(flight->getTarget());
+                paths.push_back(newPath);
+            }
+        }
+
+    }
+
+    return shortestPaths;
 }
