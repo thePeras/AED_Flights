@@ -26,6 +26,8 @@ public:
 
     const unordered_map<string, Airport> &getAirports() const;
 
+    const vector<Airport> getAirportsInRadius(Location location, double radius) const;
+
     const unordered_map<string, vector<string>> &getCountryCities() const;
 
     const Graph &getGraph() const;

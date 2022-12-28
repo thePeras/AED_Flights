@@ -103,4 +103,14 @@ const Graph &Managing::getGraph() const {
     return graph;
 }
 
+const vector<Airport> Managing::getAirportsInRadius(Location location, double radius) const {
+    vector<Airport> airportsInRadius;
+    for (auto airport : airports) {
+        if (airport.second.getLocation().distance(location) <= radius) {
+            airportsInRadius.push_back(airport.second);
+        }
+    }
+    return airportsInRadius;
+}
+
 

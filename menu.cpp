@@ -2,11 +2,11 @@
 #include <iostream>
 using namespace std;
 
-Managing m;
+Managing managing;
 
 Menu::Menu() {
     menuState.push(MAIN_MENU);
-    m.readFiles();
+    managing.readFiles();
     getMenu();
 
 }
@@ -18,7 +18,7 @@ void Menu::getMenu() {
                 mainMenu();
                 break;
             case CONSULTAS_MENU: {
-                auto airlines = m.getAirlines();
+                auto airlines = managing.getAirlines();
                 for (auto it = airlines.begin(); it != airlines.end(); it++) {
                     cout << it->second.getCode() << " - " << it->second.getName() << endl;
                 }

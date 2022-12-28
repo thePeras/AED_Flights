@@ -18,14 +18,15 @@ private:
     const bool isOrderList;
     string input_value;
     bool inputIsInvalid(string input);
+    bool validateInput;
 public:
-    MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list, bool isToPrintList = false, bool isOrderList = false);
+    MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list = {}, bool validateInput = false, bool isToPrintList = false, bool isOrderList = false);
     void showList();
     void render();
     string getInput();
 };
 
-MenuTwo::MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list, bool isToPrintList, bool isOrderList) : title(title), inputText(inputText), list(list), options(options), isToPrintList(isToPrintList), isOrderList(isOrderList) {}
+MenuTwo::MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list, bool validateInput, bool isToPrintList, bool isOrderList) : title(title), inputText(inputText), list(list), options(options), validateInput(validateInput), isToPrintList(isToPrintList), isOrderList(isOrderList) {}
 
 void MenuTwo::showList(){
     for (int i = 0; i < list.size(); i++) {
@@ -42,6 +43,7 @@ bool MenuTwo::inputIsInvalid(string input){
     }catch (exception e){
         return find(list.begin(), list.end(), input) == list.end();
     }
+    return false;
 }
 
 void MenuTwo::render(){
@@ -54,10 +56,12 @@ void MenuTwo::render(){
     }
     cout << endl << inputText << ": ";
     cin >> input;
-    while(inputIsInvalid(input)) {
+    while(inputIsInvalid(input) && validateInput) {
         cout << inputText << ": ";
         cin >> input;
     }
+
+    this->input_value = input;
 
     try {
         int inputInt = stoi(input);
