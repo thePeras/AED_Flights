@@ -41,3 +41,7 @@ void Airport::addFlight(Flight *flight) {
 const list<Flight *> &Airport::getFlights() const {
     return flights;
 }
+
+const string &Airport::getName() const {
+    return name;
+}

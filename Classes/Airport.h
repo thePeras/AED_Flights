@@ -13,6 +13,9 @@ public:
     Airport();
     Airport(string code, string name, string city, string country, Location location);
     Airport(string code, string name, string city, string country, float latitude, float longitude);
+
+    const string &getName() const;
+
     string getCode() const;
     Location getLocation() const;
     void addFlight(Flight* flight);

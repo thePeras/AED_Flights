@@ -57,7 +57,8 @@ int main(){
     // perform bfs on the graph and print the airports
     for (auto el : g.possiblePaths("LIS", "MAD", 2)) {
         for (auto flight: el) {
-            cout << flight->getSource() << " -> " << flight->getTarget() << "   ";
+            auto airports = m.getAirports();
+            cout << airports[flight->getSource()].getName() << " (" << flight->getSource() <<  ") " << " -> " << flight->getTarget() << " AIRLINE: " << flight->getAirline() << "   ";
         }
         cout << endl;
     }
