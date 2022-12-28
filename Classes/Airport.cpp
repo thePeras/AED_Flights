@@ -30,6 +30,10 @@ string Airport::getCode() const {
     return code;
 }
 
+string Airport::getName() const {
+    return name;
+}
+
 Location Airport::getLocation() const {
     return location;
 }
