@@ -5,6 +5,7 @@
 #include <stack>
 #include "MenuOption.h"
 #include "Managing.h"
+#include "Flight.h"
 
 using namespace std;
 stack<MenuTwo> menuStack;
@@ -54,9 +55,9 @@ int main(){
 
     Graph g = m.getGraph();
     // perform bfs on the graph and print the airports
-    for (auto el : g.possiblePaths("OPO", "PEK")) {
-        for (auto el2 : el) {
-            cout << el2 << " ";
+    for (auto el : g.possiblePaths("LIS", "MAD", 2)) {
+        for (auto flight: el) {
+            cout << flight->getSource() << " -> " << flight->getTarget() << "   ";
         }
         cout << endl;
     }

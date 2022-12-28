@@ -20,5 +20,5 @@ public:
     void dfs (Airport* airport);
     void dfsHelper(Airport *airport, unordered_map<string, bool> &visited);
     void bfs (Airport* airport);
-    list<list<string>> possiblePaths(string source, string target);
+    list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights);
 };

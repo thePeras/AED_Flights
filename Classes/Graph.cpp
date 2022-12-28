@@ -58,23 +58,24 @@ void Graph::dfs(Airport *airport) {
     dfsHelper(airport, visited);
 }
 
-list<list<string>> Graph::possiblePaths(string source, string target) {
-    list<list<string>> paths;
+list<list<Flight*>> Graph::possiblePaths(string source, string target, int maxNumFlights) {
+    list<list<Flight*>> paths;
 
     unordered_map<string, bool> visited;
 
-    list<list<string>> shortestPaths;
+    list<list<Flight*>> possiblePaths;
 
-    paths.push_back({source});
+    paths.push_back({});
 
     while (!paths.empty()) {
-        list<string> path = paths.front();
+        list<Flight*> path = paths.front();
+
         paths.pop_front();
 
-        string lastAirport = path.back();
+        string lastAirport = (path.empty()) ? source : path.back()->getTarget();
 
         if (lastAirport == target) {
-            shortestPaths.push_back(path);
+            possiblePaths.push_back(path);
             continue;
         }
 
@@ -84,13 +85,15 @@ list<list<string>> Graph::possiblePaths(string source, string target) {
 
         for (Flight* flight : lastAirportObj->getFlights()) {
             if (!visited[flight->getTarget()]) {
-                list<string> newPath = path;
-                newPath.push_back(flight->getTarget());
+                list<Flight*> newPath = path;
+                newPath.push_back(flight);
+
+                if (newPath.size() > maxNumFlights) continue;
+
                 paths.push_back(newPath);
             }
         }
 
     }
-
-    return shortestPaths;
+    return possiblePaths;
 }
