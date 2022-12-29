@@ -22,8 +22,21 @@ void exit_action(){
 }
 
 void aeroporto_input(){
-    MenuTwo menu_aeroporto_input("Aeroporto", "digite o código do aeroporto: ", {}, {"OPO", "JFK"});
+    vector<MenuOption> options = {
+            {"Voltar", back_action},
+    };
+    //make a vector with all the airports
+    vector<string> airports;
+    for(auto airport : m.getAirports()){
+        airports.push_back(airport.second.getCode());
+    }
+    sort(airports.begin(), airports.end());
+
+    MenuTwo menu_aeroporto_input("Aeroporto", "digite o código do aeroporto: ", options,airports, true, true);
     menu_aeroporto_input.render();
+
+    //se chegar aqui significa que escolheu um aeroporto
+    //TODO: fazer os flights
     cout << menu_aeroporto_input.getInput();
 }
 
@@ -94,20 +107,11 @@ void menu_coordenadas(){
     }
 }
 
-void menu_cidade() {
+void menu_cidade(string city, string country){
     vector<MenuOption> options_cidade = {
             {"Voltar", back_action},
     };
 
-    string country = menuStack.top()->getInput();
-
-    vector<string> cities = m.getCountryCities().find(country)->second;
-
-    MenuTwo menu_cidade("Viajar - Cidade", "Escolha uma cidade", options_cidade, cities, true, true);
-    menuStack.push(&menu_cidade);
-    menu_cidade.render();
-
-    string city = menu_cidade.getInput();
     vector<string> airports = m.getAirportsInCity(city, country);
 
     MenuTwo menu_aeroporto("Viajar - Aeroporto", "Código do aeroporto", options_cidade, airports, true, true);
@@ -145,6 +149,7 @@ void menu_cidades(string country) {
 
     //se passar para aqui significa que o usuário escolheu uma cidade em string
     //e agr sim, chamo o menu_cidade
+    menu_cidade(menu_pais_cidades.getInput(), country);
 }
 
 void menu_pais(){
@@ -208,6 +213,7 @@ void digitar_aeroporto(){
         aeroportos.push_back(it->second.getCode());
     }
 
+    sort(aeroportos.begin(), aeroportos.end());
     MenuTwo digitar_aeroporto("Consultar aeroporto", "código do aeroporto: ", options, aeroportos, true, true);
     menuStack.push(&digitar_aeroporto);
 
