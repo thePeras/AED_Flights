@@ -89,7 +89,6 @@ void Managing::readFlights() {
         // Basically adding edges to the graph
         float distance = airports[origin].getLocation().distance(airports[destination].getLocation());
         airports[origin].addFlight(new Flight(origin, destination, airline, distance));
-
     }
     file.close();
 }

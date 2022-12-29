@@ -28,4 +28,3 @@ public:
 
     void setDistance(float distance);
 };
-

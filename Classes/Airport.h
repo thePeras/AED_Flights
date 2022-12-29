@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Location.h"
+#include "Flight.h"
 #include <string>
 #include <list>
 #include <set>

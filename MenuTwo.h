@@ -18,6 +18,7 @@ private:
     const bool isToPrintList;
     const bool isOrderList;
     string input_value;
+    string savedVariable;
     bool inputIsInvalid(string input);
     bool validateInput;
     void increaseListIndex();
@@ -27,6 +28,8 @@ public:
     void showList();
     void render();
     string getInput();
+    void setSavedVariable(string savedVariable);
+    string getSavedVariable();
 };
 
 MenuTwo::MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list, bool validateInput, bool isToPrintList, bool isOrderList) : title(title), inputText(inputText), list(list), validateInput(validateInput), isToPrintList(isToPrintList), isOrderList(isOrderList) {
@@ -107,4 +110,12 @@ void MenuTwo::increaseListIndex(){
 
 void MenuTwo::decreaseListIndex(){
     if(listIndex - 10 >= 0) listIndex -= 10;
+}
+
+void MenuTwo::setSavedVariable(string savedVariable){
+    this->savedVariable = savedVariable;
+}
+
+string MenuTwo::getSavedVariable() {
+    return this->savedVariable;
 }

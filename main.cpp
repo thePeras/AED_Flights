@@ -5,7 +5,7 @@
 #include <stack>
 #include "MenuOption.h"
 #include "Managing.h"
-#include "Flight.h"
+#include <sstream>
 
 using namespace std;
 stack<MenuTwo*> menuStack;
@@ -230,18 +230,42 @@ void menu_viajar(){
     menu_viajar.render();
 }
 
+void voos_aeroporto(){
+    vector<MenuOption> options = {
+            {"Voltar", back_action},
+    };
+    Airport airport = m.getAirports().find(menuStack.top()->getSavedVariable())->second;
+
+    vector<string> flights;
+    for (auto & flight : airport.getFlights()) {
+        flights.push_back(flight->getTarget());
+    }
+
+    MenuTwo menu_voos_aeroporto("Voos - Aeroporto", "opção", options, flights, false, true);
+    menuStack.push(&menu_voos_aeroporto);
+
+    menu_voos_aeroporto.render();
+}
+
 void consultar_aeroporto(Airport airport){
     vector<MenuOption> options = {
             {"Voltar ao menu principal", back_action},
-            {"Informação sobre os voos", []() {}},
+            {"Informação sobre os voos", voos_aeroporto},
             {"Ver destinos diretos", []() {}},
             {"Ver destinos com X voos", [](){}},
             {"ideia: Ver destinos a X kms", [](){}},
     };
 
-    cout << "Daqui partem " << airport.getFlights().size() << " voos" << endl;
+    stringstream curiosity1;
+    stringstream curiosity2;
+    curiosity1 << "Daqui partem " << airport.getFlights().size() << " voos";
+    curiosity2 << "Operam " << airport.getAirlines().size() << " companhias areas";
 
-    MenuTwo consultar_aeroporto("Aeroporto - " + airport.getName(), "opção: ", options, {});
+    vector<string> curiosidades = {curiosity1.str(), curiosity2.str()};
+
+    MenuTwo consultar_aeroporto("Aeroporto - " + airport.getName(), "opção: ", options, curiosidades, true, true);
+    consultar_aeroporto.setSavedVariable(airport.getCode());
+    menuStack.push(&consultar_aeroporto);
     consultar_aeroporto.render();
 }
 
@@ -257,7 +281,6 @@ void digitar_aeroporto(){
 
     sort(aeroportos.begin(), aeroportos.end());
     MenuTwo digitar_aeroporto("Consultar aeroporto", "código do aeroporto: ", options, aeroportos, true, true);
-    menuStack.push(&digitar_aeroporto);
 
     digitar_aeroporto.render();
 
