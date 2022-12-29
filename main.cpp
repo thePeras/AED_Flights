@@ -5,6 +5,7 @@
 #include <stack>
 #include "MenuOption.h"
 #include "Managing.h"
+#include "Flight.h"
 
 using namespace std;
 stack<MenuTwo*> menuStack;
@@ -229,7 +230,22 @@ void menu_viajar(){
     menu_viajar.render();
 }
 
-void consultar_aeroporto(){
+void consultar_aeroporto(Airport airport){
+    vector<MenuOption> options = {
+            {"Voltar ao menu principal", back_action},
+            {"Informação sobre os voos", []() {}},
+            {"Ver destinos diretos", []() {}},
+            {"Ver destinos com X voos", [](){}},
+            {"ideia: Ver destinos a X kms", [](){}},
+    };
+
+    cout << "Daqui partem " << airport.getFlights().size() << " voos" << endl;
+
+    MenuTwo consultar_aeroporto("Aeroporto - " + airport.getName(), "opção: ", options, {});
+    consultar_aeroporto.render();
+}
+
+void digitar_aeroporto(){
     vector<MenuOption> options = {
             {"Voltar", back_action},
     };
@@ -238,26 +254,17 @@ void consultar_aeroporto(){
     for(auto it = m.getAirports().begin(); it != m.getAirports().end(); it++) {
         aeroportos.push_back(it->second.getCode());
     }
+
     sort(aeroportos.begin(), aeroportos.end());
     MenuTwo digitar_aeroporto("Consultar aeroporto", "código do aeroporto: ", options, aeroportos, true, true);
     menuStack.push(&digitar_aeroporto);
 
     digitar_aeroporto.render();
-    cout << "SOMETHING" << endl;
 
     Airport theAirport = m.getAirports().find(digitar_aeroporto.getInput())->second;
 
-    //get curiosidades
+    consultar_aeroporto(theAirport);
 
-    vector<MenuOption> options2 = {
-            {"Voltar", back_action},
-            {"Informação sobre os voos", []() {}},
-            {"Ver destinos diretos", []() {}},
-            {"Ver destinos com X voos", [](){}},
-            {"ideia: Ver destinos a X kms", [](){}},
-    };
-    MenuTwo consultar_aeroporto("Aeroporto - " + theAirport.getName(), "opção: ", options2, {});
-    consultar_aeroporto.render();
 }
 
 int main(){
@@ -266,7 +273,7 @@ int main(){
     vector<MenuOption> options = {
             {"Sair", exit_action},
             {"Viajar", menu_viajar},
-            {"Consultar Aeroporto", consultar_aeroporto},
+            {"Consultar Aeroporto", digitar_aeroporto},
             {"Os meus bilhetes", []() {cout << "Edit Location" << endl;}},
     };
 

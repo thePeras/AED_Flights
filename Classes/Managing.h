@@ -30,6 +30,8 @@ public:
 
     vector<string> getAirportsInCountry(string country);
 
+    list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights);
+
 private:
     //TODO: Add sets, lists, vectors (or whatever we want to use) to store the data
 

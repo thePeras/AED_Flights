@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Airport.h"
 #include <string>
 using namespace std;
 
@@ -13,7 +12,6 @@ private:
 public:
     Flight();
     Flight(string source, string target, string airline, float distance);
-    Flight(Airport source, Airport target, string airline);
 
     const string &getSource() const;
     void setSource(const string &source);
@@ -22,7 +20,7 @@ public:
 
     void setTarget(const string &target);
 
-    const string &getAirline() const;
+    const string getAirline() const;
 
     void setAirline(const string &airline);
 
@@ -30,3 +28,4 @@ public:
 
     void setDistance(float distance);
 };
+
