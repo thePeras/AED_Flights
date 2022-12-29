@@ -108,7 +108,7 @@ void menu_pais(){
 
 
     string country = menu_pais.getInput();
-    vector<string> cities = countryCities[country];
+    vector<string> cities = countryCities.find(country)->second;
     sort(cities.begin(), cities.end());
 
 
