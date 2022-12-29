@@ -189,11 +189,14 @@ void consultar_aeroporto(){
         aeroportos.push_back(it->second.getCode());
     }
 
+    //make a vector of 31 airports
+    aeroportos = {"LIS", "LHR", "CDG", "FRA", "AMS", "MAD", "BCN", "FCO", "MXP", "FCO", "MXP", "FCO", "MXP", "FCO", "MXP", "FCO", "MXP", "FCO", "MXP", "FCO", "MXP", "FCO", "MXP", "FCO", "MXP", "FCO", "MXP", "FCO", "MXP", "FCO", "MXP"};
 
     MenuTwo digitar_aeroporto("Consultar aeroporto", "código do aeroporto: ", options, aeroportos, true, true);
     menuStack.push(digitar_aeroporto);
 
     digitar_aeroporto.render();
+    cout << "SOEMTHIGN" << endl;
 
     Airport theAirport = m.getAirports().find(digitar_aeroporto.getInput())->second;
 
@@ -208,7 +211,6 @@ void consultar_aeroporto(){
     };
     MenuTwo consultar_aeroporto("Aeroporto - " + theAirport.getName(), "opção: ", options2, {});
     consultar_aeroporto.render();
-    consultar_aeroporto.render();
 }
 
 int main(){
@@ -216,7 +218,7 @@ int main(){
 
     Graph g = m.getGraph();
     // perform bfs on the graph and print the airports
-    g.bfs(g.airports["OPO"]);
+    //g.bfs(g.airports["OPO"]);
 
     vector<MenuOption> options = {
             {"Sair", exit_action},
@@ -225,7 +227,7 @@ int main(){
             {"Os meus bilhetes", []() {cout << "Edit Location" << endl;}},
     };
 
-    MenuTwo MainMenu("Inicio", "Escolha uma opção", options, {}, false);
+    MenuTwo MainMenu("Inicio", "Escolha uma opção", options, {}, true);
     menuStack.push(MainMenu);
     MainMenu.render();
 
