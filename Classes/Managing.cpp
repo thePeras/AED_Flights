@@ -11,7 +11,6 @@
 #include <fstream>
 
 Managing::Managing() {
-    graph = Graph();
 }
 
 void Managing::readFiles() {
@@ -65,9 +64,7 @@ void Managing::readAirports() {
 
         Airport airport(code, name, city, country, *new Location(latitude, longitude));
         airports.insert({code, airport});
-        graph.addAirport(&airports[code]);
     }
-    graph.n = airports.size();
     file.close();
 }
 
@@ -97,10 +94,6 @@ const unordered_map<string, Airport> &Managing::getAirports() const {
 
 const unordered_map<string, vector<string>> &Managing::getCountryCities() const {
     return country_cities;
-}
-
-const Graph &Managing::getGraph() const {
-    return graph;
 }
 
 const vector<Airport> Managing::getAirportsInRadius(Location location, double radius) const {

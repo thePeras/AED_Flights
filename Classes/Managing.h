@@ -7,7 +7,7 @@
 #include "Airline.h"
 #include "Comparators.cpp"
 #include "Airport.h"
-#include "Graph.h"
+#include <vector>
 
 using namespace std;
 
@@ -16,10 +16,6 @@ public:
 
     Managing();
 
-    /**
-     * @brief
-     * Lê todos os ficheiros: estudantes, horários, classes/UCs, requests e rejected requests.
-     */
     void readFiles();
 
     const unordered_map<string, Airline> &getAirlines() const;
@@ -30,9 +26,8 @@ public:
 
     const unordered_map<string, vector<string>> &getCountryCities() const;
 
-    const Graph &getGraph() const;
-
     vector<string> getAirportsInCity(string city, string country);
+
     vector<string> getAirportsInCountry(string country);
 
 private:
@@ -41,9 +36,9 @@ private:
     void readAirlines();
     void readAirports();
     void readFlights();
-    Graph graph;
+
+    unordered_map<string, Airport> airports; /* Graph */
     unordered_map<string, Airline> airlines;
-    unordered_map<string, Airport> airports;
     unordered_map<string, vector<string>> country_cities;
 
 };

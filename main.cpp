@@ -219,11 +219,7 @@ void consultar_aeroporto(){
 
 int main(){
     m.readFiles();
-
-    Graph g = m.getGraph();
-    // perform bfs on the graph and print the airports
-    //g.bfs(g.airports["OPO"]);
-
+    
     vector<MenuOption> options = {
             {"Sair", exit_action},
             {"Viajar", menu_viajar},
