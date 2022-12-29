@@ -15,6 +15,12 @@ void back_action(){
     menuStack.top()->render();
 }
 
+void back_action_twice(){
+    menuStack.pop();
+    menuStack.pop();
+    menuStack.top()->render();
+}
+
 void exit_action(){
     cout << endl << "Leaving..." << endl;
     cout << "Goodbye!" << endl;
@@ -140,8 +146,9 @@ void menu_cidade(){
     vector<MenuOption> options_cidade = {
             {"Voltar", back_action},
     };
-    string country = menuStack.top()->getInput();
-
+    auto queue_aux = menuStack;
+    queue_aux.pop();
+    string country = queue_aux.top()->getInput();
     vector<string> cities = m.getCountryCities().find(country)->second;
 
     MenuTwo menu_cidade("Viajar - Cidade", "Escolha uma cidade", options_cidade, cities, true, true);
@@ -151,7 +158,12 @@ void menu_cidade(){
     string city = menu_cidade.getInput();
     vector<string> airports = m.getAirportsInCity(city, country);
 
-    MenuTwo menu_aeroporto("Viajar - Aeroporto", "Código do aeroporto", options_cidade, airports, true, true);
+
+    vector<MenuOption> options_aeroporto = {
+            {"Voltar", back_action_twice},
+    };
+
+    MenuTwo menu_aeroporto("Viajar - Aeroporto", "Código do aeroporto", options_aeroporto, airports, true, true);
     menuStack.push(&menu_aeroporto);
     menu_aeroporto.render();
 
@@ -160,7 +172,7 @@ void menu_cidade(){
     //get curiosidades
 
     vector<MenuOption> options2 = {
-            {"Voltar",                      back_action},
+            {"Voltar",                      back_action_twice},
             {"Informação sobre os voos",    []() {}},
             {"Ver destinos diretos",        []() {}},
             {"Ver destinos com X voos",     []() {}},
@@ -188,10 +200,11 @@ void menu_pais(){
     menuStack.push(&menu_pais);
 
     menu_pais.render();
+
     string country = menu_pais.getInput();
 
     vector<MenuOption> options2 = {
-            {"Voltar", back_action},
+            {"Voltar", back_action_twice},
             {"Selecionar todas as cidades", menu_cidades},
             {"Selecionar uma cidade", menu_cidade}
 
