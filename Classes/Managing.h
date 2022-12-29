@@ -32,6 +32,8 @@ public:
 
     const Graph &getGraph() const;
 
+    vector<string> getAirportsInCity(string city, string country);
+
 private:
     //TODO: Add sets, lists, vectors (or whatever we want to use) to store the data
 

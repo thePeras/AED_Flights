@@ -18,6 +18,10 @@ public:
     Location getLocation() const;
     void addFlight(Flight* flight);
 
+    const string &getCity() const;
+
+    const string &getCountry() const;
+
     const list<Flight *> &getFlights() const;
 
 private:

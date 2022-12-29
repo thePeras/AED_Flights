@@ -113,4 +113,14 @@ const vector<Airport> Managing::getAirportsInRadius(Location location, double ra
     return airportsInRadius;
 }
 
+vector<string> Managing::getAirportsInCity(string city, string country) {
+    vector<string> airportsInCity;
+    for (auto airport : airports) {
+        if (airport.second.getCity() == city && airport.second.getCountry() == country) {
+            airportsInCity.push_back(airport.first);
+        }
+    }
+    return airportsInCity;
+}
+
 

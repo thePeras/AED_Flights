@@ -45,3 +45,11 @@ void Airport::addFlight(Flight *flight) {
 const list<Flight *> &Airport::getFlights() const {
     return flights;
 }
+
+const string &Airport::getCity() const {
+    return city;
+}
+
+const string &Airport::getCountry() const {
+    return country;
+}

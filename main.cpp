@@ -87,20 +87,59 @@ void menu_coordenadas(){
         cout << test[i].getCode() << endl;
     }
 }
+
 void menu_pais(){
     vector<MenuOption> options_pais = {
             {"Voltar", back_action}
     };
-    auto countryCities = m.getCountryCities();
+
+    auto countryCities = m.getCountryCities();  //buscar os países para imprimir
     vector<string> countries;
     for(auto it = countryCities.begin(); it != countryCities.end(); it++){
         countries.push_back(it->first);
     }
+    sort(countries.begin(), countries.end());
 
-    MenuTwo menu_viajar("Viajar", "de onde? ", options_pais, countries, true, true, true);
-    menuStack.push(menu_viajar);
 
-    menu_viajar.render();
+    MenuTwo menu_pais("Viajar", "Introduza um país: ", options_pais, countries, true, true);
+    menuStack.push(menu_pais);
+
+    menu_pais.render();
+
+
+    string country = menu_pais.getInput();
+    vector<string> cities = countryCities[country];
+    sort(cities.begin(), cities.end());
+
+
+    MenuTwo menu_cidade("Viajar", "de onde? ", options_pais, cities, true, true);
+    menuStack.push(menu_cidade);
+    menu_cidade.render();
+
+    string city = menu_cidade.getInput();
+
+    vector<string> airports = m.getAirportsInCity(city, country);
+    sort(airports.begin(), airports.end());
+
+    MenuTwo input_aeroporto("Viajar", "de onde? ", options_pais, airports, true, true);
+    menuStack.push(input_aeroporto);
+    input_aeroporto.render();
+
+
+    Airport theAirport = m.getAirports().find(input_aeroporto.getInput())->second;
+    //get curiosidades
+
+    vector<MenuOption> options2 = {
+            {"Voltar", back_action},
+            {"Informação sobre os voos", []() {}},
+            {"Ver destinos diretos", []() {}},
+            {"Ver destinos com X voos", [](){}},
+            {"ideia: Ver destinos a X kms", [](){}},
+    };
+    MenuTwo consultar_aeroporto("Aeroporto - " + theAirport.getName(), "opção: ", options2, {});
+    consultar_aeroporto.render();
+
+
 }
 
 void menu_viajar(){
@@ -145,6 +184,7 @@ void consultar_aeroporto(){
             {"ideia: Ver destinos a X kms", [](){}},
     };
     MenuTwo consultar_aeroporto("Aeroporto - " + theAirport.getName(), "opção: ", options2, {});
+    consultar_aeroporto.render();
     consultar_aeroporto.render();
 }
 
