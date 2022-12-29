@@ -80,7 +80,7 @@ void Managing::readFlights() {
         getline(ss, airline);
 
         // Basically adding edges to the graph
-        airports[origin].addFlight(new Flight (airports[origin], airports[destination], airline));
+        airports[origin].addFlight(new Flight(origin, destination, airline, 0));
     }
 }
 

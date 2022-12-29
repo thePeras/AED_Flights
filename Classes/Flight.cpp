@@ -1,5 +1,4 @@
 #include "Flight.h"
-#include "Airport.h"
 
 using namespace std;
 
@@ -15,13 +14,6 @@ Flight::Flight(string source, string target, string airline, float distance) {
     this->target = target;
     this->airline = airline;
     this->distance = distance;
-}
-
-Flight::Flight(Airport source, Airport target, string airline) {
-    this->source = source.getCode();
-    this->target = target.getCode();
-    this->airline = airline;
-    this->distance = source.getLocation().distance(target.getLocation());
 }
 
 const string &Flight::getSource() const {
@@ -50,4 +42,8 @@ float Flight::getDistance() const {
 
 void Flight::setDistance(float distance) {
     Flight::distance = distance;
+}
+
+const string Flight::getAirline() const {
+    return airline;
 }
