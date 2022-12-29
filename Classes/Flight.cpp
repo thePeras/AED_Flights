@@ -40,10 +40,6 @@ void Flight::setTarget(const string &target) {
     Flight::target = target;
 }
 
-const string &Flight::getAirline() const {
-    return airline;
-}
-
 void Flight::setAirline(const string &airline) {
     Flight::airline = airline;
 }

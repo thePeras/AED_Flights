@@ -3,6 +3,7 @@
 #include "Location.h"
 #include <string>
 #include <list>
+#include <set>
 
 using namespace std;
 
@@ -24,6 +25,7 @@ public:
 
     const list<Flight *> &getFlights() const;
 
+    const set<string> getAirlines() const;
 private:
     string code;
     string name;

@@ -22,7 +22,7 @@ public:
 
     void setTarget(const string &target);
 
-    const string &getAirline() const;
+    const string getAirline() const;
 
     void setAirline(const string &airline);
 
@@ -30,3 +30,7 @@ public:
 
     void setDistance(float distance);
 };
+
+const string Flight::getAirline() const {
+    return airline;
+}

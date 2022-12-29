@@ -53,3 +53,14 @@ const string &Airport::getCity() const {
 const string &Airport::getCountry() const {
     return country;
 }
+
+const set<string> Airport::getAirlines() const {
+    set<string> airlines;
+
+    for (auto flight : flights) {
+        airlines.insert(flight->getAirline());
+    }
+
+    return airlines;
+}
+
