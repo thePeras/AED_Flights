@@ -107,11 +107,48 @@ void menu_coordenadas(){
     }
 }
 
-void menu_cidade(string city, string country){
+void menu_cidades() {
+    vector<MenuOption> options = {
+            {"Voltar", back_action},
+
+    };
+
+    string country = menuStack.top()->getInput();
+    vector<string> airports = m.getAirportsInCountry(country);
+
+    MenuTwo menu_aeroporto("Viajar - Aeroporto", "Código do aeroporto", options, airports, true, true);
+    menuStack.push(&menu_aeroporto);
+
+    menu_aeroporto.render();
+
+    Airport airport = m.getAirports().find(menu_aeroporto.getInput())->second;
+
+    //get curiosidades
+
+    vector<MenuOption> options2 = {
+            {"Voltar",                      back_action},
+            {"Informação sobre os voos",    []() {}},
+            {"Ver destinos diretos",        []() {}},
+            {"Ver destinos com X voos",     []() {}},
+            {"ideia: Ver destinos a X kms", []() {}},
+    };
+    MenuTwo consultar_aeroporto("Aeroporto - " + airport.getName(), "opção: ", options2, {});
+    consultar_aeroporto.render();
+}
+
+void menu_cidade(){
     vector<MenuOption> options_cidade = {
             {"Voltar", back_action},
     };
+    string country = menuStack.top()->getInput();
 
+    vector<string> cities = m.getCountryCities().find(country)->second;
+
+    MenuTwo menu_cidade("Viajar - Cidade", "Escolha uma cidade", options_cidade, cities, true, true);
+    menuStack.push(&menu_cidade);
+    menu_cidade.render();
+
+    string city = menu_cidade.getInput();
     vector<string> airports = m.getAirportsInCity(city, country);
 
     MenuTwo menu_aeroporto("Viajar - Aeroporto", "Código do aeroporto", options_cidade, airports, true, true);
@@ -133,24 +170,6 @@ void menu_cidade(string city, string country){
     consultar_aeroporto.render();
 }
 
-void menu_cidades(string country) {
-    vector<MenuOption> options = {
-            {"Voltar", back_action},
-            {"Selecionar todas as cidades", /*dar set dos aeroportos*/}
-    };
-
-    //get cities of a country
-    vector<string> cities = m.getCountryCities().find(country)->second;
-
-    MenuTwo menu_pais_cidades("Viajar - Cidades de " + country, "Cidade", options, cities, true, true);
-    menuStack.push(&menu_pais_cidades);
-
-    menu_pais_cidades.render();
-
-    //se passar para aqui significa que o usuário escolheu uma cidade em string
-    //e agr sim, chamo o menu_cidade
-    menu_cidade(menu_pais_cidades.getInput(), country);
-}
 
 void menu_pais(){
     vector<MenuOption> options_pais = {
@@ -171,7 +190,16 @@ void menu_pais(){
     menu_pais.render();
     string country = menu_pais.getInput();
 
-    menu_cidades(country);
+    vector<MenuOption> options2 = {
+            {"Voltar", back_action},
+            {"Selecionar todas as cidades", menu_cidades},
+            {"Selecionar uma cidade", menu_cidade}
+
+    };
+
+    MenuTwo menu_escolha("Viajar - " + country, "Escolha uma opção", options2, {}, true, true);
+    menuStack.push(&menu_escolha);
+    menu_escolha.render();
 }
 
 void menu_viajar(){
