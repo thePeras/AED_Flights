@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <sstream>
 #include <fstream>
+#include <limits>
+#include <queue>
 
 Managing::Managing() {
 }
@@ -47,6 +49,7 @@ void Managing::readAirlines() {
 void Managing::readAirports() {
     string line;
     ifstream file(AIRPORTS_FILE);
+    getline(file, line);
     while (getline(file, line)) {
         istringstream ss (line);
         string code, name, city, country;
@@ -69,8 +72,9 @@ void Managing::readAirports() {
 }
 
 void Managing::readFlights() {
-    ifstream file(FLIGHTS_FILE);
     string line;
+    ifstream file(FLIGHTS_FILE);
+    getline(file, line);
     while (getline(file, line)) {
         istringstream ss (line);
         string origin, destination, airline;
@@ -78,10 +82,12 @@ void Managing::readFlights() {
         if (origin.empty()) break;
         getline(ss, destination, ',');
         getline(ss, airline);
+        ss.ignore();
 
         // Basically adding edges to the graph
         airports[origin].addFlight(new Flight (airports[origin], airports[destination], airline));
     }
+    file.close();
 }
 
 const unordered_map<string, Airline> &Managing::getAirlines() const {
@@ -124,5 +130,57 @@ vector<string> Managing::getAirportsInCountry(string country) {
         }
     }
     return airportsInCountry;
+}
+
+pair<float, vector<Flight *>> Managing::dijkstra(string origin, string destination) {
+    unordered_map<string, float> distances;
+
+    unordered_map<string, string> previous;
+
+    for (auto airport : airports) {
+        distances[airport.first] = numeric_limits<float>::infinity();
+    }
+
+    distances[origin] = 0;
+
+
+    priority_queue<pair<float, string>> pq;
+
+    pq.emplace(0, origin);
+
+    while (!pq.empty()) {
+        auto current = pq.top();
+        pq.pop();
+
+        if (current.second == destination) break;
+
+        Airport &currentAirport = airports.find(current.second)->second;
+
+        for (Flight *flight : currentAirport.getFlights()) {
+            float distance = flight->getDistance() + current.first;
+
+            string next = flight->getTarget();
+            if (distances[next] > distance) {
+                distances[next] = distance;
+                previous[next] = current.second;
+                pq.emplace(distance, next);
+            }
+        }
+    }
+
+    vector<Flight *> path;
+    string current = destination;
+    while (current != previous[current]) {
+        Airport &currentAirport = airports.find(current)->second;
+        for (Flight *flight: currentAirport.getFlights()) {
+            if (flight->getTarget() == previous[current] && flight->getSource() == current) {
+                path.push_back(flight);
+                break;
+            }
+        }
+        current = previous[current];
+    }
+    reverse(path.begin(), path.end());
+    return {distances[destination], path};
 }
 

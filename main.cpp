@@ -5,6 +5,7 @@
 #include <stack>
 #include "MenuOption.h"
 #include "Managing.h"
+#include "Flight.h"
 
 using namespace std;
 stack<MenuTwo*> menuStack;
@@ -219,7 +220,13 @@ void consultar_aeroporto(){
 
 int main(){
     m.readFiles();
-    
+
+    auto el = m.dijkstra("OPO", "JFK");
+    // print flights and distance
+    for (auto & i : el.second) {
+        cout << i->getSource() << " -> " << i->getTarget() << endl;
+    }
+
     vector<MenuOption> options = {
             {"Sair", exit_action},
             {"Viajar", menu_viajar},
