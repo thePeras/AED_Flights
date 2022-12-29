@@ -30,8 +30,7 @@ public:
 
     vector<string> getAirportsInCountry(string country);
 
-    pair<float, vector<Flight*>> dijkstra(string origin, string destination);
-
+    list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights);
 
 private:
     //TODO: Add sets, lists, vectors (or whatever we want to use) to store the data
