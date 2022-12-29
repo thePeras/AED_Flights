@@ -27,7 +27,6 @@ public:
     void showList();
     void render();
     string getInput();
-    string getPreviousInput();
 };
 
 MenuTwo::MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list, bool validateInput, bool isToPrintList, bool isOrderList) : title(title), inputText(inputText), list(list), validateInput(validateInput), isToPrintList(isToPrintList), isOrderList(isOrderList) {
@@ -100,11 +99,6 @@ void MenuTwo::render(){
 
 string MenuTwo::getInput(){
     return this->input_value;
-}
-
-string MenuTwo::getPreviousInput() {
-    auto size = options.size();
-    return options[size - 1].input;
 }
 
 void MenuTwo::increaseListIndex(){
