@@ -94,7 +94,30 @@ void menu_coordenadas(){
     }
 }
 void menu_cidades(){
+    vector<MenuOption> options_cidades = {
+            {"Voltar", back_action},
+    };
 
+    vector<string> airports = m.getAirportsInCountry(menuStack.top().getPreviousInput());
+
+    MenuTwo menu_aeroporto("Viajar - Aeroporto", "Código do aeroporto", options_cidades, airports, true, true);
+    menuStack.push(menu_aeroporto);
+
+    menu_aeroporto.render();
+
+    Airport airport = m.getAirports().find(menu_aeroporto.getInput())->second;
+
+    //get curiosidades
+
+    vector<MenuOption> options2 = {
+            {"Voltar",                      back_action},
+            {"Informação sobre os voos",    []() {}},
+            {"Ver destinos diretos",        []() {}},
+            {"Ver destinos com X voos",     []() {}},
+            {"ideia: Ver destinos a X kms", []() {}},
+    };
+    MenuTwo consultar_aeroporto("Aeroporto - " + airport.getName(), "opção: ", options2, {});
+    consultar_aeroporto.render();
 
 }
 

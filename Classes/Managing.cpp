@@ -123,4 +123,13 @@ vector<string> Managing::getAirportsInCity(string city, string country) {
     return airportsInCity;
 }
 
+vector<string> Managing::getAirportsInCountry(string country) {
+    vector<string> airportsInCountry;
+    for (auto airport : airports) {
+        if (airport.second.getCountry() == country) {
+            airportsInCountry.push_back(airport.second.getName() + " (" + airport.first + ")");
+        }
+    }
+    return airportsInCountry;
+}
 
