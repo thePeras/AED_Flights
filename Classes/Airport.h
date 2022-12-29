@@ -4,10 +4,8 @@
 #include <string>
 #include <list>
 #include <set>
-
+#include "Flight.h"
 using namespace std;
-
-class Flight;
 
 class Airport {
 public:

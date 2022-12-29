@@ -17,13 +17,6 @@ Flight::Flight(string source, string target, string airline, float distance) {
     this->distance = distance;
 }
 
-Flight::Flight(Airport source, Airport target, string airline) {
-    this->source = source.getCode();
-    this->target = target.getCode();
-    this->airline = airline;
-    this->distance = source.getLocation().distance(target.getLocation());
-}
-
 const string &Flight::getSource() const {
     return source;
 }
@@ -50,4 +43,8 @@ float Flight::getDistance() const {
 
 void Flight::setDistance(float distance) {
     Flight::distance = distance;
+}
+
+const string Flight::getAirline() const {
+    return airline;
 }

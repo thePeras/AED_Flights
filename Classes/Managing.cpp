@@ -6,6 +6,7 @@
 #include "Airline.h"
 #include "Flight.h"
 #include "Airport.h"
+#include "Location.h"
 #include <algorithm>
 #include <sstream>
 #include <fstream>
@@ -47,6 +48,7 @@ void Managing::readAirlines() {
 void Managing::readAirports() {
     string line;
     ifstream file(AIRPORTS_FILE);
+    getline(file, line);
     while (getline(file, line)) {
         istringstream ss (line);
         string code, name, city, country;
@@ -71,6 +73,7 @@ void Managing::readAirports() {
 void Managing::readFlights() {
     ifstream file(FLIGHTS_FILE);
     string line;
+    getline(file, line);
     while (getline(file, line)) {
         istringstream ss (line);
         string origin, destination, airline;
@@ -80,7 +83,9 @@ void Managing::readFlights() {
         getline(ss, airline);
 
         // Basically adding edges to the graph
-        airports[origin].addFlight(new Flight (airports[origin], airports[destination], airline));
+        float distance = airports[origin].getLocation().distance(airports[destination].getLocation());
+        airports[origin].addFlight(new Flight(origin, destination, airline, distance));
+
     }
 }
 
