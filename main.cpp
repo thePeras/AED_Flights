@@ -16,7 +16,7 @@ void back_action(){
 }
 
 void aeroporto_input(){
-    MenuTwo menu_aeroporto_input("Aeroporto", "digite o nome do aeroporto", {}, {"OPO", "JFK"});
+    MenuTwo menu_aeroporto_input("Aeroporto", "digite o código do aeroporto: ", {}, {"OPO", "JFK"});
     menu_aeroporto_input.render();
     cout << menu_aeroporto_input.getInput();
 }
@@ -117,7 +117,36 @@ void menu_viajar(){
     menu_viajar.render();
 }
 
+void consultar_aeroporto(){
+    vector<MenuOption> options = {
+            {"Voltar", back_action},
+    };
 
+    vector<string> aeroportos;
+    for(auto it = m.getAirports().begin(); it != m.getAirports().end(); it++) {
+        aeroportos.push_back(it->second.getCode());
+    }
+
+
+    MenuTwo digitar_aeroporto("Consultar aeroporto", "código do aeroporto: ", options, aeroportos, true, true);
+    menuStack.push(digitar_aeroporto);
+
+    digitar_aeroporto.render();
+
+    Airport theAirport = m.getAirports().find(digitar_aeroporto.getInput())->second;
+
+    //get curiosidades
+
+    vector<MenuOption> options2 = {
+            {"Voltar", back_action},
+            {"Informação sobre os voos", []() {}},
+            {"Ver destinos diretos", []() {}},
+            {"Ver destinos com X voos", [](){}},
+            {"ideia: Ver destinos a X kms", [](){}},
+    };
+    MenuTwo consultar_aeroporto("Aeroporto - " + theAirport.getName(), "opção: ", options2, {});
+    consultar_aeroporto.render();
+}
 
 int main(){
     m.readFiles();
@@ -128,15 +157,13 @@ int main(){
 
     vector<MenuOption> options = {
             {"Viajar", menu_viajar},
-            {"Consultar Aeroporto", []() {cout << "Remove Location" << endl;}},
+            {"Consultar Aeroporto", consultar_aeroporto},
             {"Os meus bilhetes", []() {cout << "Edit Location" << endl;}},
     };
 
     MenuTwo MainMenu("Inicio", "Escolha uma opção", options, {}, false);
     menuStack.push(MainMenu);
     MainMenu.render();
-
-
 
     return 0;
 }
