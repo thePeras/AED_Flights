@@ -15,6 +15,12 @@ void back_action(){
     menuStack.top().render();
 }
 
+void exit_action(){
+    cout << endl << "Leaving..." << endl;
+    cout << "Goodbye!" << endl;
+    exit(0);
+}
+
 void aeroporto_input(){
     MenuTwo menu_aeroporto_input("Aeroporto", "digite o código do aeroporto: ", {}, {"OPO", "JFK"});
     menu_aeroporto_input.render();
@@ -56,7 +62,7 @@ void menu_coordenadas(){
             {"Voltar", back_action},
     };
 
-    MenuTwo menu_latitude("Viajar - de onde?", "latitude", options_viajar);
+    MenuTwo menu_latitude("Viajar - De Onde?", "latitude", options_viajar);
     menuStack.push(menu_latitude);
     menu_latitude.render();
     string latitude = menu_latitude.getInput();
@@ -65,7 +71,7 @@ void menu_coordenadas(){
         latitude = menu_latitude.getInput();
     }
 
-    MenuTwo menu_longitude("Viajar - de onde?", "longitude", options_viajar);
+    MenuTwo menu_longitude("Viajar - De Onde?", "longitude", options_viajar);
     menu_longitude.render();
     string longitude = menu_longitude.getInput();
     while(!longitudeIsValid(longitude)){
@@ -73,7 +79,7 @@ void menu_coordenadas(){
         longitude = menu_longitude.getInput();
     }
 
-    MenuTwo menu_radius("Viajar - de onde?", "raio", options_viajar);
+    MenuTwo menu_radius("Viajar - De Onde?", "raio", options_viajar);
     menu_radius.render();
     string radius = menu_radius.getInput();
     while(!radiusIsValid(radius)){
@@ -87,6 +93,46 @@ void menu_coordenadas(){
         cout << test[i].getCode() << endl;
     }
 }
+void menu_cidades(){
+
+
+}
+
+
+void menu_cidade() {
+    vector<MenuOption> options_cidade = {
+            {"Voltar", back_action},
+    };
+
+    string country = menuStack.top().getPreviousInput();
+
+    vector<string> cities = m.getCountryCities().find(country)->second;
+
+    MenuTwo menu_cidade("Viajar - Cidade", "Escolha uma cidade", options_cidade, cities, true, true);
+    menuStack.push(menu_cidade);
+    menu_cidade.render();
+
+    string city = menu_cidade.getInput();
+    vector<string> airports = m.getAirportsInCity(city, country);
+
+    MenuTwo menu_aeroporto("Viajar - Aeroporto", "Código do aeroporto", options_cidade, airports, true, true);
+    menuStack.push(menu_aeroporto);
+    menu_aeroporto.render();
+
+    Airport airport = m.getAirports().find(menu_aeroporto.getInput())->second;
+
+    //get curiosidades
+
+    vector<MenuOption> options2 = {
+            {"Voltar",                      back_action},
+            {"Informação sobre os voos",    []() {}},
+            {"Ver destinos diretos",        []() {}},
+            {"Ver destinos com X voos",     []() {}},
+            {"ideia: Ver destinos a X kms", []() {}},
+    };
+    MenuTwo consultar_aeroporto("Aeroporto - " + airport.getName(), "opção: ", options2, {});
+    consultar_aeroporto.render();
+}
 
 void menu_pais(){
     vector<MenuOption> options_pais = {
@@ -95,50 +141,27 @@ void menu_pais(){
 
     auto countryCities = m.getCountryCities();  //buscar os países para imprimir
     vector<string> countries;
-    for(auto it = countryCities.begin(); it != countryCities.end(); it++){
-        countries.push_back(it->first);
+    for(auto & countryCitie : countryCities){
+        countries.push_back(countryCitie.first);
     }
     sort(countries.begin(), countries.end());
 
 
-    MenuTwo menu_pais("Viajar", "Introduza um país: ", options_pais, countries, true, true);
+    MenuTwo menu_pais("Viajar - País", "Introduza um país", options_pais, countries, true, true);
     menuStack.push(menu_pais);
 
     menu_pais.render();
-
-
     string country = menu_pais.getInput();
-    vector<string> cities = countryCities.find(country)->second;
-    sort(cities.begin(), cities.end());
-
-
-    MenuTwo menu_cidade("Viajar", "de onde? ", options_pais, cities, true, true);
-    menuStack.push(menu_cidade);
-    menu_cidade.render();
-
-    string city = menu_cidade.getInput();
-
-    vector<string> airports = m.getAirportsInCity(city, country);
-    sort(airports.begin(), airports.end());
-
-    MenuTwo input_aeroporto("Viajar", "de onde? ", options_pais, airports, true, true);
-    menuStack.push(input_aeroporto);
-    input_aeroporto.render();
-
-
-    Airport theAirport = m.getAirports().find(input_aeroporto.getInput())->second;
-    //get curiosidades
 
     vector<MenuOption> options2 = {
             {"Voltar", back_action},
-            {"Informação sobre os voos", []() {}},
-            {"Ver destinos diretos", []() {}},
-            {"Ver destinos com X voos", [](){}},
-            {"ideia: Ver destinos a X kms", [](){}},
+            {"Selecionar todas as cidades", menu_cidades},
+            {"Selecionar uma cidade", menu_cidade, country}
     };
-    MenuTwo consultar_aeroporto("Aeroporto - " + theAirport.getName(), "opção: ", options2, {});
-    consultar_aeroporto.render();
 
+    MenuTwo menu_escolha("Viajar - Cidade", "Escolha uma opção", options2, {}, true, true);
+    menuStack.push(menu_escolha);
+    menu_escolha.render();
 
 }
 
@@ -150,7 +173,7 @@ void menu_viajar(){
             {"Coordenadas", menu_coordenadas},
     };
 
-    MenuTwo menu_viajar("Viajar", "de onde? ", options_viajar, {});
+    MenuTwo menu_viajar("Viajar", "De Onde", options_viajar, {});
     menuStack.push(menu_viajar);
 
     menu_viajar.render();
@@ -196,6 +219,7 @@ int main(){
     g.bfs(g.airports["OPO"]);
 
     vector<MenuOption> options = {
+            {"Sair", exit_action},
             {"Viajar", menu_viajar},
             {"Consultar Aeroporto", consultar_aeroporto},
             {"Os meus bilhetes", []() {cout << "Edit Location" << endl;}},

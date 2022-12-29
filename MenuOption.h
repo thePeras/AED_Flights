@@ -6,5 +6,6 @@ struct MenuOption
 {
     char const * text;
     ActionFunctionPointer action;
+    std::string input;
 };
 
