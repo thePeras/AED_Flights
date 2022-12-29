@@ -87,12 +87,27 @@ void menu_coordenadas(){
         cout << test[i].getCode() << endl;
     }
 }
+void menu_pais(){
+    vector<MenuOption> options_pais = {
+            {"Voltar", back_action}
+    };
+    auto countryCities = m.getCountryCities();
+    vector<string> countries;
+    for(auto it = countryCities.begin(); it != countryCities.end(); it++){
+        countries.push_back(it->first);
+    }
+
+    MenuTwo menu_viajar("Viajar", "de onde? ", options_pais, countries, true, true, true);
+    menuStack.push(menu_viajar);
+
+    menu_viajar.render();
+}
 
 void menu_viajar(){
     vector<MenuOption> options_viajar = {
             {"Voltar", back_action},
             {"Aeroporto (TAG)", aeroporto_input},
-            {"País", []() {}},
+            {"País", menu_pais},
             {"Coordenadas", menu_coordenadas},
     };
 
@@ -101,6 +116,8 @@ void menu_viajar(){
 
     menu_viajar.render();
 }
+
+
 
 int main(){
     m.readFiles();
