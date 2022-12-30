@@ -32,6 +32,8 @@ public:
 
     list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights);
 
+    pair<string, int> mostDistantCountry(string source, int maxNumFlights);
+
 private:
     //TODO: Add sets, lists, vectors (or whatever we want to use) to store the data
 
@@ -42,6 +44,7 @@ private:
     unordered_map<string, Airport> airports; /* Graph */
     unordered_map<string, Airline> airlines;
     unordered_map<string, vector<string>> country_cities;
+    //TODO: unordered_map<string, vector<string>> cities_airports; where key = COUNTRY:CITY and value = vector of airports
 
 };
 

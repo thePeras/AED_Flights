@@ -115,6 +115,7 @@ const vector<Airport> Managing::getAirportsInRadius(Location location, double ra
     return airportsInRadius;
 }
 
+// TODO: use cities_airports here
 vector<string> Managing::getAirportsInCity(string city, string country) {
     vector<string> airportsInCity;
     for (auto airport : airports) {
@@ -172,5 +173,48 @@ list<list<Flight *>> Managing::possiblePaths(string source, string target, int m
 
     }
     return possiblePaths;
+}
+
+pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights){
+    list<list<Flight*>> paths;
+    unordered_map<string, bool> visited;
+
+    Airport sourceAirportObj = airports[source];
+
+    int distance = 0;
+    string country;
+    int flightsNeeded;
+
+    paths.push_back({});
+
+    while (!paths.empty()) {
+        list<Flight*> path = paths.front();
+
+        paths.pop_front();
+
+        string lastAirport = (path.empty()) ? source : path.back()->getTarget();
+        Airport lastAirportObj = airports[lastAirport];
+
+        int currentDistance = lastAirportObj.getLocation().distance(sourceAirportObj.getLocation());
+        if(currentDistance > distance){
+            distance = currentDistance;
+            country = lastAirportObj.getCountry();
+            flightsNeeded = path.size();
+        }
+
+        visited[lastAirport] = true;
+        for (Flight* flight : lastAirportObj.getFlights()) {
+            if (!visited[flight->getTarget()]) {
+                list<Flight*> newPath = path;
+                newPath.push_back(flight);
+
+                if (newPath.size() > maxNumFlights) continue;
+
+                paths.push_back(newPath);
+            }
+        }
+    }
+
+    return make_pair(country, flightsNeeded);
 }
 

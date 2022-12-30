@@ -249,7 +249,7 @@ void voos_aeroporto(){
 
 void consultar_aeroporto(Airport airport){
     vector<MenuOption> options = {
-            {"Voltar ao menu principal", back_action},
+            {"Voltar ao menu principal", back_action_twice},
             {"Informação sobre os voos", voos_aeroporto},
             {"Ver destinos diretos", []() {}},
             {"Ver destinos com X voos", [](){}},
@@ -257,13 +257,26 @@ void consultar_aeroporto(Airport airport){
     };
 
     stringstream curiosity1;
+    curiosity1 << "Neste aeroporto descola";
+    if(airport.getFlights().size() != 1) curiosity1 << "m";
+    if(airport.getFlights().size() < 10) curiosity1 << " apenas";
+    curiosity1 << " " << airport.getFlights().size() << " voo";
+    if(airport.getFlights().size() != 1) curiosity1 << "s";
+
     stringstream curiosity2;
-    curiosity1 << "Daqui partem " << airport.getFlights().size() << " voos";
     curiosity2 << "Operam " << airport.getAirlines().size() << " companhias areas";
 
-    vector<string> curiosidades = {curiosity1.str(), curiosity2.str()};
+    stringstream curiosity3;
+    pair<string, int> mostDistanceCountry = m.mostDistantCountry(airport.getCode(), 2);
+    curiosity3 << "Com " << mostDistanceCountry.second << " voo";
+    if(mostDistanceCountry.second != 1) curiosity3 << "s";
+    curiosity3 << " consegues ir ao país " << mostDistanceCountry.first;
 
-    MenuTwo consultar_aeroporto("Aeroporto - " + airport.getName(), "opção: ", options, curiosidades, true, true);
+    vector<string> curiosities = {curiosity1.str(), curiosity2.str(), curiosity3.str()};
+
+    string airportName = " (" + airport.getCode() + ") Aeroporto - " + airport.getName() + ", " + airport.getCountry();
+
+    MenuTwo consultar_aeroporto(airportName, "Opção", options, curiosities, true, true);
     consultar_aeroporto.setSavedVariable(airport.getCode());
     menuStack.push(&consultar_aeroporto);
     consultar_aeroporto.render();
