@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class MenuTwo {
+class Menu {
 private:
     const string title;
     const string inputText;
@@ -24,7 +24,7 @@ private:
     void increaseListIndex();
     void decreaseListIndex();
 public:
-    MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list = {}, bool validateInput = false, bool isToPrintList = false, bool isOrderList = false);
+    Menu(string title, string inputText, vector<MenuOption> options, vector<string> list = {}, bool validateInput = false, bool isToPrintList = false, bool isOrderList = false);
     void showList();
     void render();
     string getInput();
@@ -32,12 +32,12 @@ public:
     string getSavedVariable();
 };
 
-MenuTwo::MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list, bool validateInput, bool isToPrintList, bool isOrderList) : title(title), inputText(inputText), list(list), validateInput(validateInput), isToPrintList(isToPrintList), isOrderList(isOrderList) {
+Menu::Menu(string title, string inputText, vector<MenuOption> options, vector<string> list, bool validateInput, bool isToPrintList, bool isOrderList) : title(title), inputText(inputText), list(list), validateInput(validateInput), isToPrintList(isToPrintList), isOrderList(isOrderList) {
     this->listIndex = 0;
     this->options = options;
 }
 
-void MenuTwo::showList(){
+void Menu::showList(){
     for (int i = this->listIndex; i < this->listIndex + 10 && i < list.size(); i++) {
         if(isOrderList) cout << i + 1 << " - ";
         cout << list[i] << endl;
@@ -45,7 +45,7 @@ void MenuTwo::showList(){
     cout << endl;
 }
 
-bool MenuTwo::inputIsInvalid(string input){
+bool Menu::inputIsInvalid(string input){
     try{
         int inputInt = stoi(input);
         if(isToPrintList and list.size() > 10 and inputInt >= 0 and inputInt <= options.size()) return false;
@@ -57,7 +57,7 @@ bool MenuTwo::inputIsInvalid(string input){
     return true;
 }
 
-void MenuTwo::render(){
+void Menu::render(){
     string input;
     cout << endl << "-------- " << title << " --------" << endl << endl;
     if(isToPrintList) showList();
@@ -100,22 +100,22 @@ void MenuTwo::render(){
     }
 }
 
-string MenuTwo::getInput(){
+string Menu::getInput(){
     return this->input_value;
 }
 
-void MenuTwo::increaseListIndex(){
+void Menu::increaseListIndex(){
     if(listIndex + 10 < list.size()) listIndex += 10;
 }
 
-void MenuTwo::decreaseListIndex(){
+void Menu::decreaseListIndex(){
     if(listIndex - 10 >= 0) listIndex -= 10;
 }
 
-void MenuTwo::setSavedVariable(string savedVariable){
+void Menu::setSavedVariable(string savedVariable){
     this->savedVariable = savedVariable;
 }
 
-string MenuTwo::getSavedVariable() {
+string Menu::getSavedVariable() {
     return this->savedVariable;
 }
