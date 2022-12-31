@@ -274,11 +274,11 @@ int Managing::getDiameter(const unordered_map<string, Airport>& graph) {
     unordered_map<string, int> distances;
 
     for (auto& [code, airport] : graph) {
-        visited[code] = false;
-        distances[code] = -1;
-    }
+        for (auto& [code, airport] : graph) {
+            visited[code] = false;
+            distances[code] = -1;
+        }
 
-    for (auto& [code, airport] : graph) {
         queue<string> q;
         q.push(code);
         visited[code] = true;
