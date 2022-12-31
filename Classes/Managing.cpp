@@ -268,3 +268,37 @@ void Managing::findArticulationPoints(
     }
 }
 
+int Managing::getDiameter(const unordered_map<string, Airport>& graph) {
+    int diameter = 0;
+    unordered_map<string, bool> visited;
+    unordered_map<string, int> distances;
+
+    for (auto& [code, airport] : graph) {
+        visited[code] = false;
+        distances[code] = -1;
+    }
+
+    for (auto& [code, airport] : graph) {
+        queue<string> q;
+        q.push(code);
+        visited[code] = true;
+        distances[code] = 0;
+
+        while (!q.empty()) {
+            string current = q.front();
+            q.pop();
+
+            for (Flight* flight : graph.find(current)->second.getFlights()) {
+                string w = flight->getTarget();
+                if (!visited[w]) {
+                    q.push(w);
+                    visited[w] = true;
+                    distances[w] = distances[current] + 1;
+                    diameter = max(diameter, distances[w]);
+                }
+            }
+        }
+    }
+    return diameter;
+}
+

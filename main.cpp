@@ -321,8 +321,8 @@ int main(){
     unordered_map<string, Airport> network = m.getUndirectedGlobalNetwork();
     m.findArticulationPoints("OPO", discovered, low, parent, articulationPoints, network);
 
-    cout << endl << "Existem " << articulationPoints.size() << " aeroportos importantes (Pontos de articulação)" << endl;
-
+    cout << endl << "Existem " << articulationPoints.size() << " aeroportos importantes (Pontos de articulação)." << endl;
+    cout << "A rede global possui " << m.getAirports().size() << " aeroportos e tem um diâmetro de " << m.getDiameter(m.getAirports()) << endl;
     vector<MenuOption> options = {
             {"Sair", exit_action},
             {"Viajar", menu_viajar},
