@@ -145,6 +145,10 @@ vector<string> Managing::getAirportsInCountry(string country) {
     return airportsInCountry;
 }
 
+unordered_map<string, Airport> Managing::getUndirectedGlobalNetwork() {
+    return undirectedGlobalNetwork;
+}
+
 list<list<Flight *>> Managing::possiblePaths(string source, string target, int maxNumFlights) {
     list<list<Flight *>> paths;
     unordered_map<string, bool> visited;
@@ -230,14 +234,14 @@ pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights)
 //tarjan's algorithm
 void Managing::findArticulationPoints(
         string source, unordered_map<string, int> &discovered, unordered_map<string, int> &low,
-        unordered_map<string, string> &parent, set<string> &articulationPoints) {
+        unordered_map<string, string> &parent, set<string> &articulationPoints, unordered_map<string, Airport> &network) {
 
     static int time = 0;
     int children = 0;
 
     discovered[source] = low[source] = ++time;
 
-    Airport sourceAirportObj = undirectedGlobalNetwork[source];
+    Airport sourceAirportObj = network[source];
 
     for (Flight *flight: sourceAirportObj.getFlights()) {
         string target = flight->getTarget();
@@ -245,7 +249,7 @@ void Managing::findArticulationPoints(
         if (discovered[target] == -1) {
             children++;
             parent[target] = source;
-            findArticulationPoints(target, discovered, low, parent, articulationPoints);
+            findArticulationPoints(target, discovered, low, parent, articulationPoints, network);
 
             low[source] = min(low[source], low[target]);
 

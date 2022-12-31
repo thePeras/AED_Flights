@@ -316,15 +316,12 @@ int main(){
     for(auto it = m.getAirports().begin(); it != m.getAirports().end(); it++) {
         discovered[it->first] = -1;
         low[it->first] = -1;
-        parent[it->first] = "";
     }
 
-    m.findArticulationPoints("OPO", discovered, low, parent, articulationPoints);
+    unordered_map<string, Airport> network = m.getUndirectedGlobalNetwork();
+    m.findArticulationPoints("OPO", discovered, low, parent, articulationPoints, network);
 
-    for(auto & articulationPoint : articulationPoints){
-        cout << articulationPoint << endl;
-    }
-    cout << articulationPoints.size() << endl;
+    cout << endl << "Existem " << articulationPoints.size() << " aeroportos importantes (Pontos de articulação)" << endl;
 
     vector<MenuOption> options = {
             {"Sair", exit_action},
