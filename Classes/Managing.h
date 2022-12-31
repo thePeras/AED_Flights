@@ -34,6 +34,8 @@ public:
 
     pair<string, int> mostDistantCountry(string source, int maxNumFlights);
 
+    void findArticulationPoints(string source, unordered_map<string, int> &disc, unordered_map<string, int> &low, unordered_map<string, string> &parent, set<string> &articulationPoints);
+
 private:
     //TODO: Add sets, lists, vectors (or whatever we want to use) to store the data
 
@@ -45,6 +47,6 @@ private:
     unordered_map<string, Airline> airlines;
     unordered_map<string, vector<string>> country_cities;
     //TODO: unordered_map<string, vector<string>> cities_airports; where key = COUNTRY:CITY and value = vector of airports
-
+    unordered_map<string, Airport> undirectedGlobalNetwork;
 };
 

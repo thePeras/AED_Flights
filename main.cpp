@@ -306,7 +306,26 @@ void digitar_aeroporto(){
 
 int main(){
     m.readFiles();
-    
+
+    unordered_map<string, int> discovered;
+    unordered_map<string, int> low;
+    unordered_map<string, string> parent;
+    set<string> articulationPoints;
+
+    //initialize
+    for(auto it = m.getAirports().begin(); it != m.getAirports().end(); it++) {
+        discovered[it->first] = -1;
+        low[it->first] = -1;
+        parent[it->first] = "";
+    }
+
+    m.findArticulationPoints("OPO", discovered, low, parent, articulationPoints);
+
+    for(auto & articulationPoint : articulationPoints){
+        cout << articulationPoint << endl;
+    }
+    cout << articulationPoints.size() << endl;
+
     vector<MenuOption> options = {
             {"Sair", exit_action},
             {"Viajar", menu_viajar},
