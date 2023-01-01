@@ -12,6 +12,7 @@
 #include <fstream>
 #include <limits>
 #include <queue>
+#include <iostream>
 
 Managing::Managing() {
 }
@@ -93,6 +94,8 @@ void Managing::readFlights() {
         float distance = airports[origin].getLocation().distance(airports[destination].getLocation());
         Flight *flight = new Flight(origin, destination, airline, distance);
 
+        airlines[airline].addFlight(flight);
+
         //direct graph
         airports[origin].addFlight(flight);
         //undirected graph
@@ -147,6 +150,27 @@ vector<string> Managing::getAirportsInCountry(string country) {
 
 unordered_map<string, Airport> Managing::getUndirectedGlobalNetwork() {
     return undirectedGlobalNetwork;
+}
+unordered_map<string, Airport> Managing::getUndirectedAirlineNetwork(string airlineCode){
+    unordered_map<string, Airport> newUndirectedNetwork;
+
+    //Creating new airports
+    for(auto& [code, airport] : airports){
+        Airport newAirport = Airport(code, airport.getName(), airport.getCity(), airport.getCountry(), airport.getLocation());
+        newUndirectedNetwork[code] = newAirport;
+    }
+
+    Airline airline = airlines[airlineCode];
+
+    for (Flight* flight : airline.getFlights()) {
+        string source = flight->getSource();
+        string target = flight->getTarget();
+
+        newUndirectedNetwork[source].addFlight(flight);
+        newUndirectedNetwork[target].addFlight(flight);
+    }
+
+    return newUndirectedNetwork;
 }
 
 list<list<Flight *>> Managing::possiblePaths(string source, string target, int maxNumFlights) {
@@ -232,6 +256,7 @@ pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights)
 }
 
 //tarjan's algorithm
+//!! o source tem de ser um Aeroporto com voos
 void Managing::findArticulationPoints(
         string source, unordered_map<string, int> &discovered, unordered_map<string, int> &low,
         unordered_map<string, string> &parent, set<string> &articulationPoints, unordered_map<string, Airport> &network) {
@@ -301,4 +326,3 @@ int Managing::getDiameter(const unordered_map<string, Airport>& graph) {
     }
     return diameter;
 }
-

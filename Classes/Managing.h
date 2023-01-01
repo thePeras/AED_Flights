@@ -31,6 +31,7 @@ public:
     vector<string> getAirportsInCountry(string country);
 
     unordered_map<string, Airport> getUndirectedGlobalNetwork();
+    unordered_map<string, Airport> getUndirectedAirlineNetwork(string airlineCode);
 
     list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights);
 

@@ -1,8 +1,10 @@
 #pragma once
 
+#include "Flight.h"
 #include <string>
-using namespace std;
+#include <vector>
 
+using namespace std;
 
 class Airline {
     private:
@@ -10,6 +12,7 @@ class Airline {
     string name;
     string callSign;
     string country;
+    vector<Flight*> flights;
 
     public:
     Airline(){
@@ -17,6 +20,7 @@ class Airline {
         name = "";
         callSign = "";
         country = "";
+        flights = {};
     }
 
     Airline(string code, string name, string callSign, string country){
@@ -24,6 +28,7 @@ class Airline {
         this->name = name;
         this->callSign = callSign;
         this->country = country;
+        this->flights = {};
     }
 
     const string &getCode() const {
@@ -56,6 +61,14 @@ class Airline {
 
     void setCountry(const string &country) {
         this->country = country;
+    }
+
+    void addFlight(Flight* flight){
+        flights.push_back(flight);
+    }
+
+    vector<Flight*> getFlights(){
+        return flights;
     }
 };
 
