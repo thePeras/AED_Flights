@@ -79,7 +79,7 @@ void menus::digitar_aeroporto(){
 
     sort(airports.begin(), airports.end());
 
-    Menu digitar_aeroporto("Consultar aeroporto", "código do aeroporto: ", options, airports, true, true);
+    Menu digitar_aeroporto("Consultar aeroporto", "código do aeroporto: ", options, airports, true, true, 10);
     digitar_aeroporto.render();
 
     if(digitar_aeroporto.optionIsSelected() && digitar_aeroporto.getOption() == 0){
@@ -120,7 +120,7 @@ void menus::consultar_aeroporto(Airport& airport){
 
     string airportName = " (" + airport.getCode() + ") Aeroporto - " + airport.getName() + ", " + airport.getCountry();
 
-    Menu consultar_aeroporto(airportName, "Opção", options, curiosities, true, true);
+    Menu consultar_aeroporto(airportName, "Opção", options, curiosities, true, true, 1);
     consultar_aeroporto.render();
 
     if(consultar_aeroporto.optionIsSelected()){
@@ -142,7 +142,7 @@ void menus::voos_aeroporto(Airport airport){
         flights.push_back(flight->getTarget());
     }
 
-    Menu menu_voos_aeroporto("Voos - Aeroporto", "opção", options, flights, false, true);
+    Menu menu_voos_aeroporto("Voos - Aeroporto", "opção", options, flights, false, true, 1);
     menu_voos_aeroporto.render();
 
     if(menu_voos_aeroporto.optionIsSelected() && menu_voos_aeroporto.getOption() == 0){
@@ -182,7 +182,7 @@ void menus::aeroporto_input(){
     }
     sort(airports.begin(), airports.end());
 
-    Menu menu_aeroporto_input("Aeroporto", "digite o código do aeroporto: ", options, airports, true, true);
+    Menu menu_aeroporto_input("Aeroporto", "digite o código do aeroporto: ", options, airports, true, true, 10);
     menu_aeroporto_input.render();
 
     if(menu_aeroporto_input.optionIsSelected() && menu_aeroporto_input.getOption() == 0){
@@ -197,7 +197,7 @@ void menus::aeroporto_input(){
 }
 
 void menus::menu_pais(){
-    vector<string> options = { "Voltar"};
+    vector<string> options = { "Voltar" };
 
     auto countryCities = m.getCountryCities();  //get countries
     vector<string> countries;
@@ -228,7 +228,7 @@ void menus::menus_pais_cidades(string country){
             "Selecionar todas as cidades"
     };
 
-    Menu menu_escolha("Viajar - " + country, "Escolha uma opção", options_cities, cities, true, true);
+    Menu menu_escolha("Viajar - " + country, "Escolha uma opção", options_cities, cities, true, true, 3);
     menu_escolha.render();
 
     if(menu_escolha.optionIsSelected()){
@@ -260,7 +260,7 @@ void menus::menu_cidade(string city, string country){
             "Selecionar todos os aeroportos",
     };
 
-    Menu menu_aeroporto("Viajar - Aeroporto", "Código do aeroporto", airport_options, airports, true, true);
+    Menu menu_aeroporto("Viajar - Aeroporto", "Código do aeroporto", airport_options, airports, true, true, 10);
     menu_aeroporto.render();
 
     if(menu_aeroporto.optionIsSelected()){
@@ -362,7 +362,7 @@ void menus::consultar_rede_companhia(){
         airlines.push_back(it->second.getCode());
     }
 
-    Menu airlines_menu("Consultar rede de uma companhia", "companhia", options, airlines, true, true);
+    Menu airlines_menu("Consultar rede de uma companhia", "companhia", options, airlines, true, true, 10);
     airlines_menu.render();
 
     if(airlines_menu.optionIsSelected() && airlines_menu.getOption() == 0){
