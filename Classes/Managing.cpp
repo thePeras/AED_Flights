@@ -252,6 +252,40 @@ list<list<Flight*>> Managing::possiblePaths(string source, string target, int ma
     return possiblePaths;
 }
 
+set<string> Managing::reachableAirports(string source, int maxNumFlights) {
+    set<string> reachableAirports;
+    unordered_map<string, bool> visited;
+
+    queue<list<Flight *>> paths;
+    paths.push({});
+
+    visited[source] = true;
+
+    while (!paths.empty()) {
+        list<Flight *> path = paths.front();
+        paths.pop();
+
+        string lastAirport = (path.empty()) ? source : path.back()->getTarget();
+
+        visited[lastAirport] = true;
+        reachableAirports.insert(lastAirport);
+
+        Airport lastAirportObj = airports[lastAirport];
+
+        for (Flight *flight: lastAirportObj.getFlights()) {
+            if (!visited[flight->getTarget()]) {
+                list<Flight *> newPath = path;
+                newPath.push_back(flight);
+
+                if (newPath.size() > maxNumFlights) continue;
+
+                paths.push(newPath);
+            }
+        }
+    }
+    return reachableAirports;
+}
+
 pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights) {
     list<list<Flight *>> paths;
     unordered_map<string, bool> visited;
@@ -382,3 +416,5 @@ int Managing::getDiameter(const unordered_map<string, Airport>& graph) {
     }
     return diameter;
 }
+
+

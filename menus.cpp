@@ -46,7 +46,13 @@ void menus::mainMenu(){
         cout << endl;
     }
 
-    vector<string> options = { "Sair", "Viajar", "Consultar Aeroporto", "Consultar Rede", "Os meus bilhetes"};
+    vector<string> options = {
+            "Sair",
+            "Viajar",
+            "Consultar Aeroporto",
+            "Consultar Rede",
+            "Os meus bilhetes"
+    };
 
     Menu MainMenu("Inicio", "Escolha uma opção", options, {}, true);
     MainMenu.render();
@@ -54,7 +60,7 @@ void menus::mainMenu(){
     if(MainMenu.optionIsSelected()){
         switch (MainMenu.getOption()) {
             case 0: exit_action(); break;
-            case 1: menu_viajar("Viajar"); break;
+            case 1: menu_viajar("De onde?"); break;
             case 2: digitar_aeroporto(); break;
             case 3: consultar_rede(); break;
             case 4: cout << "Os meus bilhetes ainda por fazer" << endl; break;
@@ -155,7 +161,7 @@ void menus::menu_viajar(string title){
             "Coordenadas"
     };
 
-    Menu menu_viajar("Viajar", title, options, {});
+    Menu menu_viajar("Viajar - " + title, title, options, {});
     menu_viajar.render();
 
     if(menu_viajar.optionIsSelected()){
