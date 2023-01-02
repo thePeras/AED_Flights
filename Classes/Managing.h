@@ -46,10 +46,7 @@ public:
 
     int getDiameter(const unordered_map<string, Airport> &graph);
 
-
 private:
-    //TODO: Add sets, lists, vectors (or whatever we want to use) to store the data
-
     void readAirlines();
     void readAirports();
     void readFlights();

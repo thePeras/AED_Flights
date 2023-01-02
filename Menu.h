@@ -3,41 +3,41 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include "MenuOption.h"
 #include <iostream>
 
 using namespace std;
 
-class MenuTwo {
+class Menu {
 private:
     const string title;
     const string inputText;
-    vector<MenuOption> options;
+    vector<string> options;
     const vector<string> list;
     int listIndex;
     const bool isToPrintList;
     const bool isOrderList;
     string input_value;
-    string savedVariable;
     bool inputIsInvalid(string input);
     bool validateInput;
+    bool optionSelected;
     void increaseListIndex();
     void decreaseListIndex();
 public:
-    MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list = {}, bool validateInput = false, bool isToPrintList = false, bool isOrderList = false);
+    Menu(string title, string inputText, vector<string> options, vector<string> list = {}, bool validateInput = false, bool isToPrintList = false, bool isOrderList = false);
     void showList();
     void render();
     string getInput();
-    void setSavedVariable(string savedVariable);
-    string getSavedVariable();
+    bool optionIsSelected();
+    int getOption();
 };
 
-MenuTwo::MenuTwo(string title, string inputText, vector<MenuOption> options, vector<string> list, bool validateInput, bool isToPrintList, bool isOrderList) : title(title), inputText(inputText), list(list), validateInput(validateInput), isToPrintList(isToPrintList), isOrderList(isOrderList) {
+Menu::Menu(string title, string inputText, vector<string> options, vector<string> list, bool validateInput, bool isToPrintList, bool isOrderList) : title(title), inputText(inputText), list(list), validateInput(validateInput), isToPrintList(isToPrintList), isOrderList(isOrderList) {
     this->listIndex = 0;
     this->options = options;
+    this->optionSelected = false;
 }
 
-void MenuTwo::showList(){
+void Menu::showList(){
     for (int i = this->listIndex; i < this->listIndex + 10 && i < list.size(); i++) {
         if(isOrderList) cout << i + 1 << " - ";
         cout << list[i] << endl;
@@ -45,7 +45,7 @@ void MenuTwo::showList(){
     cout << endl;
 }
 
-bool MenuTwo::inputIsInvalid(string input){
+bool Menu::inputIsInvalid(string input){
     try{
         int inputInt = stoi(input);
         if(isToPrintList and list.size() > 10 and inputInt >= 0 and inputInt <= options.size()) return false;
@@ -57,23 +57,23 @@ bool MenuTwo::inputIsInvalid(string input){
     return true;
 }
 
-void MenuTwo::render(){
+void Menu::render(){
     string input;
     cout << endl << "-------- " << title << " --------" << endl << endl;
     if(isToPrintList) showList();
     cout << "Opções: " << endl;
     for (int i = 0; i < options.size(); i++) {
-        cout << '\t' << i << " - " << options[i].text << endl;
+        cout << '\t' << i << " - " << options[i] << endl;
     }
     if(isToPrintList && list.size() > 10){
         cout << "\t" << options.size() << " - Próxima página" << endl;
         if(listIndex > 0) cout << "\t" << options.size() + 1 << " - Página anterior" << endl;
     }
     cout << endl << inputText << ": ";
-    cin >> input;
+    getline(cin, input);
     while(inputIsInvalid(input) && validateInput) {
         cout << inputText << ": ";
-        cin >> input;
+        getline(cin, input);
     }
 
     this->input_value = input;
@@ -81,7 +81,7 @@ void MenuTwo::render(){
     try {
         int inputInt = stoi(input);
         if(inputInt >= 0 and inputInt < options.size()){
-            options[inputInt].action();
+            optionSelected = true;
             return;
         }
         if(isToPrintList and list.size() > 10 and inputInt == options.size()){
@@ -100,22 +100,22 @@ void MenuTwo::render(){
     }
 }
 
-string MenuTwo::getInput(){
+string Menu::getInput(){
     return this->input_value;
 }
 
-void MenuTwo::increaseListIndex(){
+int Menu::getOption(){
+    return stoi(this->input_value);
+}
+
+bool Menu::optionIsSelected(){
+    return this->optionSelected;
+}
+
+void Menu::increaseListIndex(){
     if(listIndex + 10 < list.size()) listIndex += 10;
 }
 
-void MenuTwo::decreaseListIndex(){
+void Menu::decreaseListIndex(){
     if(listIndex - 10 >= 0) listIndex -= 10;
-}
-
-void MenuTwo::setSavedVariable(string savedVariable){
-    this->savedVariable = savedVariable;
-}
-
-string MenuTwo::getSavedVariable() {
-    return this->savedVariable;
 }
