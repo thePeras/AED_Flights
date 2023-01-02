@@ -256,31 +256,26 @@ set<string> Managing::reachableAirports(string source, int maxNumFlights) {
     set<string> reachableAirports;
     unordered_map<string, bool> visited;
 
-    queue<list<Flight *>> paths;
-    paths.push({});
-
-    visited[source] = true;
+    queue<pair<string, int>> paths;
+    paths.push({source, 0});
 
     while (!paths.empty()) {
-        list<Flight *> path = paths.front();
+        pair<string, int> path = paths.front();
         paths.pop();
 
-        string lastAirport = (path.empty()) ? source : path.back()->getTarget();
+        string lastAirport = path.first;
+        int numFlights = path.second;
 
+        if (visited[lastAirport]) continue;
         visited[lastAirport] = true;
         reachableAirports.insert(lastAirport);
 
         Airport lastAirportObj = airports[lastAirport];
 
         for (Flight *flight: lastAirportObj.getFlights()) {
-            if (!visited[flight->getTarget()]) {
-                list<Flight *> newPath = path;
-                newPath.push_back(flight);
+            if (numFlights + 1 > maxNumFlights) continue;
 
-                if (newPath.size() > maxNumFlights) continue;
-
-                paths.push(newPath);
-            }
+            paths.push({flight->getTarget(), numFlights + 1});
         }
     }
     return reachableAirports;
