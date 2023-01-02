@@ -255,8 +255,24 @@ pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights)
     return make_pair(country, flightsNeeded);
 }
 
+set<string> Managing::getArticulationPoints(unordered_map<string, Airport> &network, string source){
+    unordered_map<string, int> discovered;
+    unordered_map<string, int> low;
+    unordered_map<string, string> parent;
+    set<string> articulationPoints;
+
+    for(auto it = getAirports().begin(); it != getAirports().end(); it++) {
+        discovered[it->first] = -1;
+        low[it->first] = -1;
+    }
+
+    findArticulationPoints(source, discovered, low, parent, articulationPoints, network);
+
+    return articulationPoints;
+}
+
 //tarjan's algorithm
-//!! o source tem de ser um Aeroporto com voos
+//!! o source tem de ser um Aeroporto com voos (ou seja, pertencer à rede)
 void Managing::findArticulationPoints(
         string source, unordered_map<string, int> &discovered, unordered_map<string, int> &low,
         unordered_map<string, string> &parent, set<string> &articulationPoints, unordered_map<string, Airport> &network) {

@@ -304,28 +304,81 @@ void digitar_aeroporto(){
 
 }
 
+
+void consultar_rede_companhia(){
+    vector<MenuOption> options = {
+            {"Voltar", back_action},
+    };
+
+    vector<string> airlines;
+    for(auto it = m.getAirlines().begin(); it != m.getAirlines().end(); it++) {
+        airlines.push_back(it->second.getCode());
+    }
+
+    MenuTwo consultar_rede_companhia("Consultar rede de uma companhia", "companhia", options, airlines, true, true);
+    menuStack.push(&consultar_rede_companhia);
+    consultar_rede_companhia.render();
+
+    string airlineCode = consultar_rede_companhia.getInput();
+    Airline airline = m.getAirlines().find(airlineCode)->second;
+    unordered_map<string, Airport> network = m.getUndirectedAirlineNetwork(airlineCode);
+    set<string> articulationPoints = m.getArticulationPoints(network, airline.getFlights()[0]->getSource());
+
+    stringstream line1;
+    line1 << "Esta companhia area tem " << articulationPoints.size() << " aeroportos importantes (Pontos de articulação)." << endl;
+
+    vector<string> text = {line1.str()};
+
+    vector<MenuOption> options2 = {
+            {"Voltar", back_action_twice},
+    };
+
+    MenuTwo consultar_rede_unica("Rede " + airline.getName(), "opção", options2, text, false, true);
+    menuStack.push(&consultar_rede_unica);
+    consultar_rede_unica.render();
+}
+
+void consultar_rede_global(){
+    unordered_map<string, Airport> network = m.getUndirectedGlobalNetwork();
+
+    set<string> articulationPoints = m.getArticulationPoints(network, "OPO");
+
+    stringstream line1;
+    line1 << "Existem " << articulationPoints.size() << " aeroportos importantes (Pontos de articulação)." << endl;
+
+    vector<string> text = {line1.str()};
+
+    vector<MenuOption> options = {
+            {"Voltar", back_action},
+    };
+
+    MenuTwo consultar_rede_global("Consultar rede global", "opção", options, text, false, true);
+    menuStack.push(&consultar_rede_global);
+    consultar_rede_global.render();
+}
+void consultar_rede(){
+    vector<MenuOption> options = {
+            {"Voltar", back_action},
+            {"Rede Global", consultar_rede_global},
+            {"Rede de uma companhia aerea", consultar_rede_companhia},
+    };
+
+    MenuTwo consultar_rede("Consultar rede", "opção", options, {});
+    menuStack.push(&consultar_rede);
+    consultar_rede.render();
+}
+
 int main(){
     m.readFiles();
 
-    unordered_map<string, int> discovered;
-    unordered_map<string, int> low;
-    unordered_map<string, string> parent;
-    set<string> articulationPoints;
-
-    //initialize
-    for(auto it = m.getAirports().begin(); it != m.getAirports().end(); it++) {
-        discovered[it->first] = -1;
-        low[it->first] = -1;
-    }
-    unordered_map<string, Airport> network = m.getUndirectedAirlineNetwork("TAP");
-    m.findArticulationPoints("LIS", discovered, low, parent, articulationPoints, network);
-    cout << endl << "Existem, ao todo, " << m.getAirports().size() << " aeroportos.";
-    cout << endl << "Existem " << articulationPoints.size() << " aeroportos importantes (Pontos de articulação)." << endl;
-    cout << "A rede global possui " << m.getAirports().size() << " aeroportos e tem um diâmetro de " << m.getDiameter(m.getAirports()) << endl;
+    // TODO: passar para o menu das redes
+    //cout << endl << "Existem, ao todo, " << m.getAirports().size() << " aeroportos.";
+    //cout << "A rede global possui " << m.getAirports().size() << " aeroportos e tem um diâmetro de " << m.getDiameter(m.getAirports()) << endl;
     vector<MenuOption> options = {
             {"Sair", exit_action},
             {"Viajar", menu_viajar},
             {"Consultar Aeroporto", digitar_aeroporto},
+            {"Consultar Rede", consultar_rede},
             {"Os meus bilhetes", []() {cout << "Edit Location" << endl;}},
     };
 

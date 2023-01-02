@@ -37,6 +37,7 @@ public:
 
     pair<string, int> mostDistantCountry(string source, int maxNumFlights);
 
+    set<string> getArticulationPoints(unordered_map<string, Airport> &network, string source);
     void findArticulationPoints(string source, unordered_map<string, int> &disc, unordered_map<string, int> &low, unordered_map<string, string> &parent, set<string> &articulationPoints, unordered_map<string, Airport> &network);
 
     int getDiameter(const unordered_map<string, Airport> &graph);
