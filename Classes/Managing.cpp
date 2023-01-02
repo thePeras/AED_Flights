@@ -12,6 +12,7 @@
 #include <fstream>
 #include <limits>
 #include <queue>
+#include <iostream>
 
 Managing::Managing() {
 }
@@ -52,7 +53,7 @@ void Managing::readAirports() {
     ifstream file(AIRPORTS_FILE);
     getline(file, line);
     while (getline(file, line)) {
-        istringstream ss (line);
+        istringstream ss(line);
         string code, name, city, country;
         float latitude, longitude;
         getline(ss, code, ',');
@@ -68,6 +69,9 @@ void Managing::readAirports() {
 
         Airport airport(code, name, city, country, *new Location(latitude, longitude));
         airports.insert({code, airport});
+
+        Airport undirectedAirport(code, name, city, country, Location(latitude, longitude));
+        undirectedGlobalNetwork.insert({code, undirectedAirport});
     }
     file.close();
 }
@@ -78,7 +82,7 @@ void Managing::readFlights() {
 
     getline(file, line);
     while (getline(file, line)) {
-        istringstream ss (line);
+        istringstream ss(line);
         string origin, destination, airline;
         getline(ss, origin, ',');
         if (origin.empty()) break;
@@ -88,7 +92,15 @@ void Managing::readFlights() {
 
         // Basically adding edges to the graph
         float distance = airports[origin].getLocation().distance(airports[destination].getLocation());
-        airports[origin].addFlight(new Flight(origin, destination, airline, distance));
+        Flight *flight = new Flight(origin, destination, airline, distance);
+
+        airlines[airline].addFlight(flight);
+
+        //direct graph
+        airports[origin].addFlight(flight);
+        //undirected graph
+        undirectedGlobalNetwork[origin].addFlight(flight);
+        undirectedGlobalNetwork[destination].addFlight(flight);
     }
     file.close();
 }
@@ -107,7 +119,7 @@ const unordered_map<string, vector<string>> &Managing::getCountryCities() const 
 
 const vector<Airport> Managing::getAirportsInRadius(Location location, double radius) const {
     vector<Airport> airportsInRadius;
-    for (auto airport : airports) {
+    for (auto airport: airports) {
         if (airport.second.getLocation().distance(location) <= radius) {
             airportsInRadius.push_back(airport.second);
         }
@@ -118,7 +130,7 @@ const vector<Airport> Managing::getAirportsInRadius(Location location, double ra
 // TODO: use cities_airports here
 vector<string> Managing::getAirportsInCity(string city, string country) {
     vector<string> airportsInCity;
-    for (auto airport : airports) {
+    for (auto airport: airports) {
         if (airport.second.getCity() == city && airport.second.getCountry() == country) {
             airportsInCity.push_back(airport.first);
         }
@@ -128,7 +140,7 @@ vector<string> Managing::getAirportsInCity(string city, string country) {
 
 vector<string> Managing::getAirportsInCountry(string country) {
     vector<string> airportsInCountry;
-    for (auto airport : airports) {
+    for (auto airport: airports) {
         if (airport.second.getCountry() == country) {
             airportsInCountry.push_back(airport.first);
         }
@@ -136,16 +148,41 @@ vector<string> Managing::getAirportsInCountry(string country) {
     return airportsInCountry;
 }
 
+unordered_map<string, Airport> Managing::getUndirectedGlobalNetwork() {
+    return undirectedGlobalNetwork;
+}
+unordered_map<string, Airport> Managing::getUndirectedAirlineNetwork(string airlineCode){
+    unordered_map<string, Airport> newUndirectedNetwork;
+
+    //Creating new airports
+    for(auto& [code, airport] : airports){
+        Airport newAirport = Airport(code, airport.getName(), airport.getCity(), airport.getCountry(), airport.getLocation());
+        newUndirectedNetwork[code] = newAirport;
+    }
+
+    Airline airline = airlines[airlineCode];
+
+    for (Flight* flight : airline.getFlights()) {
+        string source = flight->getSource();
+        string target = flight->getTarget();
+
+        newUndirectedNetwork[source].addFlight(flight);
+        newUndirectedNetwork[target].addFlight(flight);
+    }
+
+    return newUndirectedNetwork;
+}
+
 list<list<Flight *>> Managing::possiblePaths(string source, string target, int maxNumFlights) {
-    list<list<Flight*>> paths;
+    list<list<Flight *>> paths;
     unordered_map<string, bool> visited;
 
-    list<list<Flight*>> possiblePaths;
+    list<list<Flight *>> possiblePaths;
 
     paths.push_back({});
 
     while (!paths.empty()) {
-        list<Flight*> path = paths.front();
+        list<Flight *> path = paths.front();
 
         paths.pop_front();
 
@@ -160,9 +197,9 @@ list<list<Flight *>> Managing::possiblePaths(string source, string target, int m
 
         Airport lastAirportObj = airports[lastAirport];
 
-        for (Flight* flight : lastAirportObj.getFlights()) {
+        for (Flight *flight: lastAirportObj.getFlights()) {
             if (!visited[flight->getTarget()]) {
-                list<Flight*> newPath = path;
+                list<Flight *> newPath = path;
                 newPath.push_back(flight);
 
                 if (newPath.size() > maxNumFlights) continue;
@@ -175,8 +212,77 @@ list<list<Flight *>> Managing::possiblePaths(string source, string target, int m
     return possiblePaths;
 }
 
-pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights){
-    list<list<Flight*>> paths;
+list<list<Flight*>> Managing::possiblePaths(string source, string target, int maxNumFlights, set<string>& consideredAirlines) {
+    list<list<Flight *>> paths;
+    unordered_map<string, bool> visited;
+
+    list<list<Flight *>> possiblePaths;
+
+    paths.push_back({});
+
+    while (!paths.empty()) {
+        list<Flight *> path = paths.front();
+
+        paths.pop_front();
+
+        string lastAirport = (path.empty()) ? source : path.back()->getTarget();
+
+        if (lastAirport == target) {
+            possiblePaths.push_back(path);
+            continue;
+        }
+
+        visited[lastAirport] = true;
+
+        Airport lastAirportObj = airports[lastAirport];
+
+        for (Flight *flight: lastAirportObj.getFlights()) {
+            if (consideredAirlines.find(flight->getAirline()) == consideredAirlines.end()) continue;
+            if (!visited[flight->getTarget()]) {
+                list<Flight *> newPath = path;
+                newPath.push_back(flight);
+
+                if (newPath.size() > maxNumFlights) continue;
+
+                paths.push_back(newPath);
+            }
+        }
+
+    }
+    return possiblePaths;
+}
+
+set<string> Managing::reachableAirports(string source, int maxNumFlights) {
+    set<string> reachableAirports;
+    unordered_map<string, bool> visited;
+
+    queue<pair<string, int>> paths;
+    paths.push({source, 0});
+
+    while (!paths.empty()) {
+        pair<string, int> path = paths.front();
+        paths.pop();
+
+        string lastAirport = path.first;
+        int numFlights = path.second;
+
+        if (visited[lastAirport]) continue;
+        visited[lastAirport] = true;
+        reachableAirports.insert(lastAirport);
+
+        Airport lastAirportObj = airports[lastAirport];
+
+        for (Flight *flight: lastAirportObj.getFlights()) {
+            if (numFlights + 1 > maxNumFlights) continue;
+
+            paths.push({flight->getTarget(), numFlights + 1});
+        }
+    }
+    return reachableAirports;
+}
+
+pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights) {
+    list<list<Flight *>> paths;
     unordered_map<string, bool> visited;
 
     Airport sourceAirportObj = airports[source];
@@ -188,7 +294,7 @@ pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights)
     paths.push_back({});
 
     while (!paths.empty()) {
-        list<Flight*> path = paths.front();
+        list<Flight *> path = paths.front();
 
         paths.pop_front();
 
@@ -196,16 +302,16 @@ pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights)
         Airport lastAirportObj = airports[lastAirport];
 
         int currentDistance = lastAirportObj.getLocation().distance(sourceAirportObj.getLocation());
-        if(currentDistance > distance){
+        if (currentDistance > distance) {
             distance = currentDistance;
             country = lastAirportObj.getCountry();
             flightsNeeded = path.size();
         }
 
         visited[lastAirport] = true;
-        for (Flight* flight : lastAirportObj.getFlights()) {
+        for (Flight *flight: lastAirportObj.getFlights()) {
             if (!visited[flight->getTarget()]) {
-                list<Flight*> newPath = path;
+                list<Flight *> newPath = path;
                 newPath.push_back(flight);
 
                 if (newPath.size() > maxNumFlights) continue;
@@ -217,4 +323,93 @@ pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights)
 
     return make_pair(country, flightsNeeded);
 }
+
+set<string> Managing::getArticulationPoints(unordered_map<string, Airport> &network, string source){
+    unordered_map<string, int> discovered;
+    unordered_map<string, int> low;
+    unordered_map<string, string> parent;
+    set<string> articulationPoints;
+
+    for(auto it = getAirports().begin(); it != getAirports().end(); it++) {
+        discovered[it->first] = -1;
+        low[it->first] = -1;
+    }
+
+    findArticulationPoints(source, discovered, low, parent, articulationPoints, network);
+
+    return articulationPoints;
+}
+
+//tarjan's algorithm
+//!! o source tem de ser um Aeroporto com voos (ou seja, pertencer à rede)
+void Managing::findArticulationPoints(
+        string source, unordered_map<string, int> &discovered, unordered_map<string, int> &low,
+        unordered_map<string, string> &parent, set<string> &articulationPoints, unordered_map<string, Airport> &network) {
+
+    static int time = 0;
+    int children = 0;
+
+    discovered[source] = low[source] = ++time;
+
+    Airport sourceAirportObj = network[source];
+
+    for (Flight *flight: sourceAirportObj.getFlights()) {
+        string target = flight->getTarget();
+
+        if (discovered[target] == -1) {
+            children++;
+            parent[target] = source;
+            findArticulationPoints(target, discovered, low, parent, articulationPoints, network);
+
+            low[source] = min(low[source], low[target]);
+
+            // Source is root
+            if (parent[source] == "" && children > 1) {
+                articulationPoints.insert(source);
+            }
+
+            // A component will be separated
+            if (parent[source] != "" && low[target] >= discovered[source]) {
+                articulationPoints.insert(source);
+            }
+        } else if (target != parent[source]) {
+            low[source] = min(low[source], discovered[target]);
+        }
+    }
+}
+
+int Managing::getDiameter(const unordered_map<string, Airport>& graph) {
+    int diameter = 0;
+    unordered_map<string, bool> visited;
+    unordered_map<string, int> distances;
+
+    for (auto& [code, airport] : graph) {
+        for (auto& [code, airport] : graph) {
+            visited[code] = false;
+            distances[code] = -1;
+        }
+
+        queue<string> q;
+        q.push(code);
+        visited[code] = true;
+        distances[code] = 0;
+
+        while (!q.empty()) {
+            string current = q.front();
+            q.pop();
+
+            for (Flight* flight : graph.find(current)->second.getFlights()) {
+                string w = flight->getTarget();
+                if (!visited[w]) {
+                    q.push(w);
+                    visited[w] = true;
+                    distances[w] = distances[current] + 1;
+                    diameter = max(diameter, distances[w]);
+                }
+            }
+        }
+    }
+    return diameter;
+}
+
 

@@ -30,13 +30,23 @@ public:
 
     vector<string> getAirportsInCountry(string country);
 
+    unordered_map<string, Airport> getUndirectedGlobalNetwork();
+    unordered_map<string, Airport> getUndirectedAirlineNetwork(string airlineCode);
+
     list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights);
+
+    list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights, set<string> &airlines);
+
+    set<string> reachableAirports(string source, int maxNumFlights);
 
     pair<string, int> mostDistantCountry(string source, int maxNumFlights);
 
-private:
-    //TODO: Add sets, lists, vectors (or whatever we want to use) to store the data
+    set<string> getArticulationPoints(unordered_map<string, Airport> &network, string source);
+    void findArticulationPoints(string source, unordered_map<string, int> &disc, unordered_map<string, int> &low, unordered_map<string, string> &parent, set<string> &articulationPoints, unordered_map<string, Airport> &network);
 
+    int getDiameter(const unordered_map<string, Airport> &graph);
+
+private:
     void readAirlines();
     void readAirports();
     void readFlights();
@@ -45,7 +55,7 @@ private:
     unordered_map<string, Airline> airlines;
     unordered_map<string, vector<string>> country_cities;
     //TODO: unordered_map<string, vector<string>> cities_airports; where key = COUNTRY:CITY and value = vector of airports
-    unordered_map<string, Airport> undirectedAirportsNetwork;
+    unordered_map<string, Airport> undirectedGlobalNetwork;
 
 };
 

@@ -1,8 +1,32 @@
 #pragma once
 
+#include <stack>
+#include "Airport.h"
+
 class menus {
+    private:
+        void exit_action();
+
     public:
         menus();
-        static void digitar_aeroporto();
-        //listagem de menus estáticos
+        void mainMenu();
+
+        //VIAJAR
+        void menu_viajar(string title);
+        void aeroporto_input();
+        void menu_pais();
+        void menus_pais_cidades(string country);
+        void menu_cidade(string city, string country);
+        void menu_coordenadas();
+
+        //CONSULTAR AEROPORTO
+        void digitar_aeroporto();
+        void consultar_aeroporto(Airport &airport);
+        void voos_aeroporto(Airport airport);
+
+        //CONSULTAR REDE
+        void consultar_rede();
+        void consultar_rede_global();
+        void consultar_rede_companhia();
+
 };
