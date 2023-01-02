@@ -384,9 +384,11 @@ int main(){
         cout << endl;
     }
 
-    for (auto el : m.reachableAirports("OPO", 1)) {
+    set<string> test = m.reachableAirports("OPO", 2);
+    for (auto el : test) {
         cout << el << endl;
     }
+    cout << test.size();
 
     vector<MenuOption> options = {
             {"Sair", exit_action},
