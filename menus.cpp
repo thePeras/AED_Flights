@@ -191,9 +191,29 @@ void menus::aeroporto_input(){
     }
 
     string input = menu_aeroporto_input.getInput();
-    Airport airport = m.getAirports().at(input);
+    Airport theAirport = m.getAirports().find(input)->second;
 
-    //TODO: Run the algorithm
+    if(travel_source_airports.size() == 0) {
+        travel_source_airports.push_back(theAirport);
+        menu_viajar("Para onde?");
+    }
+    else {
+        travel_target_airports.push_back(theAirport);
+        //TODO: Run the algorithm
+    }
+
+    for(auto source_airport : travel_source_airports){
+        for(auto target_airport : travel_target_airports){
+            auto trips = m.possiblePaths(source_airport.getCode(), target_airport.getCode(),2);
+            for(auto trip : trips){
+                for(auto flight : trip){
+                    cout << flight->getSource() << " -> " << flight->getTarget() << " -> " << flight->getAirline() << endl;
+                }
+            }
+        }
+    }
+
+
 }
 
 void menus::menu_pais(){
