@@ -384,6 +384,10 @@ int main(){
         cout << endl;
     }
 
+    for (auto el : m.reachableAirports("OPO", 1)) {
+        cout << el << endl;
+    }
+
     vector<MenuOption> options = {
             {"Sair", exit_action},
             {"Viajar", menu_viajar},
