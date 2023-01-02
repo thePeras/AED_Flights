@@ -321,7 +321,15 @@ int main(){
     m.findArticulationPoints("LIS", discovered, low, parent, articulationPoints, network);
     cout << endl << "Existem, ao todo, " << m.getAirports().size() << " aeroportos.";
     cout << endl << "Existem " << articulationPoints.size() << " aeroportos importantes (Pontos de articulação)." << endl;
-    cout << "A rede global possui " << m.getAirports().size() << " aeroportos e tem um diâmetro de " << m.getDiameter(m.getAirports()) << endl;
+    set<string> airlines = {"TAP", "EZY"};
+    for (auto el : m.possiblePaths("OPO", "GVA", 2, airlines)) {
+        for (auto el2 : el) {
+            cout << el2->getSource() << " -> " << el2->getTarget() << " | " << el2->getAirline() << endl;
+        }
+        cout << endl;
+    }
+
+
     vector<MenuOption> options = {
             {"Sair", exit_action},
             {"Viajar", menu_viajar},

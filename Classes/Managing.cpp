@@ -212,6 +212,46 @@ list<list<Flight *>> Managing::possiblePaths(string source, string target, int m
     return possiblePaths;
 }
 
+list<list<Flight*>> Managing::possiblePaths(string source, string target, int maxNumFlights, set<string>& consideredAirlines) {
+    list<list<Flight *>> paths;
+    unordered_map<string, bool> visited;
+
+    list<list<Flight *>> possiblePaths;
+
+    paths.push_back({});
+
+    while (!paths.empty()) {
+        list<Flight *> path = paths.front();
+
+        paths.pop_front();
+
+        string lastAirport = (path.empty()) ? source : path.back()->getTarget();
+
+        if (lastAirport == target) {
+            possiblePaths.push_back(path);
+            continue;
+        }
+
+        visited[lastAirport] = true;
+
+        Airport lastAirportObj = airports[lastAirport];
+
+        for (Flight *flight: lastAirportObj.getFlights()) {
+            if (consideredAirlines.find(flight->getAirline()) == consideredAirlines.end()) continue;
+            if (!visited[flight->getTarget()]) {
+                list<Flight *> newPath = path;
+                newPath.push_back(flight);
+
+                if (newPath.size() > maxNumFlights) continue;
+
+                paths.push_back(newPath);
+            }
+        }
+
+    }
+    return possiblePaths;
+}
+
 pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights) {
     list<list<Flight *>> paths;
     unordered_map<string, bool> visited;
