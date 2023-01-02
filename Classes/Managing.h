@@ -35,6 +35,8 @@ public:
 
     list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights);
 
+    list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights, set<string> &airlines);
+
     pair<string, int> mostDistantCountry(string source, int maxNumFlights);
 
     set<string> getArticulationPoints(unordered_map<string, Airport> &network, string source);
