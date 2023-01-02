@@ -376,20 +376,6 @@ int main(){
     //cout << endl << "Existem, ao todo, " << m.getAirports().size() << " aeroportos.";
     //cout << "A rede global possui " << m.getAirports().size() << " aeroportos e tem um diâmetro de " << m.getDiameter(m.getAirports()) << endl;
 
-    unordered_map<string, int> discovered;
-    unordered_map<string, int> low;
-    unordered_map<string, string> parent;
-    set<string> articulationPoints;
-
-    //initialize
-    for(auto it = m.getAirports().begin(); it != m.getAirports().end(); it++) {
-        discovered[it->first] = -1;
-        low[it->first] = -1;
-    }
-    unordered_map<string, Airport> network = m.getUndirectedAirlineNetwork("TAP");
-    m.findArticulationPoints("LIS", discovered, low, parent, articulationPoints, network);
-    cout << endl << "Existem, ao todo, " << m.getAirports().size() << " aeroportos.";
-    cout << endl << "Existem " << articulationPoints.size() << " aeroportos importantes (Pontos de articulação)." << endl;
     set<string> airlines = {"TAP", "EZY"};
     for (auto el : m.possiblePaths("OPO", "GVA", 2, airlines)) {
         for (auto el2 : el) {
@@ -397,7 +383,6 @@ int main(){
         }
         cout << endl;
     }
-
 
     vector<MenuOption> options = {
             {"Sair", exit_action},
