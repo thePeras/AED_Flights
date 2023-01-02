@@ -5,9 +5,6 @@
 
 class menus {
     private:
-        void back_action();
-        void back_and_empty_action();
-        void back_action_twice();
         void exit_action();
 
     public:
@@ -18,8 +15,8 @@ class menus {
         void menu_viajar(string title);
         void aeroporto_input();
         void menu_pais();
-        void menu_cidade(string country);
-        void menu_cidades(string country);
+        void menus_pais_cidades(string country);
+        void menu_cidade(string city, string country);
         void menu_coordenadas();
 
         //CONSULTAR AEROPORTO

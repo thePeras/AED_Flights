@@ -1,6 +1,5 @@
 #include "menus.h"
 #include <iostream>
-#include "MenuOption.h"
 #include "Managing.h"
 #include "Menu.h"
 #include <string>
@@ -214,45 +213,41 @@ void menus::menu_pais(){
     if(country_menu.optionIsSelected() && country_menu.getOption() == 0){
         string title = travel_source_airports.size() == 0 ? "De onde?" : "Para onde?";
         menu_viajar(title);
+        return;
     }
 
     string country = country_menu.getInput();
+    menus_pais_cidades(country);
+}
+
+void menus::menus_pais_cidades(string country){
+    vector<string> cities = m.getCountryCities().find(country)->second;
 
     vector<string> options_cities = {
             "Voltar",
-            "Selecionar todas as cidades",
-            "Selecionar uma cidade"
+            "Selecionar todas as cidades"
     };
 
-    Menu menu_escolha("Viajar - " + country, "Escolha uma opção", options_cities, {}, true, true);
+    Menu menu_escolha("Viajar - " + country, "Escolha uma opção", options_cities, cities, true, true);
     menu_escolha.render();
 
     if(menu_escolha.optionIsSelected()){
         switch (menu_escolha.getOption()) {
-            case 0: menu_pais(); break;
+            case 0: menu_pais(); return;
             case 1: {
                 vector<string> airports = m.getAirportsInCountry(country);
                 //TODO: Run the algorithm
-                break;
+                return;
             }
-            case 2: menu_cidade(country); break;
         }
     }
+
+    //selected a city
+    string city = menu_escolha.getInput();
+    menu_cidade(city, country);
 }
 
-void menus::menu_cidade(string country){
-    vector<string> options = {"Voltar"};
-
-    vector<string> cities = m.getCountryCities().find(country)->second;
-
-    Menu city_menu("Viajar - Cidade", "Escolha uma cidade", options, cities, true, true);
-    city_menu.render();
-
-    if(city_menu.optionIsSelected() && city_menu.getOption() == 0){
-        menu_pais();
-    }
-
-    string city = city_menu.getInput();
+void menus::menu_cidade(string city, string country){
     vector<string> airports = m.getAirportsInCity(city, country);
 
     if(airports.size() == 1){
@@ -260,11 +255,9 @@ void menus::menu_cidade(string country){
         //TODO: run the algorithm
     }
 
-    //TODO: Choose all city airports or one airport
     vector<string> airport_options = {
             "Voltar",
             "Selecionar todos os aeroportos",
-            "Selecionar um aeroporto em específico"
     };
 
     Menu menu_aeroporto("Viajar - Aeroporto", "Código do aeroporto", airport_options, airports, true, true);
@@ -272,15 +265,18 @@ void menus::menu_cidade(string country){
 
     if(menu_aeroporto.optionIsSelected()){
         switch (menu_aeroporto.getOption()) {
-            case 0: menu_cidade(country); break;
+            case 0: menus_pais_cidades(country); return;
             case 1: {
                 //TODO: run the algorithm with aiports vector
-                break;
+                return;
             }
-            case 2: //TODO: choose a unique airport
-            break;
         }
     }
+
+    string airport = menu_aeroporto.getInput();
+    Airport a = m.getAirports().find(airport)->second;
+
+    //TODO: run the algorithm with a
 }
 
 void menus::menu_coordenadas(){

@@ -70,10 +70,10 @@ void Menu::render(){
         if(listIndex > 0) cout << "\t" << options.size() + 1 << " - Página anterior" << endl;
     }
     cout << endl << inputText << ": ";
-    cin >> input;
+    getline(cin, input);
     while(inputIsInvalid(input) && validateInput) {
         cout << inputText << ": ";
-        cin >> input;
+        getline(cin, input);
     }
 
     this->input_value = input;
