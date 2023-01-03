@@ -27,6 +27,7 @@ class menus {
         //CONSULTAR REDE
         void consultar_rede();
         void consultar_rede_global();
-        void consultar_rede_companhia();
+        void digitar_companhia();
+        void consultar_rede_companhia(string airlineCode);
 
 };
