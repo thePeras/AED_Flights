@@ -33,10 +33,17 @@ menus::menus(){
 }
 
 void menus::mainMenu(){
-    // TODO: passar para o menu das redes
-    //cout << endl << "Existem, ao todo, " << m.getAirports().size() << " aeroportos.";
-    //cout << "A rede global possui " << m.getAirports().size() << " aeroportos e tem um diâmetro de " << m.getDiameter(m.getAirports()) << endl;
+    vector<string> airports = {"OPO", "LIS", "FAO"};
+    vector<string> targets = {"SYD", "MEB", "BNE", "PER"};
+    set<string> airlines= {"TAP", "UAE"};
+    for (auto el : m.possiblePaths(airports, targets, 3, airlines)) {
+        for (auto el2 : el) {
+            cout << el2->getSource() << " -> " << el2->getTarget() << " | " << el2->getAirline() << endl;
+        }
+        cout << endl;
+    }
 
+    /*
     set<string> airlines = {"TAP", "EZY"};
     for (auto el : m.possiblePaths("OPO", "GVA", 2, airlines)) {
         for (auto el2 : el) {
@@ -44,7 +51,7 @@ void menus::mainMenu(){
         }
         cout << endl;
     }
-
+    */
     vector<string> options = {
             "Sair",
             "Viajar",
@@ -55,6 +62,7 @@ void menus::mainMenu(){
 
     Menu MainMenu("Inicio", "Escolha uma opção", options, {}, true);
     MainMenu.render();
+
 
     if(MainMenu.optionIsSelected()){
         switch (MainMenu.getOption()) {
@@ -360,13 +368,17 @@ void menus::consultar_rede_global(){
     set<string> articulationPoints = m.getArticulationPoints(network, "OPO");
 
     stringstream line1;
-    line1 << "Existem " << articulationPoints.size() << " aeroportos importantes (Pontos de articulação)." << endl;
+    stringstream line2;
+    stringstream line3;
+    line1 << "Existem, ao todo, " << m.getAirports().size() << " aeroportos.";
+    line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação)." << endl;
+    line3 << "A rede global de aeroportos tem um diâmetro de " << m.getDiameter(m.getAirports()) << endl;
 
-    vector<string> text = {line1.str()};
+    vector<string> text = {line1.str(), line2.str(), line3.str()};
 
     vector<string> options = {"Voltar"};
 
-    Menu consultar_rede_global("Consultar rede global", "opção", options, text, false, true);
+    Menu consultar_rede_global("Consultar rede global", "opção", options, text, false, true, 1);
     consultar_rede_global.render();
 
     if(consultar_rede_global.optionIsSelected() && consultar_rede_global.getOption() == 0){
