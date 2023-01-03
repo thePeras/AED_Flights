@@ -33,7 +33,17 @@ menus::menus(){
 }
 
 void menus::mainMenu(){
+    vector<string> airports = {"OPO", "LIS", "FAO"};
+    vector<string> targets = {"SYD", "MEB", "BNE", "PER"};
+    set<string> airlines= {"TAP", "UAE"};
+    for (auto el : m.possiblePaths(airports, targets, 3, airlines)) {
+        for (auto el2 : el) {
+            cout << el2->getSource() << " -> " << el2->getTarget() << " | " << el2->getAirline() << endl;
+        }
+        cout << endl;
+    }
 
+    /*
     set<string> airlines = {"TAP", "EZY"};
     for (auto el : m.possiblePaths("OPO", "GVA", 2, airlines)) {
         for (auto el2 : el) {
@@ -41,7 +51,7 @@ void menus::mainMenu(){
         }
         cout << endl;
     }
-
+    */
     vector<string> options = {
             "Sair",
             "Viajar",
@@ -52,6 +62,7 @@ void menus::mainMenu(){
 
     Menu MainMenu("Inicio", "Escolha uma opção", options, {}, true);
     MainMenu.render();
+
 
     if(MainMenu.optionIsSelected()){
         switch (MainMenu.getOption()) {
