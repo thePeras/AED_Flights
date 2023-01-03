@@ -59,6 +59,7 @@ bool Menu::inputIsInvalid(string input){
         if(isToPrintList and list.size() > nLines * nColumns and inputInt >= 0 and inputInt <= options.size()) return false;
         if(isToPrintList and list.size() > nLines * nColumns and inputInt >= 0 and listIndex > 0 and inputInt <= options.size() + 1) return false;
         if(inputInt >= 0 and inputInt < options.size()) return false;
+        return find(list.begin(), list.end(), input) == list.end();
     }catch (exception e){
         return find(list.begin(), list.end(), input) == list.end();
     }

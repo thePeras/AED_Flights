@@ -29,4 +29,11 @@ class menus {
         void consultar_rede_global();
         void consultar_rede_companhia();
 
+    void menu_results();
+
+    void menu_filtrar();
+
+    void menu_companhias();
+
+    void menu_escala();
 };
