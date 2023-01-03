@@ -378,36 +378,87 @@ void Managing::findArticulationPoints(
     }
 }
 
-int Managing::getDiameter(const unordered_map<string, Airport>& graph) {
+int Managing::bfs(string code, unordered_map<string, bool> visited, unordered_map<string, int> distances, const unordered_map<string, Airport> &graph) {
+    int diameter = 0;
+    queue<string> q;
+    q.push(code);
+    visited[code] = true;
+    distances[code] = 0;
+
+    while (!q.empty()) {
+        string current = q.front();
+        q.pop();
+
+        for (Flight* flight : graph.find(current)->second.getFlights()) {
+            string w = flight->getTarget();
+            if (!visited[w]) {
+                q.push(w);
+                visited[w] = true;
+                distances[w] = distances[current] + 1;
+                diameter = max(diameter, distances[w]);
+            }
+        }
+    }
+    return diameter;
+}
+
+int Managing::getDiameter(const unordered_map<string, Airport>& graph, bool precise) {
     int diameter = 0;
     unordered_map<string, bool> visited;
     unordered_map<string, int> distances;
+    int k = 0;
 
     for (auto& [code, airport] : graph) {
-        for (auto& [code, airport] : graph) {
-            visited[code] = false;
-            distances[code] = -1;
-        }
+        visited[code] = false;
+        distances[code] = -1;
+    }
 
-        queue<string> q;
-        q.push(code);
-        visited[code] = true;
-        distances[code] = 0;
+    for (auto& [code, airport] : graph) {
+        diameter = max(bfs(code, visited, distances, graph), diameter);
+        if(!precise and k++ == 12) break;
+    }
+    return diameter;
+}
 
-        while (!q.empty()) {
-            string current = q.front();
-            q.pop();
+double Managing::dijkstra(string code, unordered_map<string, bool> visited, unordered_map<string, double> distances, const unordered_map<string, Airport> &graph) {
+    double diameter = 0;
+    queue<string> q;
+    q.push(code);
+    visited[code] = true;
+    distances[code] = 0;
 
-            for (Flight* flight : graph.find(current)->second.getFlights()) {
-                string w = flight->getTarget();
-                if (!visited[w]) {
-                    q.push(w);
-                    visited[w] = true;
-                    distances[w] = distances[current] + 1;
-                    diameter = max(diameter, distances[w]);
-                }
+    while (!q.empty()) {
+        string current = q.front();
+        q.pop();
+
+        for (Flight* flight : graph.find(current)->second.getFlights()) {
+            string w = flight->getTarget();
+            if (!visited[w]) {
+                q.push(w);
+                visited[w] = true;
+                distances[w] = distances[current] + flight->getDistance();
+                diameter = max(diameter, distances[w]);
             }
         }
+    }
+
+    return diameter;
+}
+
+double Managing::getWeightedDiameter(const unordered_map<std::string, Airport> &graph, bool precise) {
+    double diameter = 0;
+    unordered_map<string, bool> visited;
+    unordered_map<string, double> distances;
+    int k = 0;
+
+    for (auto& [code, airport] : graph) {
+        visited[code] = false;
+        distances[code] = -1;
+    }
+
+    for (auto& [code, airport] : graph) {
+        diameter = max(dijkstra(code, visited, distances, graph), diameter);
+        if(!precise and k++ == 14) break;
     }
     return diameter;
 }

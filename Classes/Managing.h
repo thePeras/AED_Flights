@@ -44,7 +44,10 @@ public:
     set<string> getArticulationPoints(unordered_map<string, Airport> &network, string source);
     void findArticulationPoints(string source, unordered_map<string, int> &disc, unordered_map<string, int> &low, unordered_map<string, string> &parent, set<string> &articulationPoints, unordered_map<string, Airport> &network);
 
-    int getDiameter(const unordered_map<string, Airport> &graph);
+    int getDiameter(const unordered_map<string, Airport> &graph, bool precise);
+    int bfs(string code, unordered_map<string, bool> visited, unordered_map<string, int> distances, const unordered_map<string, Airport> &graph);
+    double getWeightedDiameter(const unordered_map<string, Airport> &graph, bool precise);
+    double dijkstra(string code, unordered_map<string, bool> visited, unordered_map<string, double> distances, const unordered_map<string, Airport> &graph);
 
 private:
     void readAirlines();
