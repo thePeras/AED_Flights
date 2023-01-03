@@ -157,7 +157,7 @@ void menus::menu_viajar(string title){
             "Coordenadas"
     };
 
-    Menu menu_viajar("Viajar - " + title, title, options, {});
+    Menu menu_viajar("Viajar - " + title, "opção: ", options, {});
     menu_viajar.render();
 
     if(menu_viajar.optionIsSelected()){
@@ -179,7 +179,7 @@ void menus::aeroporto_input(){
     }
     sort(airports.begin(), airports.end());
 
-    Menu menu_aeroporto_input("Aeroporto", "digite o código do aeroporto: ", options, airports, true, true, 10);
+    Menu menu_aeroporto_input("Viajar - Aeroporto", "digite o código do aeroporto: ", options, airports, true, true, 10);
     menu_aeroporto_input.render();
 
     if(menu_aeroporto_input.optionIsSelected() && menu_aeroporto_input.getOption() == 0){
@@ -279,7 +279,7 @@ void menus::menu_cidade(string city, string country){
 void menus::menu_coordenadas(){
     vector<string> options_viajar = {"Voltar"};
 
-    Menu menu_latitude("Viajar", "latitude", options_viajar);
+    Menu menu_latitude("Viajar - Coordenadas", "latitude", options_viajar);
     menu_latitude.render();
 
     if(menu_latitude.optionIsSelected() && menu_latitude.getOption() == 0){
@@ -326,7 +326,7 @@ void menus::consultar_rede(){
         switch (consultar_rede.getOption()) {
             case 0: mainMenu(); break;
             case 1: consultar_rede_global(); break;
-            case 2: consultar_rede_companhia(); break;
+            case 2: digitar_companhia(); break;
         }
     }
 }
@@ -340,10 +340,10 @@ void menus::consultar_rede_global(){
     stringstream line2;
     stringstream line3;
     stringstream line4;
-    line1 << "Existem, ao todo, " << m.getAirports().size() << " aeroportos.";
+    line1 << "Existem ao todo, " << m.getAirports().size() << " aeroportos.";
     line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
-    line3 << "A rede global de aeroportos tem um diâmetro aproximadamente de " << m.getDiameter(m.getAirports(), false) << " aeroportos";
-    line4 << "O diâmetro em kms é de aproximadamente " << m.getWeightedDiameter(m.getAirports(), false) << " kms";
+    line3 << "A rede global de aeroportos tem um diâmetro aproximadamente de " << m.getDiameter(m.getAirports(), false) << " aeroportos.";
+    line4 << "O diâmetro em kms é de aproximadamente " << m.getWeightedDiameter(m.getAirports(), false) << " kms.";
 
     vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str()};
 
@@ -353,7 +353,7 @@ void menus::consultar_rede_global(){
             "Consultar diâmetro preciso em kms"
     };
 
-    Menu global_network("Consultar rede global", "opção", options, text, false, true, 1);
+    Menu global_network("Rede global", "opção", options, text, false, true, 1);
     global_network.render();
 
     vector<string> voltar_options = {"Voltar"};
@@ -379,7 +379,7 @@ void menus::consultar_rede_global(){
     }
 }
 
-void menus::consultar_rede_companhia(){
+void menus::digitar_companhia() {
     vector<string> options = {"Voltar"};
 
     vector<string> airlines;
@@ -393,24 +393,56 @@ void menus::consultar_rede_companhia(){
     if(airlines_menu.optionIsSelected() && airlines_menu.getOption() == 0){
         consultar_rede();
     }
-
     string airlineCode = airlines_menu.getInput();
+    consultar_rede_companhia(airlineCode);
+}
+
+void menus::consultar_rede_companhia(string airlineCode){
+
     Airline airline = m.getAirlines().find(airlineCode)->second;
-    unordered_map<string, Airport> network = m.getUndirectedAirlineNetwork(airlineCode);
+    unordered_map<string, Airport> network = m.getAirlineNetwork(airlineCode, false);
     set<string> articulationPoints = m.getArticulationPoints(network, airline.getFlights()[0]->getSource());
 
     stringstream line1;
-    line1 << "Esta companhia area tem " << articulationPoints.size() << " aeroportos importantes (Pontos de articulação)." << endl;
+    stringstream line2;
+    stringstream line3;
+    stringstream line4;
+    line1 << "A rede desta companhia area tem " << airline.getAirports().size() << " aeroportos.";
+    line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
+    line3 << "O diâmetro da rede é de aproximadamente " << m.getDiameter(network, false) << " aeroportos";
+    line4 << "Em kms, o diâmetro é de aproximadamente " << m.getWeightedDiameter(network, false) << " kms";
 
-    vector<string> text = {line1.str()};
+    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str()};
 
-    vector<string> options2 = {"Voltar"};
+    vector<string> options2 = {
+            "Voltar",
+            "Consultar diâmetro preciso de aeroportos",
+            "Consultar diâmetro preciso em kms"
+    };
 
-    Menu airline_menu("Rede " + airline.getName(), "opção", options2, text, false, true);
+    Menu airline_menu("Rede " + airline.getName(), "opção", options2, text, false, true, 1);
     airline_menu.render();
 
-    if(airline_menu.optionIsSelected() && airline_menu.getOption() == 0){
-        consultar_rede_companhia();
+    vector<string> voltar_options = {"Voltar"};
+
+    if(airline_menu.optionIsSelected()){
+        switch (airline_menu.getOption()) {
+            case 0: consultar_rede(); break;
+            case 1: {
+                string menutext = "O diametro preciso é de " + to_string(m.getDiameter(network, true)) + " aeroportos.";
+                Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "opção:", voltar_options, {menutext}, false, true, 1);
+                precise_diameter.render();
+                consultar_rede_companhia(airlineCode);
+                break;
+            }
+            case 2: {
+                string menutext = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(network, true)) + " kms.";
+                Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "opção:", voltar_options, {menutext}, false, true, 1);
+                precise_diameter.render();
+                consultar_rede_companhia(airlineCode);
+                break;
+            };
+        }
     }
 }
 

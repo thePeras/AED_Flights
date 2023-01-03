@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Flight.h"
+#include "Airport.h"
 #include <string>
 #include <vector>
+#include <set>
 
 using namespace std;
 
@@ -13,6 +15,7 @@ class Airline {
     string callSign;
     string country;
     vector<Flight*> flights;
+    set<string> airports;
 
     public:
     Airline(){
@@ -21,6 +24,7 @@ class Airline {
         callSign = "";
         country = "";
         flights = {};
+        airports = {};
     }
 
     Airline(string code, string name, string callSign, string country){
@@ -29,6 +33,7 @@ class Airline {
         this->callSign = callSign;
         this->country = country;
         this->flights = {};
+        this->airports = {};
     }
 
     const string &getCode() const {
@@ -69,6 +74,14 @@ class Airline {
 
     vector<Flight*> getFlights(){
         return flights;
+    }
+
+    void addAirport(string airport){
+        airports.insert(airport);
+    }
+
+    set<string> getAirports(){
+        return airports;
     }
 };
 

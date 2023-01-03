@@ -95,6 +95,8 @@ void Managing::readFlights() {
         Flight *flight = new Flight(origin, destination, airline, distance);
 
         airlines[airline].addFlight(flight);
+        airlines[airline].addAirport(origin);
+        airlines[airline].addAirport(destination);
 
         //direct graph
         airports[origin].addFlight(flight);
@@ -151,26 +153,27 @@ vector<string> Managing::getAirportsInCountry(string country) {
 unordered_map<string, Airport> Managing::getUndirectedGlobalNetwork() {
     return undirectedGlobalNetwork;
 }
-unordered_map<string, Airport> Managing::getUndirectedAirlineNetwork(string airlineCode){
-    unordered_map<string, Airport> newUndirectedNetwork;
+unordered_map<string, Airport> Managing::getAirlineNetwork(string airlineCode, bool directed) {
+    unordered_map<string, Airport> newNetwork;
 
-    //Creating new airports
-    for(auto& [code, airport] : airports){
-        Airport newAirport = Airport(code, airport.getName(), airport.getCity(), airport.getCountry(), airport.getLocation());
-        newUndirectedNetwork[code] = newAirport;
+    //setting up the airports
+    for(string airportCode : airlines[airlineCode].getAirports()){
+        Airport airport = Airport(airportCode, airports[airportCode].getName(), airports[airportCode].getCity(), airports[airportCode].getCountry(), airports[airportCode].getLocation());
+        newNetwork[airportCode] = airport;
     }
 
     Airline airline = airlines[airlineCode];
 
+    //adding all the flights
     for (Flight* flight : airline.getFlights()) {
         string source = flight->getSource();
         string target = flight->getTarget();
 
-        newUndirectedNetwork[source].addFlight(flight);
-        newUndirectedNetwork[target].addFlight(flight);
+        newNetwork[source].addFlight(flight);
+        if(!directed) newNetwork[target].addFlight(flight);
     }
 
-    return newUndirectedNetwork;
+    return newNetwork;
 }
 
 list<list<Flight *>> Managing::possiblePaths(string source, string target, int maxNumFlights) {
