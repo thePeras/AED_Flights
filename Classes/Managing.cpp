@@ -535,4 +535,23 @@ double Managing::getWeightedDiameter(const unordered_map<std::string, Airport> &
     return diameter;
 }
 
+int Managing::getDirectDestinationsNumber(string source) {
+    set<string> destinations;
+    for (Flight* flight : airports[source].getFlights()) {
+        destinations.insert(flight->getTarget());
+    }
+    return destinations.size();
+}
+
+vector<pair<string, int>> Managing::getTopAirports(int n) {
+    vector<pair<string,int>> topAirports;
+    for (auto &airport : airports) {
+        topAirports.push_back(make_pair(airport.first, getDirectDestinationsNumber(airport.first)));
+    }
+    sort(topAirports.begin(), topAirports.end(), [](const pair<string, int> &a, const pair<string, int> &b) {
+        return a.second > b.second;
+    });
+    return vector<pair<string, int>>(topAirports.begin(), topAirports.begin() + n);
+}
+
 
