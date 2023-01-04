@@ -535,4 +535,34 @@ double Managing::getWeightedDiameter(const unordered_map<std::string, Airport> &
     return diameter;
 }
 
+void Managing::dfs(string code, unordered_map<string, bool> &visited, const unordered_map<string, Airport> &graph) {
+    visited[code] = true;
+
+    for (Flight* flight : graph.find(code)->second.getFlights()) {
+        string w = flight->getTarget();
+        if (!visited[w]) {
+            dfs(w, visited, graph);
+        }
+    }
+}
+
+int Managing::numberOfComponents(unordered_map<string, Airport> & network){
+    unordered_map<string, bool> visited;
+
+    for(auto it = network.begin(); it != network.end(); it++){
+        visited[it->first] = false;
+    }
+
+    int nComponents = 0;
+
+    for(auto it = network.begin(); it != network.end(); it++){
+        if(!visited[it->first]){
+            nComponents++;
+            dfs(it->first, visited, network);
+        }
+    }
+
+    return nComponents;
+}
+
 

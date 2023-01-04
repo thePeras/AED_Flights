@@ -372,12 +372,15 @@ void menus::consultar_rede_global(){
     stringstream line2;
     stringstream line3;
     stringstream line4;
+    stringstream line5;
     line1 << "Existem ao todo, " << m.getAirports().size() << " aeroportos.";
     line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
     line3 << "A rede global de aeroportos tem um diâmetro aproximadamente de " << m.getDiameter(m.getAirports(), false) << " aeroportos.";
     line4 << "O diâmetro em kms é de aproximadamente " << m.getWeightedDiameter(m.getAirports(), false) << " kms.";
+    int numberOfComponents = m.numberOfComponents(network);
+    line5 << "A rede global tem " << numberOfComponents << " componentes conexos.";
 
-    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str()};
+    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str()};
 
     vector<string> options = {
             "Voltar",
@@ -385,7 +388,7 @@ void menus::consultar_rede_global(){
             "Consultar diâmetro preciso em kms"
     };
 
-    Menu global_network("Rede global", "opção", options, text, false, true, 1);
+    Menu global_network("Rede global", "opção", options, text, true, true, 1);
     global_network.render();
 
     vector<string> voltar_options = {"Voltar"};
@@ -394,15 +397,15 @@ void menus::consultar_rede_global(){
         switch (global_network.getOption()) {
             case 0: consultar_rede(); break;
             case 1: {
-                string text = "O diametro preciso é de " + to_string(m.getDiameter(m.getAirports(), true)) + " aeroportos.";
-                Menu precise_diameter("Diâmetro preciso - Rede Global", "opção:", voltar_options, {text}, false, true, 1);
+                string menu_text = "O diametro preciso é de " + to_string(m.getDiameter(m.getAirports(), true)) + " aeroportos.";
+                Menu precise_diameter("Diâmetro preciso - Rede Global", "opção:", voltar_options, {menu_text}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_global();
                 break;
             }
             case 2: {
-                string text = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(m.getAirports(), true)) + " kms.";
-                Menu precise_diameter("Diâmetro preciso - Rede Global", "opção:", voltar_options, {text}, false, true, 1);
+                string menu_text = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(m.getAirports(), true)) + " kms.";
+                Menu precise_diameter("Diâmetro preciso - Rede Global", "opção:", voltar_options, {menu_text}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_global();
                 break;
@@ -439,12 +442,17 @@ void menus::consultar_rede_companhia(string airlineCode){
     stringstream line2;
     stringstream line3;
     stringstream line4;
+    stringstream line5;
     line1 << "A rede desta companhia area tem " << airline.getAirports().size() << " aeroportos.";
     line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
-    line3 << "O diâmetro da rede é de aproximadamente " << m.getDiameter(network, false) << " aeroportos";
-    line4 << "Em kms, o diâmetro é de aproximadamente " << m.getWeightedDiameter(network, false) << " kms";
+    line3 << "O diâmetro da rede é de aproximadamente " << m.getDiameter(network, false) << " aeroportos.";
+    line4 << "Em kms, o diâmetro é de aproximadamente " << m.getWeightedDiameter(network, false) << " kms.";
+    int numberOfComponents = m.numberOfComponents(network);
+    line5 << "A companhia tem " << numberOfComponents << " componente";
+    if(numberOfComponents > 1) line5 << "s.";
 
-    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str()};
+
+    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str()};
 
     vector<string> options2 = {
             "Voltar",

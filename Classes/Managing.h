@@ -52,6 +52,8 @@ public:
     int bfs(string code, unordered_map<string, bool> visited, unordered_map<string, int> distances, const unordered_map<string, Airport> &graph);
     double getWeightedDiameter(const unordered_map<string, Airport> &graph, bool precise);
     double dijkstra(string code, unordered_map<string, bool> visited, unordered_map<string, double> distances, const unordered_map<string, Airport> &graph);
+    void dfs(string code, unordered_map<string, bool> &visited, const unordered_map<string, Airport> &graph);
+    int numberOfComponents(unordered_map<string, Airport> & network);
 
 private:
     void readAirlines();
