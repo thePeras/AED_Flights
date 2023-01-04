@@ -46,14 +46,22 @@ public:
     pair<string, int> mostDistantCountry(string source, int maxNumFlights);
 
     set<string> getArticulationPoints(unordered_map<string, Airport> &network, string source);
+
     void findArticulationPoints(string source, unordered_map<string, int> &disc, unordered_map<string, int> &low, unordered_map<string, string> &parent, set<string> &articulationPoints, unordered_map<string, Airport> &network);
 
     int getDiameter(const unordered_map<string, Airport> &graph, bool precise);
+
     int bfs(string code, unordered_map<string, bool> visited, unordered_map<string, int> distances, const unordered_map<string, Airport> &graph);
+
     double getWeightedDiameter(const unordered_map<string, Airport> &graph, bool precise);
+
     double dijkstra(string code, unordered_map<string, bool> visited, unordered_map<string, double> distances, const unordered_map<string, Airport> &graph);
     void dfs(string code, unordered_map<string, bool> &visited, const unordered_map<string, Airport> &graph);
     int numberOfComponents(unordered_map<string, Airport> & network);
+
+    int getDirectDestinationsNumber(string source);
+
+    vector<pair<string,int>> getTopAirports(int n); // top aeroportos que permitem chegar a um maior número de destinos diferentes com um voo (dois aeroportos diferentes são considerados dois destinos diferentes)
 
 private:
     void readAirlines();
