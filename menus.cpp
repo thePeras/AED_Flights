@@ -382,7 +382,8 @@ void menus::consultar_rede_global(){
 
     vector<string> options = {
             "Voltar",
-            "Ver aeroportos importantes",
+            "Ver todo os aeroportos",
+            "Ver somente os aeroportos importantes",
             "Consultar diâmetro preciso de aeroportos",
             "Consultar diâmetro preciso em kms"
     };
@@ -396,6 +397,19 @@ void menus::consultar_rede_global(){
         switch (global_network.getOption()) {
             case 0: consultar_rede(); break;
             case 1: {
+                vector<string> airports;
+                for(auto pair : m.getAirports()){
+                    stringstream line;
+                    Airport airport = pair.second;
+                    line << airport.getCode() << " - " << airport.getName() << " - " << airport.getCity() << " - " << airport.getCountry();
+                    airports.push_back(line.str());
+                }
+                Menu important_airports_menu("Aeroportos - Rede Global", "opção", voltar_options, airports, false, true, 1);
+                important_airports_menu.render();
+                consultar_rede_global();
+                break;
+            }
+            case 2: {
                 vector<string> important_airports;
                 for(string airportCode : articulationPoints){
                     Airport airport = m.getAirports().find(airportCode)->second;
@@ -408,14 +422,14 @@ void menus::consultar_rede_global(){
                 consultar_rede_global();
                 break;
             }
-            case 2: {
+            case 3: {
                 string menu_text = "O diametro preciso é de " + to_string(m.getDiameter(m.getAirports(), true)) + " aeroportos.";
                 Menu precise_diameter("Diâmetro preciso - Rede Global", "opção:", voltar_options, {menu_text}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_global();
                 break;
             }
-            case 3: {
+            case 4: {
                 string menu_text = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(m.getAirports(), true)) + " kms.";
                 Menu precise_diameter("Diâmetro preciso - Rede Global", "opção:", voltar_options, {menu_text}, false, true, 1);
                 precise_diameter.render();
@@ -468,7 +482,8 @@ void menus::consultar_rede_companhia(string airlineCode){
 
     vector<string> options2 = {
             "Voltar",
-            "Ver aeroportos importantes",
+            "Ver todos os aeroportos",
+            "Ver somente aeroportos importantes",
             "Consultar diâmetro preciso de aeroportos",
             "Consultar diâmetro preciso em kms"
     };
@@ -482,6 +497,19 @@ void menus::consultar_rede_companhia(string airlineCode){
         switch (airline_menu.getOption()) {
             case 0: consultar_rede(); break;
             case 1: {
+                vector<string> airports;
+                for(string airportCode : airline.getAirports()){
+                    Airport airport = m.getAirports().find(airportCode)->second;
+                    stringstream line;
+                    line << airport.getCode() << " - " << airport.getName() << " - " << airport.getCity() << " - " << airport.getCountry();
+                    airports.push_back(line.str());
+                }
+                Menu important_airports_menu("Aeroportos - " + airlineCode, "opção", voltar_options, airports, false, true, 1);
+                important_airports_menu.render();
+                consultar_rede_companhia(airlineCode);
+                break;
+            }
+            case 2: {
                 vector<string> important_airports;
                 for(string airportCode : articulationPoints){
                     Airport airport = m.getAirports().find(airportCode)->second;
@@ -494,14 +522,14 @@ void menus::consultar_rede_companhia(string airlineCode){
                 consultar_rede_companhia(airlineCode);
                 break;
             }
-            case 2: {
+            case 3: {
                 string menutext = "O diametro preciso é de " + to_string(m.getDiameter(network, true)) + " aeroportos.";
                 Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "opção:", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_companhia(airlineCode);
                 break;
             }
-            case 3: {
+            case 4: {
                 string menutext = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(network, true)) + " kms.";
                 Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "opção:", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
