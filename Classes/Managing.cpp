@@ -156,15 +156,13 @@ unordered_map<string, Airport> Managing::getUndirectedGlobalNetwork() {
 unordered_map<string, Airport> Managing::getAirlineNetwork(string airlineCode, bool directed) {
     unordered_map<string, Airport> newNetwork;
 
-    //setting up the airports
-    for(string airportCode : airlines[airlineCode].getAirports()){
+    Airline airline = airlines[airlineCode];
+
+    for(string airportCode : airline.getAirports()){
         Airport airport = Airport(airportCode, airports[airportCode].getName(), airports[airportCode].getCity(), airports[airportCode].getCountry(), airports[airportCode].getLocation());
         newNetwork[airportCode] = airport;
     }
 
-    Airline airline = airlines[airlineCode];
-
-    //adding all the flights
     for (Flight* flight : airline.getFlights()) {
         string source = flight->getSource();
         string target = flight->getTarget();
@@ -396,24 +394,27 @@ pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights)
     return make_pair(country, flightsNeeded);
 }
 
-set<string> Managing::getArticulationPoints(unordered_map<string, Airport> &network, string source){
+set<string> Managing::getArticulationPoints(unordered_map<string, Airport> &network){
     unordered_map<string, int> discovered;
     unordered_map<string, int> low;
     unordered_map<string, string> parent;
     set<string> articulationPoints;
 
-    for(auto it = getAirports().begin(); it != getAirports().end(); it++) {
-        discovered[it->first] = -1;
-        low[it->first] = -1;
+    for (auto &node : network){
+        discovered[node.first] = -1;
+        low[node.first] = -1;
     }
 
-    findArticulationPoints(source, discovered, low, parent, articulationPoints, network);
+    for (auto &node : network){
+        if(discovered[node.first] == -1){
+            findArticulationPoints(node.first, discovered, low, parent, articulationPoints, network);
+        }
+    }
 
     return articulationPoints;
 }
 
 //tarjan's algorithm
-//!! o source tem de ser um Aeroporto com voos (ou seja, pertencer à rede)
 void Managing::findArticulationPoints(
         string source, unordered_map<string, int> &discovered, unordered_map<string, int> &low,
         unordered_map<string, string> &parent, set<string> &articulationPoints, unordered_map<string, Airport> &network) {
@@ -546,31 +547,33 @@ void Managing::dfs(string code, unordered_map<string, bool> &visited, const unor
     }
 }
 
-int Managing::numberOfComponents(unordered_map<string, Airport> & network){
+int Managing::numberOfComponents(unordered_map<string, Airport>& network) {
     unordered_map<string, bool> visited;
 
-    for(auto it = network.begin(); it != network.end(); it++){
+    for (auto it = network.begin(); it != network.end(); it++) {
         visited[it->first] = false;
     }
 
     int nComponents = 0;
 
-    for(auto it = network.begin(); it != network.end(); it++){
-        if(!visited[it->first]){
+    for (auto it = network.begin(); it != network.end(); it++) {
+        if (!visited[it->first]) {
             nComponents++;
             dfs(it->first, visited, network);
         }
     }
 
     return nComponents;
+}
 
 int Managing::getDirectDestinationsNumber(string source) {
     set<string> destinations;
-    for (Flight* flight : airports[source].getFlights()) {
+    for (Flight *flight: airports[source].getFlights()) {
         destinations.insert(flight->getTarget());
     }
     return destinations.size();
 }
+
 
 vector<pair<string, int>> Managing::getTopAirports(int n) {
     vector<pair<string,int>> topAirports;

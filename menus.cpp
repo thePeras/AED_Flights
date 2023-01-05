@@ -114,7 +114,6 @@ void menus::consultar_aeroporto(Airport& airport){
             "Informação sobre os voos",
             "Ver destinos diretos",
             "Ver destinos com X voos",
-            "ideia: Ver destinos a X kms"
     };
 
     stringstream curiosity1;
@@ -146,7 +145,6 @@ void menus::consultar_aeroporto(Airport& airport){
             case 1: voos_aeroporto(airport); break;
             case 2: cout << "Ver destinos diretos ainda por fazer" << endl; break;
             case 3: cout << "Ver destinos com X voos ainda por fazer" << endl; break;
-            case 4: cout << "Ver destinos a X kms ainda por fazer" << endl; break;
         }
     }
 }
@@ -351,7 +349,7 @@ void menus::consultar_rede(){
             "Rede de uma companhia"
     };
 
-    Menu consultar_rede("Consultar rede", "opção", options, {});
+    Menu consultar_rede("Consultar rede", "opção", options, {}, true);
     consultar_rede.render();
 
     if(consultar_rede.optionIsSelected()){
@@ -366,7 +364,7 @@ void menus::consultar_rede(){
 void menus::consultar_rede_global(){
     unordered_map<string, Airport> network = m.getUndirectedGlobalNetwork();
 
-    set<string> articulationPoints = m.getArticulationPoints(network, "OPO");
+    set<string> articulationPoints = m.getArticulationPoints(network);
 
     stringstream line1;
     stringstream line2;
@@ -384,6 +382,7 @@ void menus::consultar_rede_global(){
 
     vector<string> options = {
             "Voltar",
+            "Ver aeroportos importantes",
             "Consultar diâmetro preciso de aeroportos",
             "Consultar diâmetro preciso em kms"
     };
@@ -397,13 +396,26 @@ void menus::consultar_rede_global(){
         switch (global_network.getOption()) {
             case 0: consultar_rede(); break;
             case 1: {
+                vector<string> important_airports;
+                for(string airportCode : articulationPoints){
+                    Airport airport = m.getAirports().find(airportCode)->second;
+                    stringstream line;
+                    line << airport.getCode() << " - " << airport.getName() << " - " << airport.getCity() << " - " << airport.getCountry();
+                    important_airports.push_back(line.str());
+                }
+                Menu important_airports_menu("Aeroportos importantes - Rede global", "opção", voltar_options, important_airports, false, true, 1);
+                important_airports_menu.render();
+                consultar_rede_global();
+                break;
+            }
+            case 2: {
                 string menu_text = "O diametro preciso é de " + to_string(m.getDiameter(m.getAirports(), true)) + " aeroportos.";
                 Menu precise_diameter("Diâmetro preciso - Rede Global", "opção:", voltar_options, {menu_text}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_global();
                 break;
             }
-            case 2: {
+            case 3: {
                 string menu_text = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(m.getAirports(), true)) + " kms.";
                 Menu precise_diameter("Diâmetro preciso - Rede Global", "opção:", voltar_options, {menu_text}, false, true, 1);
                 precise_diameter.render();
@@ -436,7 +448,7 @@ void menus::consultar_rede_companhia(string airlineCode){
 
     Airline airline = m.getAirlines().find(airlineCode)->second;
     unordered_map<string, Airport> network = m.getAirlineNetwork(airlineCode, false);
-    set<string> articulationPoints = m.getArticulationPoints(network, airline.getFlights()[0]->getSource());
+    set<string> articulationPoints = m.getArticulationPoints(network);
 
     stringstream line1;
     stringstream line2;
@@ -456,6 +468,7 @@ void menus::consultar_rede_companhia(string airlineCode){
 
     vector<string> options2 = {
             "Voltar",
+            "Ver aeroportos importantes",
             "Consultar diâmetro preciso de aeroportos",
             "Consultar diâmetro preciso em kms"
     };
@@ -469,13 +482,26 @@ void menus::consultar_rede_companhia(string airlineCode){
         switch (airline_menu.getOption()) {
             case 0: consultar_rede(); break;
             case 1: {
+                vector<string> important_airports;
+                for(string airportCode : articulationPoints){
+                    Airport airport = m.getAirports().find(airportCode)->second;
+                    stringstream line;
+                    line << airport.getCode() << " - " << airport.getName() << " - " << airport.getCity() << " - " << airport.getCountry();
+                    important_airports.push_back(line.str());
+                }
+                Menu important_airports_menu("Aeroportos importantes - " + airlineCode, "opção", voltar_options, important_airports, false, true, 1);
+                important_airports_menu.render();
+                consultar_rede_companhia(airlineCode);
+                break;
+            }
+            case 2: {
                 string menutext = "O diametro preciso é de " + to_string(m.getDiameter(network, true)) + " aeroportos.";
                 Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "opção:", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_companhia(airlineCode);
                 break;
             }
-            case 2: {
+            case 3: {
                 string menutext = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(network, true)) + " kms.";
                 Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "opção:", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
