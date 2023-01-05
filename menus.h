@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stack>
 #include "Airport.h"
 
 class menus {
@@ -32,11 +31,9 @@ class menus {
         void digitar_pais();
         void consultar_rede_pais(string country);
 
-    void menu_results();
 
-    void menu_filtrar();
-
-    void menu_companhias();
-
-    void menu_escala();
+        void menu_results();
+        void menu_filtrar();
+        void menu_companhias();
+        void menu_escala();
 };

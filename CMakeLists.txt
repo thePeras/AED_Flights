@@ -21,4 +21,4 @@ add_executable(AED_Aeroportos
         main.cpp
         menus.cpp
         menus.h
-        Menu.h Validate.h)
+        Classes/Menu.h Validate.h Classes/Menu.cpp)
