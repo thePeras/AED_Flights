@@ -43,10 +43,10 @@ void Menu::render(){
         cout << "\t" << options.size() << " - Próxima página" << endl;
         if(listIndex > 0) cout << "\t" << options.size() + 1 << " - Página anterior" << endl;
     }
-    cout << endl << inputText << ": ";
+    cout << endl << inputText;
     getline(cin, input);
     while(inputIsInvalid(input) && validateInput) {
-        cout << inputText << ": ";
+        cout << inputText;
         getline(cin, input);
     }
 

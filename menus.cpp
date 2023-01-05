@@ -69,7 +69,7 @@ void menus::mainMenu(){
             "Os meus bilhetes"
     };
 
-    Menu MainMenu("Inicio", "Escolha uma opção", options, {}, true);
+    Menu MainMenu("Inicio", "Escolha uma opção: ", options, {}, true);
     MainMenu.render();
 
 
@@ -96,14 +96,14 @@ void menus::digitar_aeroporto(){
 
     sort(airports.begin(), airports.end());
 
-    Menu digitar_aeroporto("Consultar aeroporto", "código do aeroporto: ", options, airports, true, true, 10);
-    digitar_aeroporto.render();
+    Menu digit_airport("Consultar aeroporto", "código do aeroporto: ", options, airports, true, true, 10);
+    digit_airport.render();
 
-    if(digitar_aeroporto.optionIsSelected() && digitar_aeroporto.getOption() == 0){
+    if(digit_airport.optionIsSelected() && digit_airport.getOption() == 0){
        mainMenu();
     }
 
-    Airport theAirport = m.getAirports().find(digitar_aeroporto.getInput())->second;
+    Airport theAirport = m.getAirports().find(digit_airport.getInput())->second;
     consultar_aeroporto(theAirport);
 }
 
@@ -136,11 +136,11 @@ void menus::consultar_aeroporto(Airport& airport){
 
     string airportName = " (" + airport.getCode() + ") Aeroporto - " + airport.getName() + ", " + airport.getCountry();
 
-    Menu consultar_aeroporto(airportName, "Opção", options, curiosities, true, true, 1);
-    consultar_aeroporto.render();
+    Menu consult_airport(airportName, "Opção: ", options, curiosities, true, true, 1);
+    consult_airport.render();
 
-    if(consultar_aeroporto.optionIsSelected()){
-        switch (consultar_aeroporto.getOption()) {
+    if(consult_airport.optionIsSelected()){
+        switch (consult_airport.getOption()) {
             case 0: mainMenu(); break;
             case 1: voos_aeroporto(airport); break;
             case 2: cout << "Ver destinos diretos ainda por fazer" << endl; break;
@@ -157,10 +157,10 @@ void menus::voos_aeroporto(Airport airport){
         flights.push_back(flight->getTarget());
     }
 
-    Menu menu_voos_aeroporto("Voos - Aeroporto", "opção", options, flights, false, true, 1);
-    menu_voos_aeroporto.render();
+    Menu airport_flights("Voos - Aeroporto", "opção: ", options, flights, false, true, 1);
+    airport_flights.render();
 
-    if(menu_voos_aeroporto.optionIsSelected() && menu_voos_aeroporto.getOption() == 0){
+    if(airport_flights.optionIsSelected() && airport_flights.getOption() == 0){
         consultar_aeroporto(airport);
     }
 }
@@ -175,11 +175,11 @@ void menus::menu_viajar(string title){
             "Coordenadas"
     };
 
-    Menu menu_viajar("Viajar - " + title, "opção: ", options, {});
-    menu_viajar.render();
+    Menu travel_menu("Viajar - " + title, "opção: ", options, {});
+    travel_menu.render();
 
-    if(menu_viajar.optionIsSelected()){
-        switch (menu_viajar.getOption()) {
+    if(travel_menu.optionIsSelected()){
+        switch (travel_menu.getOption()) {
 
             case 0:
                 travel_source_airports.clear();
@@ -203,15 +203,15 @@ void menus::aeroporto_input(){
     }
     sort(airports.begin(), airports.end());
 
-    Menu menu_aeroporto_input("Viajar - Aeroporto", "digite o código do aeroporto: ", options, airports, true, true, 10);
-    menu_aeroporto_input.render();
+    Menu digit_airport("Viajar - Aeroporto", "digite o código do aeroporto: ", options, airports, true, true, 10);
+    digit_airport.render();
 
-    if(menu_aeroporto_input.optionIsSelected() && menu_aeroporto_input.getOption() == 0){
+    if(digit_airport.optionIsSelected() && digit_airport.getOption() == 0){
         string title = travel_source_airports.size() == 0 ? "De onde?" : "Para onde?";
         menu_viajar(title);
     }
 
-    string airport = menu_aeroporto_input.getInput();
+    string airport = digit_airport.getInput();
 
     if(travel_source_airports.size() == 0) {
         travel_source_airports.push_back(airport);
@@ -234,7 +234,7 @@ void menus::menu_pais(){
     sort(countries.begin(), countries.end());
 
 
-    Menu country_menu("Viajar - País", "Introduza um país", options, countries, true, true);
+    Menu country_menu("Viajar - País", "Introduza um país: ", options, countries, true, true);
     country_menu.render();
 
     if(country_menu.optionIsSelected() && country_menu.getOption() == 0){
@@ -255,11 +255,11 @@ void menus::menus_pais_cidades(string country){
             "Selecionar todas as cidades"
     };
 
-    Menu menu_escolha("Viajar - " + country, "Escolha uma opção", options_cities, cities, true, true, 3);
-    menu_escolha.render();
+    Menu choice_allOrOne_country("Viajar - " + country, "Escolha uma opção: ", options_cities, cities, true, true, 3);
+    choice_allOrOne_country.render();
 
-    if(menu_escolha.optionIsSelected()){
-        switch (menu_escolha.getOption()) {
+    if(choice_allOrOne_country.optionIsSelected()){
+        switch (choice_allOrOne_country.getOption()) {
             case 0: menu_pais(); return;
             case 1: {
                 vector<string> airports = m.getAirportsInCountry(country);
@@ -270,7 +270,7 @@ void menus::menus_pais_cidades(string country){
     }
 
     //selected a city
-    string city = menu_escolha.getInput();
+    string city = choice_allOrOne_country.getInput();
     menu_cidade(city, country);
 }
 
@@ -287,11 +287,11 @@ void menus::menu_cidade(string city, string country){
             "Selecionar todos os aeroportos",
     };
 
-    Menu menu_aeroporto("Viajar - Aeroporto", "Código do aeroporto", airport_options, airports, true, true, 10);
-    menu_aeroporto.render();
+    Menu airport_menu("Viajar - Aeroporto", "Código do aeroporto: ", airport_options, airports, true, true, 10);
+    airport_menu.render();
 
-    if(menu_aeroporto.optionIsSelected()){
-        switch (menu_aeroporto.getOption()) {
+    if(airport_menu.optionIsSelected()){
+        switch (airport_menu.getOption()) {
             case 0: menus_pais_cidades(country); return;
             case 1: {
                 //TODO: run the algorithm with aiports vector
@@ -300,7 +300,7 @@ void menus::menu_cidade(string city, string country){
         }
     }
 
-    string airport = menu_aeroporto.getInput();
+    string airport = airport_menu.getInput();
     Airport a = m.getAirports().find(airport)->second;
 
     //TODO: run the algorithm with a
@@ -309,17 +309,17 @@ void menus::menu_cidade(string city, string country){
 void menus::menu_coordenadas(){
     vector<string> options_viajar = {"Voltar"};
 
-    Menu menu_latitude("Viajar - Coordenadas", "latitude", options_viajar);
-    menu_latitude.render();
+    Menu latitude_menu("Viajar - Coordenadas", "latitude: ", options_viajar);
+    latitude_menu.render();
 
-    if(menu_latitude.optionIsSelected() && menu_latitude.getOption() == 0){
+    if(latitude_menu.optionIsSelected() && latitude_menu.getOption() == 0){
         string title = travel_source_airports.size() == 0 ? "De onde?" : "Para onde?";
         menu_viajar(title);
     }
 
-    string latitude = menu_latitude.getInput();
+    string latitude = latitude_menu.getInput();
     do{
-        latitude = menu_latitude.getInput();
+        latitude = latitude_menu.getInput();
     }while(!Validate::latitude(latitude));
 
     string longitude;
@@ -350,11 +350,11 @@ void menus::consultar_rede(){
             "Rede de um país"
     };
 
-    Menu consultar_rede("Consultar rede", "opção", options, {}, true);
-    consultar_rede.render();
+    Menu consult_network("Consultar rede", "Opção: ", options, {}, true);
+    consult_network.render();
 
-    if(consultar_rede.optionIsSelected()){
-        switch (consultar_rede.getOption()) {
+    if(consult_network.optionIsSelected()){
+        switch (consult_network.getOption()) {
             case 0: mainMenu(); break;
             case 1: consultar_rede_global(); break;
             case 2: digitar_companhia(); break;
@@ -390,10 +390,10 @@ void menus::consultar_rede_global(){
             "Consultar diâmetro preciso em kms"
     };
 
-    Menu global_network("Rede global", "opção", options, text, true, true, 1);
+    Menu global_network("Rede global", "Opção: ", options, text, true, true, 1);
     global_network.render();
 
-    vector<string> voltar_options = {"Voltar"};
+    vector<string> back_options = {"Voltar"};
 
     if(global_network.optionIsSelected()){
         switch (global_network.getOption()) {
@@ -406,7 +406,7 @@ void menus::consultar_rede_global(){
                     line << airport.getCode() << " - " << airport.getName() << " - " << airport.getCity() << " - " << airport.getCountry();
                     airports.push_back(line.str());
                 }
-                Menu important_airports_menu("Aeroportos - Rede Global", "opção", voltar_options, airports, false, true, 1);
+                Menu important_airports_menu("Aeroportos - Rede Global", "Opção: ", back_options, airports, false, true, 1);
                 important_airports_menu.render();
                 consultar_rede_global();
                 break;
@@ -419,21 +419,21 @@ void menus::consultar_rede_global(){
                     line << airport.getCode() << " - " << airport.getName() << " - " << airport.getCity() << " - " << airport.getCountry();
                     important_airports.push_back(line.str());
                 }
-                Menu important_airports_menu("Aeroportos importantes - Rede global", "opção", voltar_options, important_airports, false, true, 1);
+                Menu important_airports_menu("Aeroportos importantes - Rede global", "Opção: ", back_options, important_airports, false, true, 1);
                 important_airports_menu.render();
                 consultar_rede_global();
                 break;
             }
             case 3: {
                 string menu_text = "O diametro preciso é de " + to_string(m.getDiameter(m.getAirports(), true)) + " aeroportos.";
-                Menu precise_diameter("Diâmetro preciso - Rede Global", "opção:", voltar_options, {menu_text}, false, true, 1);
+                Menu precise_diameter("Diâmetro preciso - Rede Global", "Opção: ", back_options, {menu_text}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_global();
                 break;
             }
             case 4: {
                 string menu_text = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(m.getAirports(), true)) + " kms.";
-                Menu precise_diameter("Diâmetro preciso - Rede Global", "opção:", voltar_options, {menu_text}, false, true, 1);
+                Menu precise_diameter("Diâmetro preciso - Rede Global", "Opção: ", back_options, {menu_text}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_global();
                 break;
@@ -450,7 +450,7 @@ void menus::digitar_companhia() {
         airlines.push_back(it->second.getCode());
     }
 
-    Menu airlines_menu("Consultar rede de uma companhia", "companhia", options, airlines, true, true, 10);
+    Menu airlines_menu("Consultar rede de uma companhia", "Companhia aerea: ", options, airlines, true, true, 10);
     airlines_menu.render();
 
     if(airlines_menu.optionIsSelected() && airlines_menu.getOption() == 0){
@@ -491,7 +491,7 @@ void menus::consultar_rede_companhia(string airlineCode){
             "Consultar diâmetro preciso em kms"
     };
 
-    Menu airline_menu("Rede " + airline.getName(), "opção", options2, text, false, true, 1);
+    Menu airline_menu("Rede " + airline.getName(), "Opção: ", options2, text, false, true, 1);
     airline_menu.render();
 
     vector<string> voltar_options = {"Voltar"};
@@ -507,7 +507,7 @@ void menus::consultar_rede_companhia(string airlineCode){
                     line << airport.getCode() << " - " << airport.getName() << " - " << airport.getCity() << " - " << airport.getCountry();
                     airports.push_back(line.str());
                 }
-                Menu important_airports_menu("Aeroportos - " + airlineCode, "opção", voltar_options, airports, false, true, 1);
+                Menu important_airports_menu("Aeroportos - " + airlineCode, "Opção: ", voltar_options, airports, false, true, 1);
                 important_airports_menu.render();
                 consultar_rede_companhia(airlineCode);
                 break;
@@ -520,21 +520,21 @@ void menus::consultar_rede_companhia(string airlineCode){
                     line << airport.getCode() << " - " << airport.getName() << " - " << airport.getCity() << " - " << airport.getCountry();
                     important_airports.push_back(line.str());
                 }
-                Menu important_airports_menu("Aeroportos importantes - " + airlineCode, "opção", voltar_options, important_airports, false, true, 1);
+                Menu important_airports_menu("Aeroportos importantes - " + airlineCode, "Opção: ", voltar_options, important_airports, false, true, 1);
                 important_airports_menu.render();
                 consultar_rede_companhia(airlineCode);
                 break;
             }
             case 3: {
                 string menutext = "O diametro preciso é de " + to_string(m.getDiameter(directedNetwork, true)) + " aeroportos.";
-                Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "opção:", voltar_options, {menutext}, false, true, 1);
+                Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "Opção: ", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_companhia(airlineCode);
                 break;
             }
             case 4: {
                 string menutext = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(directedNetwork, true)) + " kms.";
-                Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "opção:", voltar_options, {menutext}, false, true, 1);
+                Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "Opção: ", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_companhia(airlineCode);
                 break;
@@ -546,7 +546,7 @@ void menus::consultar_rede_companhia(string airlineCode){
 void menus::digitar_pais() {
     vector<string> options = { "Voltar" };
 
-    auto countryCities = m.getCountryCities();  //get countries
+    auto countryCities = m.getCountryCities();
     vector<string> countries;
     for(auto & countryCity : countryCities){
         countries.push_back(countryCity.first);
@@ -554,7 +554,7 @@ void menus::digitar_pais() {
     sort(countries.begin(), countries.end());
 
 
-    Menu country_menu("Consultar Rede - País", "Introduza um país:", options, countries, true, true);
+    Menu country_menu("Consultar Rede - País", "Introduza um país: ", options, countries, true, true);
     country_menu.render();
 
     if(country_menu.optionIsSelected() && country_menu.getOption() == 0){
@@ -596,7 +596,7 @@ void menus::consultar_rede_pais(string country){
             "Consultar diâmetro preciso em kms"
     };
 
-    Menu country_network_menu("Rede " + country, "opção", options2, text, false, true, 1);
+    Menu country_network_menu("Rede " + country, "Opção: ", options2, text, false, true, 1);
     country_network_menu.render();
 
     vector<string> voltar_options = {"Voltar"};
@@ -611,7 +611,7 @@ void menus::consultar_rede_pais(string country){
                     line << airport.second.getCode() << " - " << airport.second.getName() << " - " << airport.second.getCity();
                     airports.push_back(line.str());
                 }
-                Menu all_airports_menu("Aeroportos - " + country, "opção", voltar_options, airports, false, true, 1);
+                Menu all_airports_menu("Aeroportos - " + country, "Opção: ", voltar_options, airports, false, true, 1);
                 all_airports_menu.render();
                 consultar_rede_pais(country);
                 break;
@@ -624,21 +624,21 @@ void menus::consultar_rede_pais(string country){
                     line << airport.getCode() << " - " << airport.getName() << " - " << airport.getCity();
                     important_airports.push_back(line.str());
                 }
-                Menu important_airports_menu("Aeroportos importantes - " + country, "opção", voltar_options, important_airports, false, true, 1);
+                Menu important_airports_menu("Aeroportos importantes - " + country, "Opção: ", voltar_options, important_airports, false, true, 1);
                 important_airports_menu.render();
                 consultar_rede_pais(country);
                 break;
             }
             case 3: {
                 string menutext = "O diametro preciso é de " + to_string(m.getDiameter(directedNetwork, true)) + " aeroportos.";
-                Menu precise_diameter("Diâmetro preciso - Rede " + country, "opção:", voltar_options, {menutext}, false, true, 1);
+                Menu precise_diameter("Diâmetro preciso - Rede " + country, "Opção: ", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_pais(country);
                 break;
             }
             case 4: {
                 string menutext = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(directedNetwork, true)) + " kms.";
-                Menu precise_diameter("Diâmetro preciso - Rede " + country, "opção:", voltar_options, {menutext}, false, true, 1);
+                Menu precise_diameter("Diâmetro preciso - Rede " + country, "Opção: ", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_pais(country);
                 break;
@@ -659,7 +659,7 @@ void menus::menu_results() {
         }
     }
 
-    Menu menu_results("Resultados", "Escolha uma opção ou o ID de um voo", options, results, true, true, 10);
+    Menu menu_results("Resultados", "Escolha uma opção ou o ID de um voo: ", options, results, true, true, 10);
     menu_results.render();
 
     if(menu_results.optionIsSelected() && menu_results.getOption() == 0){
@@ -678,7 +678,7 @@ void menus::menu_results() {
 
 void menus::menu_filtrar() {
     vector<string> options = {"Voltar", "Companhias", "Escalas"};
-    Menu menu_filtrar("Filtrar", "Escolha uma opção", options, {});
+    Menu menu_filtrar("Filtrar", "Escolha uma opção: ", options, {});
     menu_filtrar.render();
 
     if(menu_filtrar.optionIsSelected() && menu_filtrar.getOption() == 0){
@@ -708,7 +708,7 @@ void menus::menu_companhias() {
         results.push_back(airline);
     }
 
-    Menu menu_companhias("Companhias", "Escolha uma opção", options, results, true, true, 10);
+    Menu menu_companhias("Companhias", "Escolha uma opção: ", options, results, true, true, 10);
     menu_companhias.render();
 
     if(menu_companhias.optionIsSelected() && menu_companhias.getOption() == 0){
@@ -729,7 +729,7 @@ void menus::menu_escala() {
         results.push_back(to_string(i));
     }
 
-    Menu menu_escala("Escala", "Escolha o número de voos", options, results, true, true);
+    Menu menu_escala("Escala", "Escolha o número de voos: ", options, results, true, true);
     menu_escala.render();
 
     if(menu_escala.optionIsSelected() && menu_escala.getOption() == 0){
