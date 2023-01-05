@@ -174,6 +174,35 @@ unordered_map<string, Airport> Managing::getAirlineNetwork(string airlineCode, b
     return newNetwork;
 }
 
+unordered_map<string, Airport> Managing::getCountryNetwork(string country, bool directed) {
+    unordered_map<string, Airport> newNetwork;
+
+    //adding the airports in the given country O(n)
+    for(auto pair : getAirports()){
+        if(pair.second.getCountry() == country){
+            Airport airport = Airport(pair.first, pair.second.getName(), pair.second.getCity(), pair.second.getCountry(), pair.second.getLocation());
+            newNetwork[pair.first] = airport;
+        }
+    }
+
+    //adding the flights
+    for(auto pair : newNetwork){
+        Airport airportWithAllFlights = airports[pair.first];
+
+        for(Flight* flight : airportWithAllFlights.getFlights()){
+
+            //Adding just the flights in the same country
+            string target = flight->getTarget();
+            if(airports[target].getCountry() == country){
+                newNetwork[pair.first].addFlight(flight);
+                if(!directed) newNetwork[target].addFlight(flight);
+            }
+        }
+    }
+
+    return newNetwork;
+}
+
 list<list<Flight *>> Managing::possiblePaths(string source, string target, int maxNumFlights) {
     list<list<Flight *>> paths;
     unordered_map<string, bool> visited;

@@ -29,6 +29,8 @@ class menus {
         void consultar_rede_global();
         void digitar_companhia();
         void consultar_rede_companhia(string airlineCode);
+        void digitar_pais();
+        void consultar_rede_pais(string country);
 
     void menu_results();
 

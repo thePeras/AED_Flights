@@ -346,7 +346,8 @@ void menus::consultar_rede(){
     vector<string> options = {
             "Voltar",
             "Rede Global",
-            "Rede de uma companhia"
+            "Rede de uma companhia",
+            "Rede de um país"
     };
 
     Menu consultar_rede("Consultar rede", "opção", options, {}, true);
@@ -357,6 +358,7 @@ void menus::consultar_rede(){
             case 0: mainMenu(); break;
             case 1: consultar_rede_global(); break;
             case 2: digitar_companhia(); break;
+            case 3: digitar_pais(); break;
         }
     }
 }
@@ -461,8 +463,9 @@ void menus::digitar_companhia() {
 void menus::consultar_rede_companhia(string airlineCode){
 
     Airline airline = m.getAirlines().find(airlineCode)->second;
-    unordered_map<string, Airport> network = m.getAirlineNetwork(airlineCode, false);
-    set<string> articulationPoints = m.getArticulationPoints(network);
+    unordered_map<string, Airport> directedNetwork = m.getAirlineNetwork(airlineCode, true);
+    unordered_map<string, Airport> undirectedNetwork = m.getAirlineNetwork(airlineCode, false);
+    set<string> articulationPoints = m.getArticulationPoints(undirectedNetwork);
 
     stringstream line1;
     stringstream line2;
@@ -471,9 +474,9 @@ void menus::consultar_rede_companhia(string airlineCode){
     stringstream line5;
     line1 << "A rede desta companhia area tem " << airline.getAirports().size() << " aeroportos.";
     line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
-    line3 << "O diâmetro da rede é de aproximadamente " << m.getDiameter(network, false) << " aeroportos.";
-    line4 << "Em kms, o diâmetro é de aproximadamente " << m.getWeightedDiameter(network, false) << " kms.";
-    int numberOfComponents = m.numberOfComponents(network);
+    line3 << "O diâmetro da rede é de aproximadamente " << m.getDiameter(directedNetwork, false) << " aeroportos.";
+    line4 << "Em kms, o diâmetro é de aproximadamente " << m.getWeightedDiameter(directedNetwork, false) << " kms.";
+    int numberOfComponents = m.numberOfComponents(directedNetwork);
     line5 << "A companhia tem " << numberOfComponents << " componente";
     if(numberOfComponents > 1) line5 << "s.";
 
@@ -523,17 +526,121 @@ void menus::consultar_rede_companhia(string airlineCode){
                 break;
             }
             case 3: {
-                string menutext = "O diametro preciso é de " + to_string(m.getDiameter(network, true)) + " aeroportos.";
+                string menutext = "O diametro preciso é de " + to_string(m.getDiameter(directedNetwork, true)) + " aeroportos.";
                 Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "opção:", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_companhia(airlineCode);
                 break;
             }
             case 4: {
-                string menutext = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(network, true)) + " kms.";
+                string menutext = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(directedNetwork, true)) + " kms.";
                 Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "opção:", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_companhia(airlineCode);
+                break;
+            };
+        }
+    }
+}
+
+void menus::digitar_pais() {
+    vector<string> options = { "Voltar" };
+
+    auto countryCities = m.getCountryCities();  //get countries
+    vector<string> countries;
+    for(auto & countryCity : countryCities){
+        countries.push_back(countryCity.first);
+    }
+    sort(countries.begin(), countries.end());
+
+
+    Menu country_menu("Consultar Rede - País", "Introduza um país:", options, countries, true, true);
+    country_menu.render();
+
+    if(country_menu.optionIsSelected() && country_menu.getOption() == 0){
+        consultar_rede();
+        return;
+    }
+
+    string country = country_menu.getInput();
+    consultar_rede_pais(country);
+}
+
+void menus::consultar_rede_pais(string country){
+
+    unordered_map<string, Airport> directedNetwork = m.getCountryNetwork(country, true);
+    unordered_map<string, Airport> undirectedNetwork = m.getCountryNetwork(country, false);
+    set<string> articulationPoints = m.getArticulationPoints(undirectedNetwork);
+
+    stringstream line1;
+    stringstream line2;
+    stringstream line3;
+    stringstream line4;
+    stringstream line5;
+    line1 << "Existem " << directedNetwork.size() << " aeroportos neste país.";
+    line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
+    line3 << "O diâmetro da rede é de aproximadamente " << m.getDiameter(directedNetwork, false) << " aeroportos.";
+    line4 << "Em kms, o diâmetro é de aproximadamente " << m.getWeightedDiameter(directedNetwork, false) << " kms.";
+    int numberOfComponents = m.numberOfComponents(directedNetwork);
+    line5 << "A rede deste país tem " << numberOfComponents << " componente";
+    if(numberOfComponents > 1) line5 << "s.";
+
+
+    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str()};
+
+    vector<string> options2 = {
+            "Voltar",
+            "Ver todos os aeroportos",
+            "Ver somente aeroportos importantes",
+            "Consultar diâmetro preciso de aeroportos",
+            "Consultar diâmetro preciso em kms"
+    };
+
+    Menu country_network_menu("Rede " + country, "opção", options2, text, false, true, 1);
+    country_network_menu.render();
+
+    vector<string> voltar_options = {"Voltar"};
+
+    if(country_network_menu.optionIsSelected()){
+        switch (country_network_menu.getOption()) {
+            case 0: consultar_rede(); break;
+            case 1: {
+                vector<string> airports;
+                for(auto & airport : directedNetwork){
+                    stringstream line;
+                    line << airport.second.getCode() << " - " << airport.second.getName() << " - " << airport.second.getCity();
+                    airports.push_back(line.str());
+                }
+                Menu all_airports_menu("Aeroportos - " + country, "opção", voltar_options, airports, false, true, 1);
+                all_airports_menu.render();
+                consultar_rede_pais(country);
+                break;
+            }
+            case 2: {
+                vector<string> important_airports;
+                for(string airportCode : articulationPoints){
+                    Airport airport = m.getAirports().find(airportCode)->second;
+                    stringstream line;
+                    line << airport.getCode() << " - " << airport.getName() << " - " << airport.getCity();
+                    important_airports.push_back(line.str());
+                }
+                Menu important_airports_menu("Aeroportos importantes - " + country, "opção", voltar_options, important_airports, false, true, 1);
+                important_airports_menu.render();
+                consultar_rede_pais(country);
+                break;
+            }
+            case 3: {
+                string menutext = "O diametro preciso é de " + to_string(m.getDiameter(directedNetwork, true)) + " aeroportos.";
+                Menu precise_diameter("Diâmetro preciso - Rede " + country, "opção:", voltar_options, {menutext}, false, true, 1);
+                precise_diameter.render();
+                consultar_rede_pais(country);
+                break;
+            }
+            case 4: {
+                string menutext = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(directedNetwork, true)) + " kms.";
+                Menu precise_diameter("Diâmetro preciso - Rede " + country, "opção:", voltar_options, {menutext}, false, true, 1);
+                precise_diameter.render();
+                consultar_rede_pais(country);
                 break;
             };
         }
