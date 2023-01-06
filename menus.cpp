@@ -6,6 +6,7 @@
 #include <vector>
 #include <stack>
 #include <sstream>
+#include <map>
 
 #include "Validate.h"
 
@@ -152,15 +153,29 @@ void menus::consultar_aeroporto(Airport& airport){
 
 void menus::voos_aeroporto(Airport airport){
     vector<string> options = {"Voltar"};
-
+    map<string, set<string>> all_targets;
     vector<string> flights;
+    for(auto &flight : airport.getFlights()){
+        all_targets[flight->getTarget()].insert(flight->getAirline());
+    }
+    for(auto &target : all_targets){
+        string flight = target.first + " | ";
+        for(auto &airline : target.second){
+            flight += airline + " ";
+        }
+        flights.push_back(flight);
+    }
+    sort(flights.begin(), flights.end());
+    //append "Destino | Companhia(s)" in the beggining of flights vector
+    flights.insert(flights.begin(), "Destino | Companhia(s)");
+    /*
     for (auto &flight : airport.getFlights()) {
         flights.push_back(flight->getTarget());
         flights.push_back(to_string((int) flight->getDistance()) + " kms");
         flights.push_back(flight->getAirline());
     }
-
-    Menu airport_flights("Voos - Aeroporto", "Opção: ", options, flights, false, true, 3);
+    */
+    Menu airport_flights("Voos - Aeroporto", "Opção: ", options, flights, false, true, 1);
     airport_flights.render();
 
     if(airport_flights.optionIsSelected() && airport_flights.getOption() == 0){
