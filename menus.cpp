@@ -31,6 +31,9 @@ void menus::exit_action(){
 
 menus::menus(){
     m.readFiles();
+    for(auto elem : m.getAirlines()){
+        considered_airlines.insert(elem.first);
+    }
     mainMenu();
 }
 
@@ -56,9 +59,7 @@ void menus::mainMenu(){
         cout << endl;
     }
     */
-    for(auto elem : m.getAirlines()){
-        considered_airlines.insert(elem.first);
-    }
+
     possible_paths.clear();
 
     vector<string> options = {
@@ -153,11 +154,13 @@ void menus::voos_aeroporto(Airport airport){
     vector<string> options = {"Voltar"};
 
     vector<string> flights;
-    for (auto & flight : airport.getFlights()) {
+    for (auto &flight : airport.getFlights()) {
         flights.push_back(flight->getTarget());
+        flights.push_back(to_string((int) flight->getDistance()) + " kms");
+        flights.push_back(flight->getAirline());
     }
 
-    Menu airport_flights("Voos - Aeroporto", "opção: ", options, flights, false, true, 1);
+    Menu airport_flights("Voos - Aeroporto", "Opção: ", options, flights, false, true, 3);
     airport_flights.render();
 
     if(airport_flights.optionIsSelected() && airport_flights.getOption() == 0){
@@ -175,7 +178,7 @@ void menus::menu_viajar(string title){
             "Coordenadas"
     };
 
-    Menu travel_menu("Viajar - " + title, "opção: ", options, {});
+    Menu travel_menu("Viajar - " + title, "Opção: ", options, {});
     travel_menu.render();
 
     if(travel_menu.optionIsSelected()){
