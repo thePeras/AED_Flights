@@ -153,29 +153,32 @@ void menus::consultar_aeroporto(Airport& airport){
 
 void menus::voos_aeroporto(Airport airport){
     vector<string> options = {"Voltar"};
-    map<string, set<string>> all_targets;
+    map<string,pair<double,set<string>>> all_targets;
     vector<string> flights;
+
     for(auto &flight : airport.getFlights()){
-        all_targets[flight->getTarget()].insert(flight->getAirline());
+        all_targets[flight->getTarget()].first = flight->getDistance();
+        all_targets[flight->getTarget()].second.insert(flight->getAirline());
     }
+
     for(auto &target : all_targets){
-        string flight = target.first + " | ";
-        for(auto &airline : target.second){
-            flight += airline + " ";
+        string targetString = target.first;
+        flights.push_back(targetString);
+        string distance = to_string((int) target.second.first) + " kms";
+        flights.push_back(distance);
+        string airlines = "";
+        for(auto &airline : target.second.second){
+            airlines += airline + " ";
         }
-        flights.push_back(flight);
+        flights.push_back(airlines);
     }
-    sort(flights.begin(), flights.end());
-    //append "Destino | Companhia(s)" in the beggining of flights vector
-    flights.insert(flights.begin(), "Destino | Companhia(s)");
-    /*
-    for (auto &flight : airport.getFlights()) {
-        flights.push_back(flight->getTarget());
-        flights.push_back(to_string((int) flight->getDistance()) + " kms");
-        flights.push_back(flight->getAirline());
-    }
-    */
-    Menu airport_flights("Voos - Aeroporto", "Opção: ", options, flights, false, true, 1);
+    //sort(flights.begin(), flights.end());
+
+    flights.insert(flights.begin(), "Destino");
+    flights.insert(flights.begin()+1, "Distância");
+    flights.insert(flights.begin()+2, "Companhias");
+
+    Menu airport_flights("Voos - Aeroporto", "Opção: ", options, flights, false, true, 3);
     airport_flights.render();
 
     if(airport_flights.optionIsSelected() && airport_flights.getOption() == 0){
