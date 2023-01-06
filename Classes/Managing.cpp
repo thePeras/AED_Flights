@@ -10,9 +10,7 @@
 #include <algorithm>
 #include <sstream>
 #include <fstream>
-#include <limits>
 #include <queue>
-#include <iostream>
 
 Managing::Managing() {
 }
@@ -65,13 +63,16 @@ void Managing::readAirports() {
         ss.ignore();
         ss >> longitude;
 
+        Airport airport(code, name, city, country, Location(latitude, longitude));
+        Airport undirectedAirport(code, name, city, country, Location(latitude, longitude));
+
+        airports.insert({code, airport});
+        undirectedGlobalNetwork.insert({code, undirectedAirport});
+
         country_cities[country].push_back(city);
 
-        Airport airport(code, name, city, country, *new Location(latitude, longitude));
-        airports.insert({code, airport});
-
-        Airport undirectedAirport(code, name, city, country, Location(latitude, longitude));
-        undirectedGlobalNetwork.insert({code, undirectedAirport});
+        string countryCityKey = country + ":" + city;
+        cities_airports[countryCityKey].push_back(code);
     }
     file.close();
 }
@@ -129,37 +130,32 @@ const vector<Airport> Managing::getAirportsInRadius(Location location, double ra
     return airportsInRadius;
 }
 
-// TODO: use cities_airports here
 vector<string> Managing::getAirportsInCity(string city, string country) {
-    vector<string> airportsInCity;
-    for (auto airport: airports) {
-        if (airport.second.getCity() == city && airport.second.getCountry() == country) {
-            airportsInCity.push_back(airport.first);
-        }
-    }
-    return airportsInCity;
+    return cities_airports[country + ":" + city];
 }
 
 vector<string> Managing::getAirportsInCountry(string country) {
     vector<string> airportsInCountry;
-    for (auto airport: airports) {
-        if (airport.second.getCountry() == country) {
-            airportsInCountry.push_back(airport.first);
-        }
+
+    for(string city : country_cities[country]){
+        vector<string> airportsInCity = cities_airports[country + ":" + city];
+        airportsInCountry.insert(airportsInCountry.end(), airportsInCity.begin(), airportsInCity.end());
     }
+
     return airportsInCountry;
 }
 
 unordered_map<string, Airport> Managing::getUndirectedGlobalNetwork() {
     return undirectedGlobalNetwork;
 }
+
 unordered_map<string, Airport> Managing::getAirlineNetwork(string airlineCode, bool directed) {
     unordered_map<string, Airport> newNetwork;
 
     Airline airline = airlines[airlineCode];
 
     for(string airportCode : airline.getAirports()){
-        Airport airport = Airport(airportCode, airports[airportCode].getName(), airports[airportCode].getCity(), airports[airportCode].getCountry(), airports[airportCode].getLocation());
+        Airport airport = new Airport(airports[airportCode]);
         newNetwork[airportCode] = airport;
     }
 
@@ -177,12 +173,9 @@ unordered_map<string, Airport> Managing::getAirlineNetwork(string airlineCode, b
 unordered_map<string, Airport> Managing::getCountryNetwork(string country, bool directed) {
     unordered_map<string, Airport> newNetwork;
 
-    //adding the airports in the given country O(n)
-    for(auto pair : getAirports()){
-        if(pair.second.getCountry() == country){
-            Airport airport = Airport(pair.first, pair.second.getName(), pair.second.getCity(), pair.second.getCountry(), pair.second.getLocation());
-            newNetwork[pair.first] = airport;
-        }
+    for(string airportCode : getAirportsInCountry(country)){
+        Airport new_airport = new Airport(airports[airportCode]);
+        newNetwork[airportCode] = new_airport;
     }
 
     //adding the flights

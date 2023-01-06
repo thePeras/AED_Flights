@@ -142,7 +142,7 @@ private:
     unordered_map<string, Airport> airports; /* Graph */
     unordered_map<string, Airline> airlines;
     unordered_map<string, vector<string>> country_cities;
-    //TODO: unordered_map<string, vector<string>> cities_airports; where key = COUNTRY:CITY and value = vector of airports
+    unordered_map<string, vector<string>> cities_airports;
     unordered_map<string, Airport> undirectedGlobalNetwork;
 
 };

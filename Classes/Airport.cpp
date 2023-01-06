@@ -10,6 +10,14 @@ Airport::Airport() {
     location = Location();
 }
 
+Airport::Airport(Airport * airport) {
+    code = airport->getCode();
+    name = airport->getName();
+    city = airport->getCity();
+    country = airport->getCountry();
+    location = airport->getLocation();
+}
+
 Airport::Airport(string code, string name, string city, string country, Location location) {
     this->code = code;
     this->name = name;

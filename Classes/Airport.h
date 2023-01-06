@@ -12,6 +12,8 @@ class Airport {
 public:
     Airport();
 
+    Airport(Airport *airport);
+
     Airport(string code, string name, string city, string country, Location location);
 
     Airport(string code, string name, string city, string country, float latitude, float longitude);
