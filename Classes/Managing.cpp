@@ -588,19 +588,18 @@ int Managing::numberOfComponents(unordered_map<string, Airport>& network) {
     return nComponents;
 }
 
-int Managing::numberOfDirectDestinations(string source) {
+int Managing::numberOfDirectDestinations(string source, const unordered_map<string, Airport>& graph) {
     set<string> destinations;
-    for (Flight *flight: airports[source].getFlights()) {
+    for (Flight *flight: graph.find(source)->second.getFlights()) {
         destinations.insert(flight->getTarget());
     }
     return destinations.size();
 }
 
-
-vector<pair<string, int>> Managing::getTopAirports(int n) {
+vector<pair<string, int>> Managing::getTopAirports(int n, const unordered_map<string, Airport>& graph) {
     vector<pair<string,int>> topAirports;
-    for (auto &airport : airports) {
-        topAirports.push_back(make_pair(airport.first, numberOfDirectDestinations(airport.first)));
+    for (auto &airport : graph) {
+        topAirports.push_back(make_pair(airport.first, numberOfDirectDestinations(airport.first, graph)));
     }
     sort(topAirports.begin(), topAirports.end(), [](const pair<string, int> &a, const pair<string, int> &b) {
         return a.second > b.second;

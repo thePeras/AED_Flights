@@ -130,9 +130,9 @@ public:
      */
     int numberOfComponents(unordered_map<string, Airport> & graph);
 
-    int numberOfDirectDestinations(string source);
+    int numberOfDirectDestinations(string source, const unordered_map<string, Airport>& graph);
 
-    vector<pair<string,int>> getTopAirports(int n); // top aeroportos que permitem chegar a um maior número de destinos diferentes com um voo (dois aeroportos diferentes são considerados dois destinos diferentes)
+    vector<pair<string,int>> getTopAirports(int n, const unordered_map<string, Airport>& graph); // top aeroportos que permitem chegar a um maior número de destinos diferentes com um voo (dois aeroportos diferentes são considerados dois destinos diferentes)
 
 private:
     void readAirlines();

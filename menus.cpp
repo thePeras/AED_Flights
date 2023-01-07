@@ -407,14 +407,23 @@ void menus::consultar_rede_global(){
     stringstream line3;
     stringstream line4;
     stringstream line5;
+    stringstream line6;
     line1 << "Existem ao todo, " << m.getAirports().size() << " aeroportos.";
     line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
     line3 << "A rede global de aeroportos tem um diâmetro aproximadamente de " << m.getDiameter(m.getAirports(), false) << " aeroportos.";
     line4 << "O diâmetro em kms é de aproximadamente " << m.getWeightedDiameter(m.getAirports(), false) << " kms.";
     int numberOfComponents = m.numberOfComponents(network);
     line5 << "A rede global tem " << numberOfComponents << " componentes conexos.";
+    line6 << "Os aeroportos com mais voos diferentes são: ";
 
-    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str()};
+    unordered_map<string, Airport> directedNetwork = m.getAirports();
+    vector<pair<string,int>> topAirports = m.getTopAirports(4, directedNetwork);
+    for (pair<string, int> airport : topAirports) {
+        line6 << endl << "\t\t-" << directedNetwork.find(airport.first)->second.getName() << ", " << directedNetwork.find(airport.first)->second.getCity() << " (" << airport.second << " voos diferentes)";
+    }
+
+
+    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str(), line6.str()};
 
     vector<string> options = {
             "Voltar",
@@ -506,16 +515,22 @@ void menus::consultar_rede_companhia(string airlineCode){
     stringstream line3;
     stringstream line4;
     stringstream line5;
+    stringstream line6;
     line1 << "A rede desta companhia area tem " << airline.getAirports().size() << " aeroportos.";
     line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
     line3 << "O diâmetro da rede é de aproximadamente " << m.getDiameter(directedNetwork, false) << " aeroportos.";
     line4 << "Em kms, o diâmetro é de aproximadamente " << m.getWeightedDiameter(directedNetwork, false) << " kms.";
     int numberOfComponents = m.numberOfComponents(directedNetwork);
     line5 << "A companhia tem " << numberOfComponents << " componente";
-    if(numberOfComponents > 1) line5 << "s.";
+    if(numberOfComponents > 1) line5 << "s."; else line5 << ".";
+    line6 << "Os aeroportos com mais voos diferentes são: ";
 
+    vector<pair<string,int>> topAirports = m.getTopAirports(4, directedNetwork);
+    for (pair<string, int> airport : topAirports) {
+        line6 << endl << "\t\t-" << directedNetwork.find(airport.first)->second.getName() << ", " << directedNetwork.find(airport.first)->second.getCity() << " (" << airport.second << " voos diferentes)";
+    }
 
-    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str()};
+    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str(), line6.str()};
 
     vector<string> options2 = {
             "Voltar",
@@ -611,16 +626,22 @@ void menus::consultar_rede_pais(string country){
     stringstream line3;
     stringstream line4;
     stringstream line5;
-    line1 << "Existem " << directedNetwork.size() << " aeroportos neste país.";
+    stringstream line6;
+    line1 << "Existem " << directedNetwork.size() << " aeroportos, ";
     line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
     line3 << "O diâmetro da rede é de aproximadamente " << m.getDiameter(directedNetwork, false) << " aeroportos.";
     line4 << "Em kms, o diâmetro é de aproximadamente " << m.getWeightedDiameter(directedNetwork, false) << " kms.";
     int numberOfComponents = m.numberOfComponents(directedNetwork);
     line5 << "A rede deste país tem " << numberOfComponents << " componente";
-    if(numberOfComponents > 1) line5 << "s.";
+    if(numberOfComponents > 1) line5 << "s."; else line5 << ".";
+    line6 << "Os aeroportos com mais voos diferentes são: ";
+    vector<pair<string,int>> topAirports = m.getTopAirports(4, directedNetwork);
+    for (pair<string, int> airport : topAirports) {
+        line6 << endl << "\t\t-" << directedNetwork.find(airport.first)->second.getName() << ", " << directedNetwork.find(airport.first)->second.getCity() << " (" << airport.second << " voos diferentes)";
+    }
 
 
-    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str()};
+    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str(), line6.str()};
 
     vector<string> options2 = {
             "Voltar",
