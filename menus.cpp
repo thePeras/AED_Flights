@@ -123,8 +123,44 @@ void menus::consultar_aeroporto(Airport& airport){
         switch (consult_airport.getOption()) {
             case 0: mainMenu(); break;
             case 1: voos_aeroporto(airport); break;
-            case 2: cout << "Ver destinos diretos ainda por fazer" << endl; break;
-            case 3: cout << "Ver destinos com X voos ainda por fazer" << endl; break;
+            case 2: cout << "not yet implemented" << endl; break;
+            case 3: {
+                vector<string> options = { "Voltar" };
+
+                Menu target_at_x("Destinos a X voos de" + airportName, "Digite um x: ", options, {}, true, true, 1, true);
+                target_at_x.render();
+
+                if(target_at_x.optionIsSelected() && target_at_x.getOption() == 0){
+                    return consultar_aeroporto(airport);
+                }
+
+                int x = stoi(target_at_x.getInput());
+                set<string> targets = m.reachableAirports(airport.getCode(), x);
+                vector<string> targets_vector;
+                vector<string> targets_codes;
+
+                if(targets.size() > 0){
+                    targets_vector.push_back(to_string(targets.size()) + " destinos alcançáveis a "+ to_string(x) + " voos.");
+                    for(int i=0; i<3; i++) targets_vector.push_back("");
+                }
+
+                for(string targetCode : targets){
+                    Airport target_airport = m.getAirports().find(targetCode)->second;
+                    string new_target = targetCode + " - " + target_airport.getName() + ", " + target_airport.getCountry();
+                    targets_vector.push_back(new_target);
+                    targets_codes.push_back(targetCode);
+                }
+
+                Menu target_at_x_list("Destinos a " + to_string(x) + " voos de" + airportName, "Opção: ", options, targets_vector, targets_codes,true, true, 2, false);
+                target_at_x_list.render();
+
+                if(target_at_x_list.optionIsSelected() && target_at_x_list.getOption() == 0){
+                    return consultar_aeroporto(airport);
+                }
+
+                Airport target = m.getAirports().find(target_at_x_list.getInput())->second;
+                return consultar_aeroporto(target);
+            }
         }
     }
 }
