@@ -51,7 +51,7 @@ public:
 
     set<string> reachableAirports(string source, int maxNumFlights);
 
-    pair<string, int> mostDistantCountry(string source, int maxNumFlights);
+    string mostDistantCountry(string source, int maxNumFlights);
 
     /**
      * @brief Get the articulation points of a graph

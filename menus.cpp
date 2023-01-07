@@ -107,10 +107,8 @@ void menus::consultar_aeroporto(Airport& airport){
     curiosity2 << "Operam " << airport.getAirlines().size() << " companhias areas";
 
     stringstream curiosity3;
-    pair<string, int> mostDistanceCountry = m.mostDistantCountry(airport.getCode(), 2);
-    curiosity3 << "Com " << mostDistanceCountry.second << " voo";
-    if(mostDistanceCountry.second != 1) curiosity3 << "s";
-    curiosity3 << " consegues ir ao país " << mostDistanceCountry.first;
+    string mostDistanceCountry = m.mostDistantCountry(airport.getCode(), 2);
+    curiosity3 << "Com 2 voos consegues ir ao país " << mostDistanceCountry;
 
     vector<string> curiosities = {curiosity1.str(), curiosity2.str(), curiosity3.str()};
 
