@@ -119,15 +119,41 @@ void menus::consultar_aeroporto(Airport& airport){
     Menu consult_airport(airportName, "Opção: ", options, curiosities, true, true, 1);
     consult_airport.render();
 
+    vector<string> back_options = { "Voltar" };
+
     if(consult_airport.optionIsSelected()){
         switch (consult_airport.getOption()) {
             case 0: mainMenu(); break;
             case 1: voos_aeroporto(airport); break;
-            case 2: cout << "not yet implemented" << endl; break;
-            case 3: {
-                vector<string> options = { "Voltar" };
+            case 2: {
+                set<string> targets = m.reachableAirports(airport.getCode(), 1);
+                vector<string> targets_vector;
+                vector<string> targets_codes;
 
-                Menu target_at_x("Destinos a X voos de" + airportName, "Digite um x: ", options, {}, true, true, 1, true);
+                if(targets.size() > 0){
+                    targets_vector.push_back(to_string(targets.size()) + " destinos diretos diferentes.");
+                    for(int i=0; i<3; i++) targets_vector.push_back("");
+                }
+
+                for(string targetCode : targets){
+                    Airport target_airport = m.getAirports().find(targetCode)->second;
+                    string new_target = targetCode + " - " + target_airport.getName() + ", " + target_airport.getCountry();
+                    targets_vector.push_back(new_target);
+                    targets_codes.push_back(targetCode);
+                }
+
+                Menu direct_targets("Destinos diretos" + airportName, "Opção: ", back_options, targets_vector, targets_codes,true, true, 2, false);
+                direct_targets.render();
+
+                if(direct_targets.optionIsSelected() && direct_targets.getOption() == 0){
+                    return consultar_aeroporto(airport);
+                }
+
+                Airport target = m.getAirports().find(direct_targets.getInput())->second;
+                return consultar_aeroporto(target);
+            }
+            case 3: {
+                Menu target_at_x("Destinos a X voos de" + airportName, "Digite um x: ", back_options, {}, true, true, 1, true);
                 target_at_x.render();
 
                 if(target_at_x.optionIsSelected() && target_at_x.getOption() == 0){
@@ -151,7 +177,7 @@ void menus::consultar_aeroporto(Airport& airport){
                     targets_codes.push_back(targetCode);
                 }
 
-                Menu target_at_x_list("Destinos a " + to_string(x) + " voos de" + airportName, "Opção: ", options, targets_vector, targets_codes,true, true, 2, false);
+                Menu target_at_x_list("Destinos a " + to_string(x) + " voos de" + airportName, "Opção: ", back_options, targets_vector, targets_codes,true, true, 2, false);
                 target_at_x_list.render();
 
                 if(target_at_x_list.optionIsSelected() && target_at_x_list.getOption() == 0){
