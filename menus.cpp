@@ -40,6 +40,8 @@ menus::menus(){
 
 void menus::mainMenu(){
     possible_paths.clear();
+    travel_source_airports.clear();
+    travel_target_airports.clear();
 
     vector<string> options = {
             "Sair",
