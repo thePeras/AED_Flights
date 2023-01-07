@@ -92,7 +92,7 @@ void Managing::readFlights() {
         ss.ignore();
 
         // Basically adding edges to the graph
-        float distance = airports[origin].getLocation().distance(airports[destination].getLocation());
+        float distance = airports[origin].distance(&airports[destination]);
         Flight *flight = new Flight(origin, destination, airline, distance);
 
         airlines[airline].addFlight(flight);
@@ -373,47 +373,20 @@ set<string> Managing::reachableAirports(string source, int maxNumFlights) {
     return reachableAirports;
 }
 
-pair<string, int> Managing::mostDistantCountry(string source, int maxNumFlights) {
-    list<list<Flight *>> paths;
-    unordered_map<string, bool> visited;
-
-    Airport sourceAirportObj = airports[source];
-
-    int distance = 0;
-    string country;
-    int flightsNeeded;
-
-    paths.push_back({});
-
-    while (!paths.empty()) {
-        list<Flight *> path = paths.front();
-
-        paths.pop_front();
-
-        string lastAirport = (path.empty()) ? source : path.back()->getTarget();
-        Airport lastAirportObj = airports[lastAirport];
-
-        int currentDistance = lastAirportObj.getLocation().distance(sourceAirportObj.getLocation());
-        if (currentDistance > distance) {
-            distance = currentDistance;
-            country = lastAirportObj.getCountry();
-            flightsNeeded = path.size();
-        }
-
-        visited[lastAirport] = true;
-        for (Flight *flight: lastAirportObj.getFlights()) {
-            if (!visited[flight->getTarget()]) {
-                list<Flight *> newPath = path;
-                newPath.push_back(flight);
-
-                if (newPath.size() > maxNumFlights) continue;
-
-                paths.push_back(newPath);
-            }
+string Managing::mostDistantCountry(string source, int maxNumFlights) {
+    string distantCountry = "";
+    double maxDistance = 0;
+    Airport sourceAirport = this->airports[source];
+    set<string> airports = reachableAirports(source, maxNumFlights);
+    for(string airportCode : airports) {
+        Airport airport = this->airports[airportCode];
+        double distance = sourceAirport.distance(&airport);
+        if(distance > maxDistance){
+            maxDistance = distance;
+            distantCountry = airport.getCountry();
         }
     }
-
-    return make_pair(country, flightsNeeded);
+    return distantCountry;
 }
 
 set<string> Managing::getArticulationPoints(unordered_map<string, Airport> &network){

@@ -33,6 +33,9 @@ public:
     const list<Flight *> &getFlights() const;
 
     const set<string> getAirlines() const;
+
+    double distance(Airport* airport);
+
 private:
     string code;
     string name;

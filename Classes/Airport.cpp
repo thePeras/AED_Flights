@@ -72,3 +72,6 @@ const set<string> Airport::getAirlines() const {
     return airlines;
 }
 
+double Airport::distance(Airport *airport){
+    return location.distance(airport->getLocation());
+}
