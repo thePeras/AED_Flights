@@ -420,13 +420,13 @@ void menus::menu_coordenadas(){
     string longitude;
     do{
         cout << "Longitude: ";
-        cin >> longitude;
+        getline(cin,longitude);
     }while(!Validate::longitude(longitude));
 
     string radius;
     do{
         cout << "Raio: ";
-        cin >> radius;
+        getline(cin,radius);
     }while(!Validate::radius(radius));
 
 
@@ -436,6 +436,12 @@ void menus::menu_coordenadas(){
     };
 
     vector<string> airports = m.getAirportsInRadius(Location(stod(latitude), stod(longitude)), stod(radius));
+
+    if(airports.empty()){
+        cout << endl <<"Não foram encontrados aeroportos no raio especificado." << endl;
+        menu_coordenadas();
+        return;
+    }
 
     Menu airport_menu("Viajar - Aeroporto", "Código do aeroporto: ", airport_options, airports, true, true, 10);
     airport_menu.render();
