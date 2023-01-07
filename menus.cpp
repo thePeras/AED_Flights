@@ -815,10 +815,13 @@ void menus::menu_results() {
         max_num_flights++;
     }while (possible_paths.empty());
     max_num_flights--;
-
     vector<string> results;
+
+    unordered_map<string, list<Flight*> const &> id_flights;
     int count = 3;
     for(const auto& trip : possible_paths){
+        //insert the trip to the map with count as the key
+        id_flights.insert({to_string(count), trip});
         string each_trip = "";
         for(auto flight : trip){
             if(trip.size() > 1){
@@ -849,9 +852,28 @@ void menus::menu_results() {
     }
 
     string id = menu_results.getInput();
-    cout << "Voo escolhido: " << id << endl;
-}
 
+    string bilhete = "Comprou bilhete(s) para o(s) voo(s): ";
+
+    for(auto flight : id_flights.find(id)->second){
+        bilhete +=  flight->getSource() + " -> " + flight->getTarget() + " (" + flight->getAirline() + ")   ";
+    }
+
+    vector<string> bilhetes = {bilhete};
+
+    vector<string> options_final = {"Voltar ao menu principal", "Viajar novamente"};
+    Menu menu_final("Bilhetes", "Escolha uma opção: ", options_final, bilhetes, true, true, 1);
+    menu_final.render();
+
+    if(menu_final.optionIsSelected() && menu_final.getOption() == 0){
+        mainMenu();
+    }
+    else if(menu_final.optionIsSelected() && menu_final.getOption() == 1){
+        travel_source_airports.clear();
+        travel_target_airports.clear();
+        menu_viajar("De onde?");
+    }
+}
 
 void menus::menu_filtrar() {
     vector<string> options = {"Voltar", "Companhias", "Escalas"};
