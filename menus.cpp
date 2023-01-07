@@ -50,6 +50,14 @@ void menus::mainMenu(){
     };
 
     Menu MainMenu("Inicio", "Escolha uma opção: ", options, {}, true);
+    vector<string> sources = {"OPO", "LIS"};
+    vector<string> dest = {"GVA"};
+    for (auto el : m.possiblePaths(sources, dest, 1)) {
+        for (auto el2 : el) {
+            cout << el2->getAirline() << " " << el2->getSource() << " " << el2->getTarget() << endl;
+        }
+        cout << endl;
+    }
     MainMenu.render();
 
 
