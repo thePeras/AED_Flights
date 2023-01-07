@@ -32,35 +32,13 @@ void menus::exit_action(){
 
 menus::menus(){
     m.readFiles();
-    for(auto elem : m.getAirlines()){
-        considered_airlines.insert(elem.first);
+    for(auto &airline : m.getAirlines()){
+        considered_airlines.insert(airline.first);
     }
     mainMenu();
 }
 
 void menus::mainMenu(){
-    /*
-    vector<string> airports = {"OPO", "LIS", "FAO"};
-    vector<string> targets = {"SYD", "MEB", "BNE", "PER"};
-    set<string> airlines= {"TAP", "UAE"};
-    for (auto el : m.possiblePaths(airports, targets, 3, airlines)) {
-        for (auto el2 : el) {
-            cout << el2->getSource() << " -> " << el2->getTarget() << " | " << el2->getAirline() << endl;
-        }
-        cout << endl;
-    }
-     */
-
-    /*
-    set<string> airlines = {"TAP", "EZY"};
-    for (auto el : m.possiblePaths("OPO", "GVA", 2, airlines)) {
-        for (auto el2 : el) {
-            cout << el2->getSource() << " -> " << el2->getTarget() << " | " << el2->getAirline() << endl;
-        }
-        cout << endl;
-    }
-    */
-
     possible_paths.clear();
 
     vector<string> options = {
@@ -172,7 +150,6 @@ void menus::voos_aeroporto(Airport airport){
         }
         flights.push_back(airlines);
     }
-    //sort(flights.begin(), flights.end());
 
     flights.insert(flights.begin(), "Destino");
     flights.insert(flights.begin()+1, "Distância");
@@ -674,13 +651,22 @@ void menus::menu_results() {
     possible_paths = m.possiblePaths(travel_source_airports, travel_target_airports,max_num_flights, considered_airlines);
 
     vector<string> results;
-    for(auto trip : possible_paths){
+    int count = 3;
+    for(const auto& trip : possible_paths){
+        string each_trip = "";
         for(auto flight : trip){
-            results.push_back(flight->getSource() + " -> " + flight->getTarget() + " : " + flight->getAirline());
+            if(trip.size() > 1){
+                each_trip += flight->getSource() + " -> " + flight->getTarget() + " (" + flight->getAirline() + ")   ";
+            }
+            else{
+                each_trip += flight->getSource() + " -> " + flight->getTarget() + " (" + flight->getAirline() + ")";
+            }
         }
+        results.push_back(to_string(count) + " - " + each_trip);
+        count++;
     }
 
-    Menu menu_results("Resultados", "Escolha uma opção ou o ID de um voo: ", options, results, true, true, 10);
+    Menu menu_results("Resultados com " + to_string(max_num_flights) + " voo(s)", "Escolha uma opção ou o ID de um voo: ", options, results, true, true, 2);
     menu_results.render();
 
     if(menu_results.optionIsSelected() && menu_results.getOption() == 0){
@@ -761,4 +747,5 @@ void menus::menu_escala() {
     max_num_flights = stoi(num);
     menu_results();
 }
+
 
