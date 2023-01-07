@@ -310,37 +310,51 @@ list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<str
 }
 
 list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<string>& targets, int maxNumFlights, set<string>& consideredAirlines) {
-    queue<list<Flight *>> paths;
+    list<list<Flight *>> paths;
     unordered_map<string, bool> visited;
 
     list<list<Flight *>> possiblePaths;
 
+    queue<string> airportsQueue;
+
+    visited.clear();
+
     for (string source : sources) {
-        for (string target : targets) {
-            visited.clear();
-            paths.push({});
-            while (!paths.empty()) {
-                list<Flight *> path = paths.front();
-                paths.pop();
-                string lastAirport = (path.empty()) ? source : path.back()->getTarget();
-                if (lastAirport == target) {
-                    possiblePaths.push_back(path);
-                    continue;
-                }
-                visited[lastAirport] = true;
-                Airport lastAirportObj = airports[lastAirport];
-                for (Flight *flight: lastAirportObj.getFlights()) {
-                    if (consideredAirlines.find(flight->getAirline()) == consideredAirlines.end()) continue;
-                    if (!visited[flight->getTarget()]) {
-                        list<Flight *> newPath = path;
-                        newPath.push_back(flight);
-                        if (newPath.size() > maxNumFlights) continue;
-                        paths.push(newPath);
-                    }
-                }
+        airportsQueue.push(source);
+        visited[source] = true;
+    }
+
+    paths.push_back({});
+    while (!airportsQueue.empty()) {
+        list<Flight *> path = paths.front();
+        paths.pop_front();
+
+        string lastAirport = airportsQueue.front();
+        airportsQueue.pop();
+
+        if (find(targets.begin(), targets.end(), lastAirport) != targets.end()) {
+            possiblePaths.push_back(path);
+            //this push_back is pushing a empty path
+            continue;
+        }
+
+        Airport lastAirportObj = airports[lastAirport];
+        for (Flight *flight: lastAirportObj.getFlights()) {
+            if (consideredAirlines.find(flight->getAirline()) == consideredAirlines.end()) continue;
+            if (!visited[flight->getTarget()]) {
+                airportsQueue.push(flight->getTarget());
+                visited[flight->getTarget()] = true;
+
+                list<Flight *> newPath = path;
+                newPath.push_back(flight);
+
+                if (newPath.size() > maxNumFlights) continue;
+
+                paths.push_back(newPath);
             }
         }
     }
+
     return possiblePaths;
 }
 
