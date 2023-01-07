@@ -701,8 +701,12 @@ void menus::menu_results() {
         results.push_back(to_string(count) + " - " + each_trip);
         count++;
     }
+    vector<string> ids;
+    for(int i = 3; i < count; i++){
+        ids.push_back(to_string(i));
+    }
 
-    Menu menu_results("Resultados com " + to_string(max_num_flights) + " voo(s)", "Escolha uma opção ou o ID de um voo: ", options, results, true, true, 2);
+    Menu menu_results("Resultados com " + to_string(max_num_flights) + " voo(s)", "Escolha uma opção ou o ID de um voo: ", options, results, ids, true, true, 2);
     menu_results.render();
 
     if(menu_results.optionIsSelected() && menu_results.getOption() == 0){
