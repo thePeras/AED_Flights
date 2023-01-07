@@ -430,22 +430,53 @@ void menus::menu_coordenadas(){
     }while(!Validate::radius(radius));
 
 
-    vector<string> founded_airports = m.getAirportsInRadius(Location(stod(latitude), stod(longitude)), stod(radius));
-    if(founded_airports.empty()){
-        cout << endl <<"Nenhum aeroporto encontrado" << endl;
-        menu_coordenadas();
+    vector<string> airport_options = {
+            "Voltar",
+            "Selecionar todos os aeroportos",
+    };
+
+    vector<string> airports = m.getAirportsInRadius(Location(stod(latitude), stod(longitude)), stod(radius));
+
+    Menu airport_menu("Viajar - Aeroporto", "Código do aeroporto: ", airport_options, airports, true, true, 10);
+    airport_menu.render();
+
+    if(airport_menu.optionIsSelected()){
+        switch (airport_menu.getOption()) {
+            case 0: {
+                string title = travel_source_airports.empty() ? "De onde?" : "Para onde?";
+                menu_viajar(title);
+                return;
+            }
+            case 1: {
+                if(travel_source_airports.empty()){
+                    string title = "Para onde?";
+                    travel_source_airports = airports;
+                    menu_viajar(title);
+                    return;
+                }
+                else{
+                    travel_target_airports = airports;
+                    menu_results();
+                    return;
+                }
+            }
+        }
+    }
+
+    //selected an airport
+
+    string airport = airport_menu.getInput();
+    Airport a = m.getAirports().find(airport)->second;
+    if(travel_source_airports.empty()){
+        travel_source_airports.push_back(a.getCode());
+        menu_viajar("Para onde?");
         return;
     }
-     if(travel_source_airports.empty()){
-         travel_source_airports = founded_airports;
-         menu_viajar("Para onde?");
-         return;
-     }
-     else{
-         travel_target_airports = founded_airports;
-         menu_results();
-         return;
-     }
+    else{
+        travel_target_airports.push_back(a.getCode());
+        menu_results();
+        return;
+    }
 }
 
 
