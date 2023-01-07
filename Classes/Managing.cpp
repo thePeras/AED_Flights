@@ -112,8 +112,8 @@ const unordered_map<string, Airline> &Managing::getAirlines() const {
     return airlines;
 }
 
-const unordered_map<string, Airport> &Managing::getAirports() const {
-    return airports;
+unordered_map<string, Airport> &Managing::getAirports(){
+    return this->airports;
 }
 
 const unordered_map<string, vector<string>> &Managing::getCountryCities() const {
@@ -309,53 +309,50 @@ list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<str
     return possiblePaths;
 }
 
-list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<string>& targets, int maxNumFlights, set<string>& consideredAirlines) {
-    list<list<Flight *>> paths;
+list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<string>& targets, int maxNumFlights, unordered_map<string, Airport> &network) {
     unordered_map<string, bool> visited;
-
-    list<list<Flight *>> possiblePaths;
-
-    queue<string> airportsQueue;
-
     visited.clear();
 
+    queue<queue<Airport>> solutions;
+
+    queue<queue<Airport>> airportsPaths;
+
     for (string source : sources) {
-        airportsQueue.push(source);
+        queue<Airport> airports;
+        airports.push(network[source]);
+        airportsPaths.push(airports);
+
         visited[source] = true;
     }
 
-    paths.push_back({});
-    while (!airportsQueue.empty()) {
-        list<Flight *> path = paths.front();
-        paths.pop_front();
 
-        string lastAirport = airportsQueue.front();
-        airportsQueue.pop();
+    while (!airportsPaths.empty()) {
 
-        if (find(targets.begin(), targets.end(), lastAirport) != targets.end()) {
-            possiblePaths.push_back(path);
-            //this push_back is pushing a empty path
+        queue<Airport> path = airportsPaths.front();
+        airportsPaths.pop();
+
+        Airport airport = path.back();
+
+        if (find(targets.begin(), targets.end(), airport.getCode()) != targets.end()) {
+            solutions.push(path);
             continue;
         }
 
-        Airport lastAirportObj = airports[lastAirport];
-        for (Flight *flight: lastAirportObj.getFlights()) {
-            if (consideredAirlines.find(flight->getAirline()) == consideredAirlines.end()) continue;
+        for (Flight *flight: airport.getFlights()) {
             if (!visited[flight->getTarget()]) {
-                airportsQueue.push(flight->getTarget());
+                queue<Airport> newPath = path;
+                newPath.push(network[flight->getTarget()]);
+                if (newPath.size() > maxNumFlights+1) continue;
+                airportsPaths.push(newPath);
                 visited[flight->getTarget()] = true;
-
-                list<Flight *> newPath = path;
-                newPath.push_back(flight);
-
-                if (newPath.size() > maxNumFlights) continue;
-
-                paths.push_back(newPath);
             }
         }
     }
 
-    return possiblePaths;
+    //Converting the queue of queues of airports to a list of lists of flights
+    //For each pair of airports a, b. Find all flights from a to b (to see all the airlines)
+
+    return list<list<Flight *>>();
 }
 
 set<string> Managing::reachableAirports(string source, int maxNumFlights) {
