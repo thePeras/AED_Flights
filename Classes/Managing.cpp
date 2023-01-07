@@ -120,11 +120,11 @@ const unordered_map<string, vector<string>> &Managing::getCountryCities() const 
     return country_cities;
 }
 
-const vector<Airport> Managing::getAirportsInRadius(Location location, double radius) const {
-    vector<Airport> airportsInRadius;
+const vector<string> Managing::getAirportsInRadius(Location location, double radius) const {
+    vector<string> airportsInRadius;
     for (auto airport: airports) {
         if (airport.second.getLocation().distance(location) <= radius) {
-            airportsInRadius.push_back(airport.second);
+            airportsInRadius.push_back(airport.second.getCode());
         }
     }
     return airportsInRadius;

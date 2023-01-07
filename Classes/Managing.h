@@ -31,7 +31,7 @@ public:
      * @param radius Radius in kilometers
      * @return A vector of airports in the radius
      */
-    const vector<Airport> getAirportsInRadius(Location location, double radius) const;
+    const vector<string> getAirportsInRadius(Location location, double radius) const;
 
     vector<string> getAirportsInCity(string city, string country);
 

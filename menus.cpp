@@ -267,13 +267,13 @@ void menus::aeroporto_input(){
     digit_airport.render();
 
     if(digit_airport.optionIsSelected() && digit_airport.getOption() == 0){
-        string title = travel_source_airports.size() == 0 ? "De onde?" : "Para onde?";
+        string title = travel_source_airports.empty() ? "De onde?" : "Para onde?";
         menu_viajar(title);
     }
 
     string airport = digit_airport.getInput();
 
-    if(travel_source_airports.size() == 0) {
+    if(travel_source_airports.empty()) {
         travel_source_airports.push_back(airport);
         menu_viajar("Para onde?");
     }
@@ -298,7 +298,7 @@ void menus::menu_pais(){
     country_menu.render();
 
     if(country_menu.optionIsSelected() && country_menu.getOption() == 0){
-        string title = travel_source_airports.size() == 0 ? "De onde?" : "Para onde?";
+        string title = travel_source_airports.empty() ? "De onde?" : "Para onde?";
         menu_viajar(title);
         return;
     }
@@ -323,7 +323,7 @@ void menus::menus_pais_cidades(string country){
         switch (choice_allOrOne_country.getOption()) {
             case 0: menu_pais(); return;
             case 1: {
-                if(travel_source_airports.size() == 0){
+                if(travel_source_airports.empty()){
                     string title = "Para onde?";
                     travel_source_airports = m.getAirportsInCountry(country);
                     menu_viajar(title);
@@ -348,7 +348,7 @@ void menus::menu_cidade(string city, string country){
 
     if(airports.size() == 1){
         Airport airport = m.getAirports().find(airports[0])->second;
-        if(travel_source_airports.size() == 0){
+        if(travel_source_airports.empty()){
             travel_source_airports.push_back(airport.getCode());
             menu_viajar("Para onde?");
             return;
@@ -372,7 +372,7 @@ void menus::menu_cidade(string city, string country){
         switch (airport_menu.getOption()) {
             case 0: menus_pais_cidades(country); return;
             case 1: {
-                if(travel_source_airports.size() == 0){
+                if(travel_source_airports.empty()){
                     string title = "Para onde?";
                     travel_source_airports = airports;
                     menu_viajar(title);
@@ -389,7 +389,7 @@ void menus::menu_cidade(string city, string country){
 
     string airport = airport_menu.getInput();
     Airport a = m.getAirports().find(airport)->second;
-    if(travel_source_airports.size() == 0){
+    if(travel_source_airports.empty()){
         travel_source_airports.push_back(a.getCode());
         menu_viajar("Para onde?");
         return;
@@ -404,11 +404,11 @@ void menus::menu_cidade(string city, string country){
 void menus::menu_coordenadas(){
     vector<string> options_viajar = {"Voltar"};
 
-    Menu latitude_menu("Viajar - Coordenadas", "latitude: ", options_viajar);
+    Menu latitude_menu("Viajar - Coordenadas", "Latitude: ", options_viajar);
     latitude_menu.render();
 
     if(latitude_menu.optionIsSelected() && latitude_menu.getOption() == 0){
-        string title = travel_source_airports.size() == 0 ? "De onde?" : "Para onde?";
+        string title = travel_source_airports.empty() ? "De onde?" : "Para onde?";
         menu_viajar(title);
     }
 
@@ -419,21 +419,35 @@ void menus::menu_coordenadas(){
 
     string longitude;
     do{
-        cout << "longitude: ";
+        cout << "Longitude: ";
         cin >> longitude;
     }while(!Validate::longitude(longitude));
 
     string radius;
     do{
-        cout << "raio: ";
+        cout << "Raio: ";
         cin >> radius;
     }while(!Validate::radius(radius));
 
 
-    vector<Airport> founded_airports = m.getAirportsInRadius(Location(stod(latitude), stod(longitude)), stod(radius));
-
-    //TODO: Run the algorithm
+    vector<string> founded_airports = m.getAirportsInRadius(Location(stod(latitude), stod(longitude)), stod(radius));
+    if(founded_airports.empty()){
+        cout << endl <<"Nenhum aeroporto encontrado" << endl;
+        menu_coordenadas();
+        return;
+    }
+     if(travel_source_airports.empty()){
+         travel_source_airports = founded_airports;
+         menu_viajar("Para onde?");
+         return;
+     }
+     else{
+         travel_target_airports = founded_airports;
+         menu_results();
+         return;
+     }
 }
+
 
 // CONSULTAR REDE MENU
 
@@ -765,8 +779,11 @@ void menus::consultar_rede_pais(string country){
 
 void menus::menu_results() {
     vector<string> options = {"Voltar", "Filtrar"};
-
-    possible_paths = m.possiblePaths(travel_source_airports, travel_target_airports,max_num_flights, considered_airlines);
+    do{
+        possible_paths = m.possiblePaths(travel_source_airports, travel_target_airports,max_num_flights, considered_airlines);
+        max_num_flights++;
+    }while (possible_paths.empty());
+    max_num_flights--;
 
     vector<string> results;
     int count = 3;
