@@ -1090,7 +1090,7 @@ void menus::menu_results(unordered_map<string, Airport> &network) {
 
     string id = menu_results.getInput();
 
-    string bilhete = "Comprou bilhete(s) para o(s) voo(s): ";
+    string bilhete = "Comprou um bilhete para o seguinte voo: ";
 
     for(auto flight : id_flights.find(id)->second){
         auto airlines = flight->getAirlines();

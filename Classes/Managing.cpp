@@ -294,7 +294,6 @@ Managing::possiblePaths(vector<string> &sources, vector<string> &targets, unorde
                 }
                 airportsPaths.push(newPath);
                 flightPaths.push_back(newFlightPath);
-                //visited[flight->getTarget()] = true;
             }
         }
     }
