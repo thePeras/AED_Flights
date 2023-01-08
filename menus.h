@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Airport.h"
+#include <unordered_map>
 
 class menus {
     private:
@@ -17,6 +18,7 @@ class menus {
         void menus_pais_cidades(string country);
         void menu_cidade(string city, string country);
         void menu_coordenadas();
+        void escolher_rede();
 
         //CONSULTAR AEROPORTO
         void digitar_aeroporto();
@@ -32,7 +34,7 @@ class menus {
         void consultar_rede_pais(string country);
 
 
-        void menu_results();
+        void menu_results(unordered_map<string, Airport>& network);
         void menu_filtrar();
         void menu_companhias();
         void menu_escala();
