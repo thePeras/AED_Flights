@@ -35,3 +35,10 @@ float Location::distance(Location location) {
 
     return c * EARTH_RADIUS;
 }
+
+float Location::getLongitude() const {
+    return longitude;
+}
+float Location::getLatitude() const {
+    return latitude;
+}

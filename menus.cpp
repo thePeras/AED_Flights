@@ -113,7 +113,7 @@ void menus::consultar_aeroporto(Airport& airport){
 
     vector<string> curiosities = {curiosity1.str(), curiosity2.str(), curiosity3.str()};
 
-    string airportName = " (" + airport.getCode() + ") Aeroporto - " + airport.getName() + ", " + airport.getCountry();
+    string airportName = " (" + airport.getCode() + ") Aeroporto - " + airport.getName() + ", " + airport.getCountry() + " | " + to_string(airport.getLocation().getLatitude()) + " " + to_string(airport.getLocation().getLongitude());
 
     Menu consult_airport(airportName, "Opção: ", options, curiosities, true, true, 1);
     consult_airport.render();
