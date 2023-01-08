@@ -292,6 +292,18 @@ Managing::possiblePaths(vector<string> &sources, vector<string> &targets, unorde
         }
     }
 
+    solutions.sort([](list<Flight *> a, list<Flight *> b) {
+        double aDistance = 0;
+        double bDistance = 0;
+        for (Flight *flight: a) {
+            aDistance += flight->getDistance();
+        }
+        for (Flight *flight: b) {
+            bDistance += flight->getDistance();
+        }
+        return aDistance < bDistance;
+    });
+
     return solutions;
 }
 
