@@ -772,24 +772,23 @@ void menus::menu_results() {
     for(const auto& trip : possible_paths){
         string each_trip = "";
         for(auto flight : trip){
-           /*
-            * if(trip.size() > 1){
-                each_trip += flight->getSource() + " -> " + flight->getTarget() + " (" + flight->getAirline() + ")   ";
+            each_trip = flight->getSource() + " -> " + flight->getTarget() + " ( ";
+            vector<string> airlines = flight->getAirlines();
+            for(int i=0; i<airlines.size() - 1; i++){
+                each_trip += airlines[i] + ", ";
             }
-            else{
-                each_trip += flight->getSource() + " -> " + flight->getTarget() + " (" + flight->getAirline() + ")";
-            }
-            RESOLVER PROBLEMA */
+            each_trip += airlines.back() += ") ";
         }
         results.push_back(to_string(count) + " - " + each_trip);
         count++;
     }
+
     vector<string> ids;
     for(int i = 3; i < count; i++){
         ids.push_back(to_string(i));
     }
 
-    Menu menu_results("Resultados com " + to_string(max_num_flights) + " voo(s)", "Escolha uma opção ou o ID de um voo: ", options, results, ids, true, true, 2);
+    Menu menu_results("Resultados ", "Escolha uma opção ou o ID de um voo: ", options, results, ids, true, true, 2);
     menu_results.render();
 
     if(menu_results.optionIsSelected() && menu_results.getOption() == 0){
@@ -820,8 +819,6 @@ void menus::menu_filtrar() {
     else if(menu_filtrar.optionIsSelected() && menu_filtrar.getOption() == 2){
         menu_escala();
     }
-
-
 }
 
 void menus::menu_companhias() {
@@ -870,5 +867,3 @@ void menus::menu_escala() {
     max_num_flights = stoi(num);
     menu_results();
 }
-
-

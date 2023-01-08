@@ -41,13 +41,7 @@ public:
     unordered_map<string, Airport> getAirlineNetwork(string airlineCode, bool directed);
     unordered_map<string, Airport> getCountryNetwork(string country, bool directed);
 
-    list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights);
-
-    list<list<Flight*>> possiblePaths(vector<string>& sources, vector<string>& targets, int maxNumFlights);
-
     list<list<Flight*>> possiblePaths(vector<string>& sources, vector<string>& targets, unordered_map<string, Airport> &network);
-
-    list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights, set<string> &airlines);
 
     set<string> reachableAirports(string source, int maxNumFlights);
 
