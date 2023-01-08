@@ -1062,7 +1062,10 @@ void menus::menu_results(unordered_map<string, Airport> &network) {
 
     vector<string> results;
     int count = 3;
+    unordered_map<string, list<Flight*> const &> id_flights;
     for (const auto &trip: possible_paths) {
+        //insert the trip to the map with count as the key
+        id_flights.insert({to_string(count), trip});
         string each_trip = "";
         for (auto flight: trip) {
             each_trip += flight->getSource() + " -> " + flight->getTarget() + " (";
@@ -1075,8 +1078,11 @@ void menus::menu_results(unordered_map<string, Airport> &network) {
         results.push_back(to_string(count) + " - " + each_trip);
         count++;
     }
-
-    Menu menu_results("Os melhores resultados", "Escolha uma opção: ", options, results, true, true, 2);
+    vector<string> ids;
+    for (int i = 3; i < count; i++) {
+        ids.push_back(to_string(i));
+    }
+    Menu menu_results("Os melhores resultados", "Escolha uma opção ou o ID de um voo: ", options, results, ids, true, true, 2);
     menu_results.render();
 
     if (menu_results.optionIsSelected() && menu_results.getOption() == 0) {
@@ -1084,5 +1090,35 @@ void menus::menu_results(unordered_map<string, Airport> &network) {
         travel_target_airports.clear();
         menu_viajar("De onde?");
     }
+
+
+    string id = menu_results.getInput();
+
+    string bilhete = "Comprou bilhete(s) para o(s) voo(s): ";
+
+    for(auto flight : id_flights.find(id)->second){
+        auto airlines = flight->getAirlines();
+        bilhete +=  flight->getSource() + " -> " + flight->getTarget() + " (" ;
+        for (int i = 0; i < airlines.size() - 1; i++) {
+            bilhete += airlines[i] + ", ";
+        }
+        bilhete += airlines.back() += ") ";
+    }
+
+    vector<string> bilhetes = {bilhete};
+
+    vector<string> options_final = {"Voltar ao menu principal", "Viajar novamente"};
+    Menu menu_final("Bilhetes", "Escolha uma opção: ", options_final, bilhetes, true, true, 1);
+    menu_final.render();
+
+    if(menu_final.optionIsSelected() && menu_final.getOption() == 0){
+        mainMenu();
+    }
+    else if(menu_final.optionIsSelected() && menu_final.getOption() == 1){
+        travel_source_airports.clear();
+        travel_target_airports.clear();
+        menu_viajar("De onde?");
+    }
+
 }
 
