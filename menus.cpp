@@ -4,8 +4,6 @@
 #include "Menu.h"
 #include <string>
 #include <vector>
-#include <stack>
-#include <sstream>
 #include <map>
 
 #include "Validate.h"
@@ -15,9 +13,8 @@ using namespace std;
 Managing m;
 vector<string> travel_source_airports;
 vector<string> travel_target_airports;
-int max_num_flights = 1;          //user input in results menu
-set<string> considered_airlines;  //user input in results menu
 list<list<Flight *>> possible_paths;
+
 //ACTIONS
 
 void menus::exit_action() {
@@ -32,9 +29,6 @@ void menus::exit_action() {
 
 menus::menus() {
     m.readFiles();
-    for (auto &airline: m.getAirlines()) {
-        considered_airlines.insert(airline.first);
-    }
     mainMenu();
 }
 
@@ -47,8 +41,7 @@ void menus::mainMenu() {
             "Sair",
             "Viajar",
             "Consultar Aeroporto",
-            "Consultar Rede",
-            "Os meus bilhetes"
+            "Consultar Rede"
     };
 
     Menu MainMenu("Inicio", "Escolha uma opção: ", options, {}, true);
@@ -64,14 +57,12 @@ void menus::mainMenu() {
             case 1:
                 menu_viajar("De onde?");
                 break;
+                break;
             case 2:
                 digitar_aeroporto();
                 break;
             case 3:
                 consultar_rede();
-                break;
-            case 4:
-                cout << "Os meus bilhetes ainda por fazer" << endl;
                 break;
         }
     }
