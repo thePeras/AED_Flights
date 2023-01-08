@@ -9,79 +9,47 @@
 using namespace std;
 
 class Airline {
-    private:
+private:
     string code;
     string name;
     string callSign;
     string country;
-    vector<Flight*> flights;
+    vector<Flight *> flights;
     set<string> airports;
 
-    public:
-    Airline(){
-        code = "";
-        name = "";
-        callSign = "";
-        country = "";
-        flights = {};
-        airports = {};
-    }
+public:
+    Airline();
 
-    Airline(string code, string name, string callSign, string country){
-        this->code = code;
-        this->name = name;
-        this->callSign = callSign;
-        this->country = country;
-        this->flights = {};
-        this->airports = {};
-    }
+    Airline(string code, string name, string callSign, string country);
 
-    const string &getCode() const {
-        return code;
-    }
+    void addFlight(Flight *flight);
 
-    void setCode(const string &code) {
-        this->code = code;
-    }
+    void addAirport(string airport);
 
-    const string &getName() const {
-        return name;
-    }
+    const string &getCode() const;
 
-    void setName(const string &name) {
-        this->name = name;
-    }
+    void setCode(const string &code);
 
-    const string &getCallSign() const {
-        return callSign;
-    }
+    const string &getName() const;
 
-    void setCallSign(const string &callSign) {
-        this->callSign = callSign;
-    }
+    void setName(const string &name);
 
-    const string &getCountry() const {
-        return country;
-    }
+    const string &getCallSign() const;
 
-    void setCountry(const string &country) {
-        this->country = country;
-    }
+    void setCallSign(const string &callSign);
 
-    void addFlight(Flight* flight){
-        flights.push_back(flight);
-    }
+    const string &getCountry() const;
 
-    vector<Flight*> getFlights(){
-        return flights;
-    }
+    void setCountry(const string &country);
 
-    void addAirport(string airport){
-        airports.insert(airport);
-    }
+    const vector<Flight *> &getFlights() const;
 
-    set<string> getAirports(){
-        return airports;
-    }
+    void setFlights(const vector<Flight *> &flights);
+
+    const set<string> &getAirports() const;
+
+    void setAirports(const set<string> &airports);
+
+
 };
 

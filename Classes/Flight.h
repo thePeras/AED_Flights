@@ -13,9 +13,11 @@ private:
     vector<string> airlines; //airline_id
 public:
     Flight();
+
     Flight(string source, string target, float distance);
 
     const string &getSource() const;
+
     void setSource(const string &source);
 
     const string &getTarget() const;

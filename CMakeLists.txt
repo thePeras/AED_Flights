@@ -11,7 +11,6 @@ add_executable(AED_Aeroportos
         Classes/Airline.h
         Classes/Airport.cpp
         Classes/Airport.h
-        Classes/Comparators.cpp
         Classes/Flight.cpp
         Classes/Flight.h
         Classes/Location.cpp

@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include "Airline.h"
-#include "Comparators.cpp"
 #include "Airport.h"
 #include <vector>
 #include <stack>
@@ -39,15 +38,41 @@ public:
     vector<string> getAirportsInCountry(string country);
 
     unordered_map<string, Airport> getUndirectedGlobalNetwork();
+
     unordered_map<string, Airport> getAirlineNetwork(string airlineCode, bool directed);
+
     unordered_map<string, Airport> getAirlinesNetwork(set<string> airlineCode, bool directed);
+
     unordered_map<string, Airport> getCountryNetwork(string country, bool directed);
 
-    list<list<Flight*>> possiblePaths(vector<string>& sources, vector<string>& targets, unordered_map<string, Airport> &network);
+    /**
+     * @brief Get the shortest path between two airports in terms of flights
+     * Complexity: O(V + E)
+     * @param sources Source airports
+     * @param targets Target airports
+     * @param network graph of airports
+     * @return A list of lists of flights
+     */
+    list<list<Flight *>> possiblePaths(vector<string> &sources, vector<string> &targets, unordered_map<string, Airport> &network);
 
-    set<string> reachableAirports(string source, int maxNumFlights);
+    /**
+     * @brief Get the reachable airports from a given airport up to a given number of flights
+     * Complexity: O(V + E)
+     * @param source Source airport
+     * @param numFlights Number of flights
+     * @return set of reachable airports
+     */
+    set<string> reachableAirports(string source, int numFlights);
 
-    string mostDistantCountry(string source, int maxNumFlights);
+
+    /**
+     * @brief Get the most distant country in a number of flights
+     * Complexity: O(V + E)
+     * @param source
+     * @param numFlights
+     * @return
+     */
+    string mostDistantCountry(string source, int numFlights);
 
 
     /**
@@ -68,15 +93,29 @@ public:
      * @param articulationPoints The set of articulation points to be returned
      * @param network The undirected network (Graph) to be analyzed
      */
-    void findArticulationPoints(string source, unordered_map<string, int> &discovered, unordered_map<string, int> &low, unordered_map<string, string> &parent, set<string> &articulationPoints, unordered_map<string, Airport> &network);
+    void findArticulationPoints(string source, unordered_map<string, int> &discovered, unordered_map<string, int> &low,
+                                unordered_map<string, string> &parent, set<string> &articulationPoints,
+                                unordered_map<string, Airport> &network);
 
 
     vector<vector<string>> getStronglyConnectedComponentes(unordered_map<string, Airport> &network);
 
+    /**
+     * @brief A dfs based algorithm to find strongly connected components in a graph
+     * Complexity: O(V + E)
+     * @param source The source node
+     * @param num The discovery time of the source node
+     * @param low The lowest reachable node from the source node
+     * @param s  The stack of the nodes in the current strongly connected component
+     * @param inStack
+     * @param stronglyConnectedAirports
+     * @param network The undirected network (Graph) to be analyzed
+     */
     void findStronglyConnectAirports(const string source, unordered_map<string, int> &num,
-                                     unordered_map<string, int> &low, stack<string> &s, unordered_map<string, bool> &inStack,
-                                     vector<vector<string>> &stronglyConnectedAirports, unordered_map<string, Airport> &network);
-
+                                     unordered_map<string, int> &low, stack<string> &s,
+                                     unordered_map<string, bool> &inStack,
+                                     vector<vector<string>> &stronglyConnectedAirports,
+                                     unordered_map<string, Airport> &network);
 
 
     /**
@@ -88,7 +127,8 @@ public:
      * @param graph The graph to search
      * @return The max diameter of the graph starting from the source
      */
-    int bfs(string code, unordered_map<string, bool> visited, unordered_map<string, int> distances, const unordered_map<string, Airport> &graph);
+    int bfs(string code, unordered_map<string, bool> visited, unordered_map<string, int> distances,
+            const unordered_map<string, Airport> &graph);
 
     /**
      * @brief Calculates the max diameter of a graph
@@ -108,7 +148,8 @@ public:
      * @param graph The graph to search
      * @return The max weighted diameter of the graph of a given source
      */
-    double dijkstra(string code, unordered_map<string, bool> visited, unordered_map<string, double> distances, const unordered_map<string, Airport> &graph);
+    double dijkstra(string code, unordered_map<string, bool> visited, unordered_map<string, double> distances,
+                    const unordered_map<string, Airport> &graph);
 
     /**
      * @brief Calculates the max weighted diameter of a graph
@@ -134,15 +175,17 @@ public:
      * @param graph The graph to calculate the number of connected components
      * @return The number of connected components
      */
-    int numberOfComponents(unordered_map<string, Airport> & graph);
+    int numberOfComponents(unordered_map<string, Airport> &graph);
 
-    int numberOfDirectDestinations(string source, const unordered_map<string, Airport>& graph);
+    int numberOfDirectDestinations(string source, const unordered_map<string, Airport> &graph);
 
-    vector<pair<string,int>> getTopAirports(int n, const unordered_map<string, Airport>& graph); // top aeroportos que permitem chegar a um maior número de destinos diferentes com um voo (dois aeroportos diferentes são considerados dois destinos diferentes)
+    vector<pair<string, int>> getTopAirports(int n, const unordered_map<string, Airport> &graph);
 
 private:
     void readAirlines();
+
     void readAirports();
+
     void readFlights();
 
     unordered_map<string, Airport> airports; /* Graph */

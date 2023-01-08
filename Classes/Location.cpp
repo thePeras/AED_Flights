@@ -1,6 +1,7 @@
 #include "Location.h"
 
 #include <cmath>
+
 using namespace std;
 
 Location::Location() {
@@ -39,6 +40,7 @@ float Location::distance(Location location) {
 float Location::getLongitude() const {
     return longitude;
 }
+
 float Location::getLatitude() const {
     return latitude;
 }

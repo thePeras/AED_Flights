@@ -6,6 +6,7 @@
 #include <list>
 #include <set>
 #include "Flight.h"
+
 using namespace std;
 
 class Airport {
@@ -24,7 +25,7 @@ public:
 
     Location getLocation() const;
 
-    void addFlight(Flight* flight);
+    void addFlight(Flight *flight);
 
     const string &getCity() const;
 
@@ -34,7 +35,7 @@ public:
 
     const set<string> getAirlines() const;
 
-    double distance(Airport* airport);
+    double distance(Airport *airport);
 
 private:
     string code;
@@ -42,6 +43,6 @@ private:
     string city;
     string country;
     Location location;
-    list<Flight*> flights;
+    list<Flight *> flights;
 };
 

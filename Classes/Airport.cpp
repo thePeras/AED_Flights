@@ -10,7 +10,7 @@ Airport::Airport() {
     location = Location();
 }
 
-Airport::Airport(Airport * airport) {
+Airport::Airport(Airport *airport) {
     code = airport->getCode();
     name = airport->getName();
     city = airport->getCity();
@@ -65,8 +65,8 @@ const string &Airport::getCountry() const {
 const set<string> Airport::getAirlines() const {
     set<string> airlines;
 
-    for (auto flight : flights) {
-        for (auto airline : flight->getAirlines()) {
+    for (auto flight: flights) {
+        for (auto airline: flight->getAirlines()) {
             airlines.insert(airline);
         }
     }
@@ -74,6 +74,6 @@ const set<string> Airport::getAirlines() const {
     return airlines;
 }
 
-double Airport::distance(Airport *airport){
+double Airport::distance(Airport *airport) {
     return location.distance(airport->getLocation());
 }
