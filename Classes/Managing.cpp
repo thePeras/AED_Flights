@@ -194,20 +194,27 @@ unordered_map<string, Airport> Managing::getAirlinesNetwork(set<string> airlines
         }
     }
 
+    set<Flight *> tempFlights;
+
     for (string airlineCode: airlinesCodes) {
         Airline airline = airlines[airlineCode];
-        for (Flight *flight: airline.getFlights()) {
-            Flight *newFlight = new Flight(flight->getSource(), flight->getTarget(), flight->getDistance());
-            for (string airlineTag: flight->getAirlines()) {
-                if (airlinesCodes.find(airlineTag) != airlinesCodes.end())
-                    newFlight->addAirline(airlineTag);
-            }
-            string source = flight->getSource();
-            string target = flight->getTarget();
+        tempFlights.insert(airline.getFlights().begin(), airline.getFlights().end());
+    }
 
-            newNetwork[source].addFlight(newFlight);
-            if (!directed) newNetwork[target].addFlight(newFlight);
+    for (Flight *flight: tempFlights) {
+        string source = flight->getSource();
+        string target = flight->getTarget();
+
+        Flight *newFlight = new Flight(source, target, flight->getDistance());
+
+        for (string airlineCode: flight->getAirlines()) {
+            if (airlinesCodes.find(airlineCode) != airlinesCodes.end()) {
+                newFlight->addAirline(airlineCode);
+            }
         }
+
+        newNetwork[source].addFlight(newFlight);
+        if (!directed) newNetwork[target].addFlight(newFlight);
     }
 
     return newNetwork;

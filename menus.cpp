@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <sstream>
 
 #include "Validate.h"
 
@@ -13,9 +14,6 @@ using namespace std;
 Managing m;
 vector<string> travel_source_airports;
 vector<string> travel_target_airports;
-list<list<Flight *>> possible_paths;
-
-//ACTIONS
 
 void menus::exit_action() {
     cout << endl << "Leaving..." << endl;
@@ -33,7 +31,6 @@ menus::menus() {
 }
 
 void menus::mainMenu() {
-    possible_paths.clear();
     travel_source_airports.clear();
     travel_target_airports.clear();
 
@@ -56,7 +53,6 @@ void menus::mainMenu() {
                 break;
             case 1:
                 menu_viajar("De onde?");
-                break;
                 break;
             case 2:
                 digitar_aeroporto();
@@ -1058,7 +1054,7 @@ void menus::consultar_rede_pais(string country) {
 void menus::menu_results(unordered_map<string, Airport> &network) {
     vector<string> options = {"Voltar"};
 
-    possible_paths = m.possiblePaths(travel_source_airports, travel_target_airports, network);
+    list<list<Flight*>> possible_paths = m.possiblePaths(travel_source_airports, travel_target_airports, network);
 
     vector<string> results;
     int count = 3;
