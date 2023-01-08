@@ -105,12 +105,12 @@ void Managing::readFlights() {
             //undirected graph
             undirectedGlobalNetwork[origin].addFlight(flight);
             undirectedGlobalNetwork[destination].addFlight(flight);
-
             airlines[airline].addFlight(flight);
 
         }
         else {
             findFlight->second->addAirline(airline);
+            airlines[airline].addFlight(findFlight->second);
         }
 
         airlines[airline].addAirport(origin);

@@ -51,8 +51,6 @@ void menus::mainMenu(){
 
     Menu MainMenu("Inicio", "Escolha uma opção: ", options, {}, true);
 
-    Airport a = m.getAirports().at("OPO");
-
     MainMenu.render();
 
 
