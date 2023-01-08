@@ -323,7 +323,7 @@ void menus::menus_pais_cidades(string country){
     };
 
     sort(cities.begin(), cities.end());
-    Menu choice_allOrOne_country("Viajar - " + country, "Escolha uma opção: ", options_cities, cities, true, true, 3);
+    Menu choice_allOrOne_country("Viajar - " + country, "Escolha uma opção ou uma cidade: ", options_cities, cities, true, true, 3);
     choice_allOrOne_country.render();
 
     if(choice_allOrOne_country.optionIsSelected()){
