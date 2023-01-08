@@ -50,8 +50,9 @@ void menus::mainMenu(){
     };
 
     Menu MainMenu("Inicio", "Escolha uma opção: ", options, {}, true);
-    vector<string> sources = {"OPO", "LIS"};
-    vector<string> dest = {"GVA"};
+
+    Airport a = m.getAirports().at("OPO");
+
     MainMenu.render();
 
 
@@ -193,12 +194,12 @@ void menus::consultar_aeroporto(Airport& airport){
 
 void menus::voos_aeroporto(Airport airport){
     vector<string> options = {"Voltar"};
-    map<string,pair<double,set<string>>> all_targets;
+    map<string,pair<double,vector<string>>> all_targets;
     vector<string> flights;
 
     for(auto &flight : airport.getFlights()){
         all_targets[flight->getTarget()].first = flight->getDistance();
-        all_targets[flight->getTarget()].second.insert(flight->getAirline());
+        all_targets[flight->getTarget()].second = flight->getAirlines();
     }
 
     for(auto &target : all_targets){
@@ -773,12 +774,14 @@ void menus::menu_results() {
     for(const auto& trip : possible_paths){
         string each_trip = "";
         for(auto flight : trip){
-            if(trip.size() > 1){
+           /*
+            * if(trip.size() > 1){
                 each_trip += flight->getSource() + " -> " + flight->getTarget() + " (" + flight->getAirline() + ")   ";
             }
             else{
                 each_trip += flight->getSource() + " -> " + flight->getTarget() + " (" + flight->getAirline() + ")";
             }
+            RESOLVER PROBLEMA */
         }
         results.push_back(to_string(count) + " - " + each_trip);
         count++;
@@ -827,7 +830,7 @@ void menus::menu_companhias() {
     set<string> airlines;
     for(auto trip : possible_paths){
         for(auto flight : trip){
-            airlines.insert(flight->getAirline());
+            /* airlines.insert(flight->getAirline());  RESOLVER PROBLEMA */
         }
     }
 

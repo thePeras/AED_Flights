@@ -66,7 +66,9 @@ const set<string> Airport::getAirlines() const {
     set<string> airlines;
 
     for (auto flight : flights) {
-        airlines.insert(flight->getAirline());
+        for (auto airline : flight->getAirlines()) {
+            airlines.insert(airline);
+        }
     }
 
     return airlines;
