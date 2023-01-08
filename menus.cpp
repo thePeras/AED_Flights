@@ -221,7 +221,7 @@ void menus::voos_aeroporto(Airport airport){
     flights.insert(flights.begin()+1, "Distância");
     flights.insert(flights.begin()+2, "Companhias");
 
-    Menu airport_flights("Voos - Aeroporto", "Opção: ", options, flights,targets_codes, true, true, 3);
+    Menu airport_flights("Voos - Aeroporto", "Escolha uma opção ou o código de um aeroporto: ", options, flights,targets_codes, true, true, 3);
     airport_flights.render();
 
     if(airport_flights.optionIsSelected() && airport_flights.getOption() == 0){
@@ -270,7 +270,7 @@ void menus::aeroporto_input(){
     }
     sort(airports.begin(), airports.end());
 
-    Menu digit_airport("Viajar - Aeroporto", "digite o código do aeroporto: ", options, airports, true, true, 10);
+    Menu digit_airport("Viajar - Aeroporto", "Digite o código do aeroporto: ", options, airports, true, true, 10);
     digit_airport.render();
 
     if(digit_airport.optionIsSelected() && digit_airport.getOption() == 0){
