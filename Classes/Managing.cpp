@@ -80,6 +80,7 @@ void Managing::readAirports() {
 void Managing::readFlights() {
     string line;
     ifstream file(FLIGHTS_FILE);
+    unordered_map<string, Flight*> flights;
 
     getline(file, line);
     while (getline(file, line)) {
@@ -93,17 +94,28 @@ void Managing::readFlights() {
 
         // Basically adding edges to the graph
         float distance = airports[origin].distance(&airports[destination]);
-        Flight *flight = new Flight(origin, destination, airline, distance);
+        Flight *flight = new Flight(origin, destination, distance);
 
-        airlines[airline].addFlight(flight);
+        auto findFlight = flights.find(origin + ":" + destination);
+        if (findFlight == flights.end()) {
+            flights.insert({origin + ":" + destination, flight});
+            flight->addAirline(airline);
+            // direct graph
+            airports[origin].addFlight(flight);
+            //undirected graph
+            undirectedGlobalNetwork[origin].addFlight(flight);
+            undirectedGlobalNetwork[destination].addFlight(flight);
+
+            airlines[airline].addFlight(flight);
+
+        }
+        else {
+            findFlight->second->addAirline(airline);
+        }
+
         airlines[airline].addAirport(origin);
         airlines[airline].addAirport(destination);
 
-        //direct graph
-        airports[origin].addFlight(flight);
-        //undirected graph
-        undirectedGlobalNetwork[origin].addFlight(flight);
-        undirectedGlobalNetwork[destination].addFlight(flight);
     }
     file.close();
 }
@@ -260,7 +272,9 @@ list<list<Flight*>> Managing::possiblePaths(string source, string target, int ma
         Airport lastAirportObj = airports[lastAirport];
 
         for (Flight *flight: lastAirportObj.getFlights()) {
+            /* TO CHANGE
             if (consideredAirlines.find(flight->getAirline()) == consideredAirlines.end()) continue;
+             */
             if (!visited[flight->getTarget()]) {
                 list<Flight *> newPath = path;
                 newPath.push_back(flight);
@@ -574,11 +588,7 @@ int Managing::numberOfComponents(unordered_map<string, Airport>& network) {
 }
 
 int Managing::numberOfDirectDestinations(string source, const unordered_map<string, Airport>& graph) {
-    set<string> destinations;
-    for (Flight *flight: graph.find(source)->second.getFlights()) {
-        destinations.insert(flight->getTarget());
-    }
-    return destinations.size();
+    return graph.find(source)->second.getFlights().size();
 }
 
 vector<pair<string, int>> Managing::getTopAirports(int n, const unordered_map<string, Airport>& graph) {

@@ -1,17 +1,19 @@
 #pragma once
 
 #include <string>
+#include <vector>
+
 using namespace std;
 
 class Flight {
 private:
     string source; //airport_id
     string target; //airport_id
-    string airline; //airline_id
     float distance; //in km
+    vector<string> airlines; //airline_id
 public:
     Flight();
-    Flight(string source, string target, string airline, float distance);
+    Flight(string source, string target, float distance);
 
     const string &getSource() const;
     void setSource(const string &source);
@@ -20,11 +22,11 @@ public:
 
     void setTarget(const string &target);
 
-    const string getAirline() const;
-
-    void setAirline(const string &airline);
-
     float getDistance() const;
 
     void setDistance(float distance);
+
+    void addAirline(string airline);
+
+    const vector<string> &getAirlines() const;
 };
