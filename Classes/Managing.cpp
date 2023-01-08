@@ -360,13 +360,13 @@ set<string> Managing::reachableAirports(string source, int maxNumFlights) {
 
         if (visited[lastAirport]) continue;
         visited[lastAirport] = true;
-        reachableAirports.insert(lastAirport);
+        if(numFlights == maxNumFlights)
+            reachableAirports.insert(lastAirport);
 
         Airport lastAirportObj = airports[lastAirport];
 
         for (Flight *flight: lastAirportObj.getFlights()) {
             if (numFlights + 1 > maxNumFlights) continue;
-
             paths.push({flight->getTarget(), numFlights + 1});
         }
     }
