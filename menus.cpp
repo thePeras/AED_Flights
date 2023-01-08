@@ -585,15 +585,26 @@ void menus::consultar_rede_global(){
             }
             case 3:{
                 vector<string> results;
+                int max = 0;
+                int count = 0;
+                sort(stronglyConnectedComponents.begin(), stronglyConnectedComponents.end(), [](const vector<string> &a, const vector<string> &b) {
+                    return a.size() > b.size();
+                });
                 for(auto component : stronglyConnectedComponents){
                     string codes = "";
+                    count = 0;
                     for(auto airportCode : component){
                         Airport airport = m.getAirports().find(airportCode)->second;
+                        count++;
                         codes += airport.getCode() + " <-> ";
 
                     }
+                    if(count > max) max = count;
                     results.push_back(codes.erase(codes.length() - 5));
                 }
+
+                results.insert(results.begin(), "O maior conjunto de aeroportos fortemente conexos tem " + to_string(max) + " aeroportos.\n");
+
                 Menu stronglyConnectedAirportsMenu("Aeroportos fortemente conexos - Rede global", "Opção: ", back_options, results, false, true, 1);
                 stronglyConnectedAirportsMenu.render();
                 consultar_rede_global();
@@ -713,15 +724,26 @@ void menus::consultar_rede_companhia(string airlineCode){
             }
             case 3: {
                 vector<string> results;
+                int max = 0;
+                int count = 0;
+                sort(stronglyConnectedComponents.begin(), stronglyConnectedComponents.end(), [](const vector<string> &a, const vector<string> &b) {
+                    return a.size() > b.size();
+                });
                 for(auto component : stronglyConnectedComponents){
                     string codes = "";
+                    count = 0;
                     for(auto airportCode : component){
                         Airport airport = m.getAirports().find(airportCode)->second;
+                        count++;
                         codes += airport.getCode() + " <-> ";
 
                     }
+                    if(count > max) max = count;
                     results.push_back(codes.erase(codes.length() - 5));
                 }
+
+                results.insert(results.begin(), "O maior conjunto de aeroportos fortemente conexos tem " + to_string(max) + " aeroportos.\n");
+
                 Menu components_menu("Componentes fortemente conexos - " + airlineCode, "Opção: ", voltar_options, results, false, true, 1);
                 components_menu.render();
                 consultar_rede_companhia(airlineCode);
@@ -844,14 +866,26 @@ void menus::consultar_rede_pais(string country){
             }
             case 3:{
                 vector<string> results;
-                for(const auto& component : stronglyConnectedComponents){
+                int max = 0;
+                int count = 0;
+                sort(stronglyConnectedComponents.begin(), stronglyConnectedComponents.end(), [](const vector<string> &a, const vector<string> &b) {
+                    return a.size() > b.size();
+                });
+                for(auto component : stronglyConnectedComponents){
                     string codes = "";
-                    for(auto& airportCode : component){
-                        codes += airportCode + " <-> ";
+                    count = 0;
+                    for(auto airportCode : component){
+                        Airport airport = m.getAirports().find(airportCode)->second;
+                        count++;
+                        codes += airport.getCode() + " <-> ";
+
                     }
-                    codes = codes.substr(0, codes.size() - 5);
-                    results.push_back(codes);
+                    if(count > max) max = count;
+                    results.push_back(codes.erase(codes.length() - 5));
                 }
+
+                results.insert(results.begin(), "O maior conjunto de aeroportos fortemente conexos tem " + to_string(max) + " aeroportos.\n");
+
                 Menu scc_menu("Componentes fortemente conexos - " + country, "Opção: ", voltar_options, results, false, true, 1);
                 scc_menu.render();
                 consultar_rede_pais(country);
