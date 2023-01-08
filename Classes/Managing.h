@@ -45,7 +45,7 @@ public:
 
     list<list<Flight*>> possiblePaths(vector<string>& sources, vector<string>& targets, int maxNumFlights);
 
-    list<list<Flight*>> possiblePaths(vector<string>& sources, vector<string>& targets, int maxNumFlights, unordered_map<string, Airport> &network);
+    list<list<Flight*>> possiblePaths(vector<string>& sources, vector<string>& targets, unordered_map<string, Airport> &network);
 
     list<list<Flight*>> possiblePaths(string source, string target, int maxNumFlights, set<string> &airlines);
 

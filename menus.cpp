@@ -766,7 +766,7 @@ void menus::consultar_rede_pais(string country){
 void menus::menu_results() {
     vector<string> options = {"Voltar", "Filtrar"};
 
-    possible_paths = m.possiblePaths(travel_source_airports, travel_target_airports, max_num_flights, m.getAirports());
+    possible_paths = m.possiblePaths(travel_source_airports, travel_target_airports, m.getAirports());
 
     vector<string> results;
     int count = 3;

@@ -309,9 +309,10 @@ list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<str
     return possiblePaths;
 }
 
-list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<string>& targets, int maxNumFlights, unordered_map<string, Airport> &network) {
+list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<string>& targets, unordered_map<string, Airport> &network) {
     unordered_map<string, bool> visited;
     visited.clear();
+    int maxNumFlights;
 
     queue<queue<Airport>> solutions;
 
@@ -333,16 +334,16 @@ list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<str
 
         Airport airport = path.back();
 
-        if (find(targets.begin(), targets.end(), airport.getCode()) != targets.end()) {
-            solutions.push(path);
-            continue;
-        }
-
         for (Flight *flight: airport.getFlights()) {
             if (!visited[flight->getTarget()]) {
                 queue<Airport> newPath = path;
                 newPath.push(network[flight->getTarget()]);
-                if (newPath.size() > maxNumFlights+1) continue;
+                if (solutions.size() > 0 and newPath.size() > maxNumFlights+1) continue;
+                if (find(targets.begin(), targets.end(), flight->getTarget()) != targets.end()) {
+                    solutions.push(newPath);
+                    maxNumFlights = newPath.size()-1;
+                    continue;
+                }
                 airportsPaths.push(newPath);
                 visited[flight->getTarget()] = true;
             }
