@@ -8,6 +8,7 @@
 #include "Comparators.cpp"
 #include "Airport.h"
 #include <vector>
+#include <stack>
 
 using namespace std;
 
@@ -53,6 +54,7 @@ public:
 
     string mostDistantCountry(string source, int maxNumFlights);
 
+
     /**
      * @brief Get the articulation points of a graph
      * Complexity: O(V + E)
@@ -72,6 +74,15 @@ public:
      * @param network The undirected network (Graph) to be analyzed
      */
     void findArticulationPoints(string source, unordered_map<string, int> &discovered, unordered_map<string, int> &low, unordered_map<string, string> &parent, set<string> &articulationPoints, unordered_map<string, Airport> &network);
+
+
+    vector<vector<string>> getStronglyConnectedComponentes(unordered_map<string, Airport> &network);
+
+    void findStronglyConnectAirports(const string source, unordered_map<string, int> &num,
+                                     unordered_map<string, int> &low, stack<string> &s, unordered_map<string, bool> &inStack,
+                                     vector<vector<string>> &stronglyConnectedAirports, unordered_map<string, Airport> &network);
+
+
 
     /**
      * @brief BFS (Breadth First Search) algorithm

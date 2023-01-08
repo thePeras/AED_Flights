@@ -11,6 +11,7 @@
 #include <sstream>
 #include <fstream>
 #include <queue>
+#include <stack>
 
 Managing::Managing() {
 }
@@ -389,6 +390,62 @@ string Managing::mostDistantCountry(string source, int maxNumFlights) {
     return distantCountry;
 }
 
+vector<vector<string>> Managing::getStronglyConnectedComponentes(unordered_map<string, Airport> &network) {
+    vector<vector<string>> stronglyConnectedAirports;
+    unordered_map<string, int> num;
+    unordered_map<string, int> low;
+
+    stack<string> s;
+
+    unordered_map<string, bool> inStack;
+    for (auto &node : network){
+        num[node.first] = -1;
+        low[node.first] = -1;
+    }
+
+    for(auto &node : network){
+        if(num[node.first] == -1){
+            findStronglyConnectAirports(node.first, num, low, s, inStack, stronglyConnectedAirports, network);
+      }
+    }
+    return stronglyConnectedAirports;
+
+}
+void Managing::findStronglyConnectAirports(const string source, unordered_map<string, int> &num,
+                                           unordered_map<string, int> &low, stack<string> &s,
+                                           unordered_map<string, bool> &inStack, vector<vector<string>> &stronglyConnectedAirports,
+                                           unordered_map<string, Airport> &network) {
+    //tarjan algorithm
+    Airport sourceAirportObj = network[source];
+    static int counter = 0;
+    num[source] = low[source] = counter++;
+    s.push(source);
+    inStack[source] = true;
+
+    for(Flight *flight : sourceAirportObj.getFlights()){
+        string target = flight->getTarget();
+        if(num[target] == -1){
+            findStronglyConnectAirports(target, num, low, s, inStack, stronglyConnectedAirports, network);
+            low[source] = min(low[source], low[target]);
+        }
+        else if(inStack[target]){
+            low[source] = min(low[source], num[target]);
+        }
+    }
+
+    if(low[source] == num[source]){
+        string w;
+        vector<string> stronglyConnectedNodes;
+        do{
+            w = s.top();
+            s.pop();
+            inStack[w] = false;
+            stronglyConnectedNodes.push_back(w);
+        }while(w != source);
+        stronglyConnectedAirports.push_back(stronglyConnectedNodes);
+    }
+}
+
 set<string> Managing::getArticulationPoints(unordered_map<string, Airport> &network){
     unordered_map<string, int> discovered;
     unordered_map<string, int> low;
@@ -579,3 +636,7 @@ vector<pair<string, int>> Managing::getTopAirports(int n, const unordered_map<st
     });
     return vector<pair<string, int>>(topAirports.begin(), topAirports.begin() + n);
 }
+
+
+
+

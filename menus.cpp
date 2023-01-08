@@ -513,8 +513,9 @@ void menus::consultar_rede(){
 
 void menus::consultar_rede_global(){
     unordered_map<string, Airport> network = m.getUndirectedGlobalNetwork();
-
+    unordered_map<string, Airport> directedNetwork = m.getAirports();
     set<string> articulationPoints = m.getArticulationPoints(network);
+    vector<vector<string>> stronglyConnectedComponents = m.getStronglyConnectedComponentes(directedNetwork);
 
     stringstream line1;
     stringstream line2;
@@ -522,27 +523,28 @@ void menus::consultar_rede_global(){
     stringstream line4;
     stringstream line5;
     stringstream line6;
+    stringstream line7;
     line1 << "Existem ao todo, " << m.getAirports().size() << " aeroportos.";
     line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
     line3 << "A rede global de aeroportos tem um diâmetro aproximadamente de " << m.getDiameter(m.getAirports(), false) << " aeroportos.";
     line4 << "O diâmetro em kms é de aproximadamente " << m.getWeightedDiameter(m.getAirports(), false) << " kms.";
     int numberOfComponents = m.numberOfComponents(network);
     line5 << "A rede global tem " << numberOfComponents << " componentes conexos.";
+    line7 << "O conjunto de aeroportos fortemente conexos é de " << stronglyConnectedComponents.size() << " (Componentes fortemente conexos).";
     line6 << "Os aeroportos com mais voos diferentes são: ";
-
-    unordered_map<string, Airport> directedNetwork = m.getAirports();
     vector<pair<string,int>> topAirports = m.getTopAirports(4, directedNetwork);
     for (pair<string, int> airport : topAirports) {
         line6 << endl << "\t\t-" << directedNetwork.find(airport.first)->second.getName() << ", " << directedNetwork.find(airport.first)->second.getCity() << " (" << airport.second << " voos diferentes)";
     }
 
 
-    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str(), line6.str()};
+    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str(), line7.str() ,line6.str()};
 
     vector<string> options = {
             "Voltar",
             "Ver todo os aeroportos",
             "Ver somente os aeroportos importantes",
+            "Ver conjuntos de aeroportos fortemente conexos",
             "Consultar diâmetro preciso de aeroportos",
             "Consultar diâmetro preciso em kms"
     };
@@ -581,14 +583,30 @@ void menus::consultar_rede_global(){
                 consultar_rede_global();
                 break;
             }
-            case 3: {
+            case 3:{
+                vector<string> results;
+                for(auto component : stronglyConnectedComponents){
+                    string codes = "";
+                    for(auto airportCode : component){
+                        Airport airport = m.getAirports().find(airportCode)->second;
+                        codes += airport.getCode() + " <-> ";
+
+                    }
+                    results.push_back(codes.erase(codes.length() - 5));
+                }
+                Menu stronglyConnectedAirportsMenu("Aeroportos fortemente conexos - Rede global", "Opção: ", back_options, results, false, true, 1);
+                stronglyConnectedAirportsMenu.render();
+                consultar_rede_global();
+                break;
+            }
+            case 4: {
                 string menu_text = "O diametro preciso é de " + to_string(m.getDiameter(m.getAirports(), true)) + " aeroportos.";
                 Menu precise_diameter("Diâmetro preciso - Rede Global", "Opção: ", back_options, {menu_text}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_global();
                 break;
             }
-            case 4: {
+            case 5: {
                 string menu_text = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(m.getAirports(), true)) + " kms.";
                 Menu precise_diameter("Diâmetro preciso - Rede Global", "Opção: ", back_options, {menu_text}, false, true, 1);
                 precise_diameter.render();
@@ -623,6 +641,7 @@ void menus::consultar_rede_companhia(string airlineCode){
     unordered_map<string, Airport> directedNetwork = m.getAirlineNetwork(airlineCode, true);
     unordered_map<string, Airport> undirectedNetwork = m.getAirlineNetwork(airlineCode, false);
     set<string> articulationPoints = m.getArticulationPoints(undirectedNetwork);
+    vector<vector<string>> stronglyConnectedComponents = m.getStronglyConnectedComponentes(directedNetwork);
 
     stringstream line1;
     stringstream line2;
@@ -630,6 +649,7 @@ void menus::consultar_rede_companhia(string airlineCode){
     stringstream line4;
     stringstream line5;
     stringstream line6;
+    stringstream line7;
     line1 << "A rede desta companhia area tem " << airline.getAirports().size() << " aeroportos.";
     line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
     line3 << "O diâmetro da rede é de aproximadamente " << m.getDiameter(directedNetwork, false) << " aeroportos.";
@@ -637,19 +657,22 @@ void menus::consultar_rede_companhia(string airlineCode){
     int numberOfComponents = m.numberOfComponents(directedNetwork);
     line5 << "A companhia tem " << numberOfComponents << " componente";
     if(numberOfComponents > 1) line5 << "s."; else line5 << ".";
+    line7 << "O conjunto de aeroportos fortemente conexos é de " << stronglyConnectedComponents.size() << " (Componentes fortemente conexos).";
     line6 << "Os aeroportos com mais voos diferentes são: ";
+
 
     vector<pair<string,int>> topAirports = m.getTopAirports(4, directedNetwork);
     for (pair<string, int> airport : topAirports) {
         line6 << endl << "\t\t-" << directedNetwork.find(airport.first)->second.getName() << ", " << directedNetwork.find(airport.first)->second.getCity() << " (" << airport.second << " voos diferentes)";
     }
 
-    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str(), line6.str()};
+    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str(), line7.str(),line6.str()};
 
     vector<string> options2 = {
             "Voltar",
             "Ver todos os aeroportos",
             "Ver somente aeroportos importantes",
+            "Ver conjuntos de aeroportos fortemente conexos",
             "Consultar diâmetro preciso de aeroportos",
             "Consultar diâmetro preciso em kms"
     };
@@ -689,13 +712,29 @@ void menus::consultar_rede_companhia(string airlineCode){
                 break;
             }
             case 3: {
+                vector<string> results;
+                for(auto component : stronglyConnectedComponents){
+                    string codes = "";
+                    for(auto airportCode : component){
+                        Airport airport = m.getAirports().find(airportCode)->second;
+                        codes += airport.getCode() + " <-> ";
+
+                    }
+                    results.push_back(codes.erase(codes.length() - 5));
+                }
+                Menu components_menu("Componentes fortemente conexos - " + airlineCode, "Opção: ", voltar_options, results, false, true, 1);
+                components_menu.render();
+                consultar_rede_companhia(airlineCode);
+                break;
+            }
+            case 4: {
                 string menutext = "O diametro preciso é de " + to_string(m.getDiameter(directedNetwork, true)) + " aeroportos.";
                 Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "Opção: ", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_companhia(airlineCode);
                 break;
             }
-            case 4: {
+            case 5: {
                 string menutext = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(directedNetwork, true)) + " kms.";
                 Menu precise_diameter("Diâmetro preciso - Rede " + airline.getName(), "Opção: ", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
@@ -734,6 +773,8 @@ void menus::consultar_rede_pais(string country){
     unordered_map<string, Airport> directedNetwork = m.getCountryNetwork(country, true);
     unordered_map<string, Airport> undirectedNetwork = m.getCountryNetwork(country, false);
     set<string> articulationPoints = m.getArticulationPoints(undirectedNetwork);
+    vector<pair<string,int>> topAirports = m.getTopAirports(4, directedNetwork);
+    vector<vector<string>> stronglyConnectedComponents = m.getStronglyConnectedComponentes(directedNetwork);
 
     stringstream line1;
     stringstream line2;
@@ -741,6 +782,7 @@ void menus::consultar_rede_pais(string country){
     stringstream line4;
     stringstream line5;
     stringstream line6;
+    stringstream line7;
     line1 << "Existem " << directedNetwork.size() << " aeroportos, ";
     line2 << "Dos quais " << articulationPoints.size() << " são importantes (Pontos de articulação).";
     line3 << "O diâmetro da rede é de aproximadamente " << m.getDiameter(directedNetwork, false) << " aeroportos.";
@@ -749,18 +791,20 @@ void menus::consultar_rede_pais(string country){
     line5 << "A rede deste país tem " << numberOfComponents << " componente";
     if(numberOfComponents > 1) line5 << "s."; else line5 << ".";
     line6 << "Os aeroportos com mais voos diferentes são: ";
-    vector<pair<string,int>> topAirports = m.getTopAirports(4, directedNetwork);
+    line7 << "O conjunto de aeroportos fortemente conexos é de " << stronglyConnectedComponents.size() << " (Componentes fortemente conexos).";
+
     for (pair<string, int> airport : topAirports) {
         line6 << endl << "\t\t-" << directedNetwork.find(airport.first)->second.getName() << ", " << directedNetwork.find(airport.first)->second.getCity() << " (" << airport.second << " voos diferentes)";
     }
 
 
-    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str(), line6.str()};
+    vector<string> text = {line1.str(), line2.str(), line3.str(), line4.str(), line5.str(), line7.str() ,line6.str()};
 
     vector<string> options2 = {
             "Voltar",
             "Ver todos os aeroportos",
             "Ver somente aeroportos importantes",
+            "Ver conjuntos de aeroportos fortemente conexos",
             "Consultar diâmetro preciso de aeroportos",
             "Consultar diâmetro preciso em kms"
     };
@@ -798,14 +842,30 @@ void menus::consultar_rede_pais(string country){
                 consultar_rede_pais(country);
                 break;
             }
-            case 3: {
+            case 3:{
+                vector<string> results;
+                for(const auto& component : stronglyConnectedComponents){
+                    string codes = "";
+                    for(auto& airportCode : component){
+                        codes += airportCode + " <-> ";
+                    }
+                    codes = codes.substr(0, codes.size() - 5);
+                    results.push_back(codes);
+                }
+                Menu scc_menu("Componentes fortemente conexos - " + country, "Opção: ", voltar_options, results, false, true, 1);
+                scc_menu.render();
+                consultar_rede_pais(country);
+                break;
+
+            }
+            case 4: {
                 string menutext = "O diametro preciso é de " + to_string(m.getDiameter(directedNetwork, true)) + " aeroportos.";
                 Menu precise_diameter("Diâmetro preciso - Rede " + country, "Opção: ", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
                 consultar_rede_pais(country);
                 break;
             }
-            case 4: {
+            case 5: {
                 string menutext = "O diametro preciso em kms é de " + to_string(m.getWeightedDiameter(directedNetwork, true)) + " kms.";
                 Menu precise_diameter("Diâmetro preciso - Rede " + country, "Opção: ", voltar_options, {menutext}, false, true, 1);
                 precise_diameter.render();
