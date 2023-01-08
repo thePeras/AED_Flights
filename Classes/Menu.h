@@ -16,7 +16,7 @@ private:
     const string title;
     const string inputText;
     vector<string> options;
-    const vector<string> listToPrint;
+    vector<string> listToPrint;
     vector<string> listToValidate;
     int listIndex;
     const bool isToPrintList;
@@ -35,5 +35,7 @@ public:
     string getInput();
     bool optionIsSelected();
     int getOption();
+
+    void setList(vector<string> vector1);
 };
 

@@ -102,3 +102,7 @@ void Menu::increaseListIndex(){
 void Menu::decreaseListIndex(){
     if(listIndex - nColumns * nLines >= 0) listIndex -= nColumns * nLines;
 }
+
+void Menu::setList(vector<string> list) {
+    this->listToPrint = list;
+}
