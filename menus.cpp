@@ -814,12 +814,7 @@ void menus::menu_results(unordered_map<string, Airport>& network) {
         count++;
     }
 
-    vector<string> ids;
-    for(int i = 3; i < count; i++){
-        ids.push_back(to_string(i));
-    }
-
-    Menu menu_results("Os melhores resultados", "Escolha uma opção ou o ID de um voo: ", options, results, ids, true, true, 2);
+    Menu menu_results("Os melhores resultados", "Escolha uma opção: ", options, results, true, true, 2);
     menu_results.render();
 
     if(menu_results.optionIsSelected() && menu_results.getOption() == 0){
@@ -827,8 +822,5 @@ void menus::menu_results(unordered_map<string, Airport>& network) {
         travel_target_airports.clear();
         menu_viajar("De onde?");
     }
-
-    string id = menu_results.getInput();
-    cout << "Voo escolhido: " << id << endl;
 }
 

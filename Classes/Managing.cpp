@@ -235,6 +235,7 @@ list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<str
         flightPaths.pop_front();
 
         Airport airport = path.back();
+        visited[airport.getCode()] = true;
 
         for (Flight *flight: airport.getFlights()) {
             if (!visited[flight->getTarget()]) {
@@ -251,7 +252,7 @@ list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<str
                 }
                 airportsPaths.push(newPath);
                 flightPaths.push_back(newFlightPath);
-                visited[flight->getTarget()] = true;
+                //visited[flight->getTarget()] = true;
             }
         }
     }
