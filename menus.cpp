@@ -203,8 +203,10 @@ void menus::voos_aeroporto(Airport airport){
         all_targets[flight->getTarget()].second.insert(flight->getAirline());
     }
 
+    vector<string> targets_codes;
     for(auto &target : all_targets){
         string targetString = target.first;
+        targets_codes.push_back(targetString);
         flights.push_back(targetString);
         string distance = to_string((int) target.second.first) + " kms";
         flights.push_back(distance);
@@ -219,12 +221,15 @@ void menus::voos_aeroporto(Airport airport){
     flights.insert(flights.begin()+1, "Distância");
     flights.insert(flights.begin()+2, "Companhias");
 
-    Menu airport_flights("Voos - Aeroporto", "Opção: ", options, flights, false, true, 3);
+    Menu airport_flights("Voos - Aeroporto", "Opção: ", options, flights,targets_codes, true, true, 3);
     airport_flights.render();
 
     if(airport_flights.optionIsSelected() && airport_flights.getOption() == 0){
         consultar_aeroporto(airport);
     }
+
+    Airport theAirport = m.getAirports().find(airport_flights.getInput())->second;
+    consultar_aeroporto(theAirport);
 }
 
 // VIAJAR MENU
