@@ -39,6 +39,7 @@ public:
 
     unordered_map<string, Airport> getUndirectedGlobalNetwork();
     unordered_map<string, Airport> getAirlineNetwork(string airlineCode, bool directed);
+    unordered_map<string, Airport> getAirlinesNetwork(set<string> airlineCode, bool directed);
     unordered_map<string, Airport> getCountryNetwork(string country, bool directed);
 
     list<list<Flight*>> possiblePaths(vector<string>& sources, vector<string>& targets, unordered_map<string, Airport> &network);

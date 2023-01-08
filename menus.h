@@ -19,6 +19,7 @@ class menus {
         void menu_cidade(string city, string country);
         void menu_coordenadas();
         void escolher_rede();
+        void menu_results(unordered_map<string, Airport>& network);
 
         //CONSULTAR AEROPORTO
         void digitar_aeroporto();
@@ -33,9 +34,4 @@ class menus {
         void digitar_pais();
         void consultar_rede_pais(string country);
 
-
-        void menu_results(unordered_map<string, Airport>& network);
-        void menu_filtrar();
-        void menu_companhias();
-        void menu_escala();
 };

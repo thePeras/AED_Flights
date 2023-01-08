@@ -182,6 +182,37 @@ unordered_map<string, Airport> Managing::getAirlineNetwork(string airlineCode, b
     return newNetwork;
 }
 
+unordered_map<string, Airport> Managing::getAirlinesNetwork(set<string> airlinesCodes, bool directed) {
+    unordered_map<string, Airport> newNetwork;
+
+    for(string airlineCode : airlinesCodes){
+        Airline airline = airlines[airlineCode];
+
+        for(string airportCode : airline.getAirports()){
+            Airport airport = new Airport(airports[airportCode]);
+            newNetwork[airportCode] = airport;
+        }
+    }
+
+    for(string airlineCode : airlinesCodes) {
+        Airline airline = airlines[airlineCode];
+        for (Flight* flight : airline.getFlights()) {
+            Flight* newFlight = new Flight(flight->getSource(), flight->getTarget(), flight->getDistance());
+            for(string airlineTag : flight->getAirlines()){
+                if(airlinesCodes.find(airlineTag) != airlinesCodes.end())
+                    newFlight->addAirline(airlineTag);
+            }
+            string source = flight->getSource();
+            string target = flight->getTarget();
+
+            newNetwork[source].addFlight(newFlight);
+            if(!directed) newNetwork[target].addFlight(newFlight);
+        }
+    }
+
+    return newNetwork;
+}
+
 unordered_map<string, Airport> Managing::getCountryNetwork(string country, bool directed) {
     unordered_map<string, Airport> newNetwork;
 
@@ -235,9 +266,12 @@ list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<str
         flightPaths.pop_front();
 
         Airport airport = path.back();
-        visited[airport.getCode()] = true;
+        //visited[airport.getCode()] = true;
 
-        for (Flight *flight: airport.getFlights()) {
+        list<Flight*> flights = airport.getFlights();
+        flights.sort([](Flight* a, Flight* b) { return a->getDistance() < b->getDistance(); });
+
+        for (Flight *flight: flights) {
             if (!visited[flight->getTarget()]) {
                 queue<Airport> newPath = path;
                 newPath.push(network[flight->getTarget()]);
@@ -252,7 +286,7 @@ list<list<Flight *>> Managing::possiblePaths(vector<string>& sources, vector<str
                 }
                 airportsPaths.push(newPath);
                 flightPaths.push_back(newFlightPath);
-                //visited[flight->getTarget()] = true;
+                visited[flight->getTarget()] = true;
             }
         }
     }

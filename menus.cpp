@@ -460,7 +460,50 @@ void menus::escolher_rede(){
                 menu_results(m.getAirports());
                 break;
             };
-            case 2: digitar_companhia(); break;
+            case 2:{
+                options = {"Voltar", "Pesquisar"};
+
+                vector<string> airlines;
+                vector<string> airlines_codes;
+                airlines_codes.push_back("Companhias selecionadas: []");
+                airlines_codes.push_back("");
+                airlines_codes.push_back("");
+                for(auto it = m.getAirlines().begin(); it != m.getAirlines().end(); it++) {
+                    airlines.push_back(it->second.getCode());
+                    airlines_codes.push_back(it->second.getCode() + " - " + it->second.getName());
+                }
+                sort(airlines_codes.begin()+3, airlines_codes.end(), [](const string& a, const string& b) {
+                    if(isdigit(a[0]) && isdigit(b[0])) return a < b;
+                    if(isdigit(a[0])) return false;
+                    if(isdigit(b[0])) return true;
+                    return a < b;
+                });
+
+                set<string> selected_airlines;
+                Menu airlines_menu("Viajar - Rede Companhias", "Código da companhia: ", options, airlines_codes, airlines, true, true, 3);
+                airlines_menu.render();
+                while(!airlines_menu.optionIsSelected()){
+                    string digited_airline = airlines_menu.getInput();
+                    cout << digited_airline << endl;
+                    selected_airlines.insert(digited_airline);
+
+                    string selected_airlines_string = "Companhias selecionadas: [";
+                    for(string airline : selected_airlines){
+                        selected_airlines_string += airline + ", ";
+                    }
+                    selected_airlines_string += "]";
+
+                    airlines_codes[0] = selected_airlines_string;
+                    airlines_menu.setList(airlines_codes);
+
+                    airlines_menu.render();
+                }
+
+                unordered_map<string, Airport> airlines_network = m.getAirlinesNetwork(selected_airlines, false);
+                menu_results(airlines_network);
+
+                break;
+            }
         }
     }
 }
