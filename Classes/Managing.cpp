@@ -267,7 +267,7 @@ Managing::possiblePaths(vector<string> &sources, vector<string> &targets, unorde
         flightPaths.pop_front();
 
         Airport airport = path.back();
-        //visited[airport.getCode()] = true;
+        visited[airport.getCode()] = true;
 
         list<Flight *> flights = airport.getFlights();
         flights.sort([](Flight *a, Flight *b) { return a->getDistance() < b->getDistance(); });
@@ -287,7 +287,7 @@ Managing::possiblePaths(vector<string> &sources, vector<string> &targets, unorde
                 }
                 airportsPaths.push(newPath);
                 flightPaths.push_back(newFlightPath);
-                visited[flight->getTarget()] = true;
+                //visited[flight->getTarget()] = true;
             }
         }
     }
