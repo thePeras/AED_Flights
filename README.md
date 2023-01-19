@@ -1,7 +1,22 @@
-# Transportes Aereos
-## Projeto 2 - Transportes Aereos (AED)
+# Graph data structure - Flights
 
-[xtiles](https://xtiles.app/639b29f828d3456cd7bee179)
+>**Project**
+><br />
+>Curricular Unit: [Algoritmos e Estruturas de Dados](https://sigarra.up.pt/feup/pt/ucurr_geral.ficha_uc_view?pv_ocorrencia_id=501673 "Algorithms and data structures"), 2nd year 
+><br />
+>Course: **Informatics and Computer Engineering** 
+><br />
+> Faculty: **FEUP** (Faculty of Engineering of the University of Porto)
+><br/>
+> Evaluation: ****/20
 
------------------------------------------
-Project by: [Luís Jesus](https://github.com/lfsjesus/), [Miguel Rocha](https://github.com/r00cha) and [João Pereira](https://github.com/thePeras)
+## Project Goals
+
+Develop a program to search flights between different airports using a graph data structure.
+Explore the caracteristics of the data structure like **articulation points**, **diameter**, **strongly connected components**, etc.
+
+### Tecnologies Used
+
+<div>
+	<img height="40" src="https://user-images.githubusercontent.com/25181517/192106073-90fffafe-3562-4ff9-a37e-c77a2da0ff58.png" alt="C++" title="C++" />
+</div>
