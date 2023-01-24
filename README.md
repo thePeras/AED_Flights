@@ -8,12 +8,14 @@
 ><br />
 > Faculty: **FEUP** (Faculty of Engineering of the University of Porto)
 ><br/>
-> Evaluation: ****/20
+> Evaluation: **18**/20
 
 ## Project Goals
 
 Develop a program to search flights between different airports using a graph data structure.
 Explore the caracteristics of the data structure like **articulation points**, **diameter**, **strongly connected components**, etc.
+
+All of the relevant methods documentation can be found [here](https://theperas.github.io/AED_Flights/html/functions.html)
 
 ### Tecnologies Used
 
